@@ -1,11 +1,7 @@
 @echo off
 rem setlocal
 setlocal enableextensions
-setlocal enabledelayedexpansion
-if errorlevel 1 (
-     echo unable to enable extensions
-     goto failure
- )
+rem setlocal enabledelayedexpansion
 
 rem if "%~1" == "" goto help
 rem if "%~2" == "" goto help
@@ -28,6 +24,12 @@ set ROOTDIR=%CD%
 call :LOG_DT "ROOTDIR = '%ROOTDIR%' ..."
 CALL :CHANGEDIR %ROOTDIR%
 
+call :FINDGIT
+"%GITEXE%" --version
+
+call :FINDGITHUBCLI
+"%GHEXE%" --version
+
 if "%~1" == "init" (
  if not "%~2" == "" (
 
@@ -43,25 +45,12 @@ if "%~1" == "init" (
 )
 
 if "%~1" == "master" (
-call :FINDGIT
-"%GITEXE%" --version
-call :FINDGITHUBCLI
-"%GHEXE%" --version
 call :GITINIT master
 call :GITREMOTE
 goto :end
 )
 
 call :CHECKGIT
-
-call :FINDGIT
-"%GITEXE%" --version
-call :FINDGITHUBCLI
-"%GHEXE%" --version
-
-set ROOTDIR=%CD%
-call :LOG_DT "ROOTDIR = '%ROOTDIR%' ..."
-call :CHANGEDIR %ROOTDIR%
 
 if "%~1" == "remote" (
 call :GITREMOTE
@@ -138,13 +127,16 @@ for %%I in ( "LICENSE.md", "README.md", ".gitignore ", "run_git.cmd" ) do (
 
 ) else (
 call :CHANGEDIR ..
+call :LOG_DT %cd%
 call :LOG_DT "CREATE REPO 'mywingit%~1' ..."
 call :LOG_DT "INIT GIT 'mywingit%~1' ..."
 "%GITEXE%" init "mywingit%~1"
 call :LOG_DT %CD%
 set MCD=%CD%
+call :LOG_DT %MCD%
 set RDIR=%MCD%\mywingit%~1
 call :LOG_DT "DIR REPO '%RDIR%'..."
+exit 1
 
 call :CHANGEDIR "%ROOTDIR%"
 call :LOG_DT "COPY FILES ..."
