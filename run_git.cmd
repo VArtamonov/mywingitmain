@@ -24,6 +24,16 @@ set ROOTDIR=%CD%
 call :LOG_DT "ROOTDIR = '%ROOTDIR%' ..."
 CALL :CHANGEDIR %ROOTDIR%
 
+set MYINI=%~dp0%~n0.ini
+call :LOG_DT "MYINI= '!MYINI!' ..."
+FOR /F "eol=; tokens=1,2 delims=, " %%i in (%MYINI%) do (
+rem echo %%i %%j
+if "%%i" == "UserName" (
+set USERNAME=%%j
+call :LOG_DT "USERNAME= '!USERNAME!' ..."
+)
+)
+
 call :FINDGIT
 "%GITEXE%" --version
 
@@ -155,7 +165,7 @@ call :CHANGEDIR %RDIR%
 call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
 "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
 
-"%GITEXE%" remote add origin https://github.com/VArtamonov/mywingit%~1.git
+"%GITEXE%" remote add origin https://github.com/!USERNAME!/mywingit%~1.git
 
 rem "%GHEXE%" auth login --web
 rem "%GHEXE%" auth status
