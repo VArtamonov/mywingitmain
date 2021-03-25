@@ -1,5 +1,5 @@
 @echo off
-rem setlocal
+setlocal
 setlocal enableextensions
 setlocal enabledelayedexpansion
 if errorlevel 1 (
@@ -30,12 +30,11 @@ CALL :CHANGEDIR %ROOTDIR%
 
 if "%~1" == "init" (
  if not "%~2" == "" (
- call :FINDGIT
- "%GITEXE%" --version
- call :FINDGITHUBCLI
- "%GHEXE%" --version
 
+ call :FINDGIT
+ call :FINDGITHUBCLI
  call :GITINIT %~2
+ 
  ) else (
  call :LOG_DT "ERROR ..."	
  echo Please run '%~nx0 init ^<gitname^>'
@@ -99,8 +98,9 @@ rem ==========
 :FINDGIT
 call :LOG_DT "FIND GIT ..."
 FOR %%i IN ("git.exe") DO SET GITEXE=%%~$PATH:i
-IF EXIST "%GITEXE%" @(
+IF EXIST "%GITEXE%" (
 	call :LOG_DT "GIT.EXE = '%GITEXE%'"
+	goto :eof
 ) else (
 call :LOGERROR "Git.exe no found"
 goto :FAILURE
@@ -145,9 +145,9 @@ call :LOG_DT "INIT GIT 'mywingit%~1' ..."
 set RDIR="%CD%\mywingit%~1"
 call :LOG_DT "DIR REPO 'RDIR'..."
 
-call :CHANGEDIR "%ROOTDIR%\CopyFiles"
+call :CHANGEDIR "%ROOTDIR%"
 call :LOG_DT "COPY FILES ..."
-for %%I in ( "copyLICENSE.md", "copyREADME.md", ".gitignore ", "run_git.cmd" ) do (
+for %%I in ( "CopyFiles\copyLICENSE.md", "CopyFiles\copyREADME.md", "CopyFiles\.gitignore ", "run_git.cmd" ) do (
 	echo File %%~I
 	if not exist "%%~I" (
 		copy "%%~I" "%RDIR%\%%~I"
