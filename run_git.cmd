@@ -1,5 +1,5 @@
 @echo off
-setlocal
+rem setlocal
 setlocal enableextensions
 setlocal enabledelayedexpansion
 if errorlevel 1 (
@@ -137,8 +137,8 @@ for %%I in ( "LICENSE.md", "README.md", ".gitignore ", "run_git.cmd" ) do (
 	)
 
 ) else (
-call :LOG_DT "CREATE REPO 'mywingit%~1' ..."
 call :CHANGEDIR ..
+call :LOG_DT "CREATE REPO 'mywingit%~1' ..."
 call :LOG_DT "INIT GIT 'mywingit%~1' ..."
 "%GITEXE%" init "mywingit%~1"
 set MCD=%CD%
