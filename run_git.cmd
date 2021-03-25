@@ -23,6 +23,11 @@ call :LOG_DT "..."
 call :LOG_DT "Logging to file - %file_log%"
 call :LOG_DT "... START %0"
 
+rem root dir
+set ROOTDIR=%CD%
+call :LOG_DT "ROOTDIR = '%ROOTDIR%' ..."
+CALL :CHANGEDIR %ROOTDIR%
+
 if "%~1" == "init" (
  if not "%~2" == "" (
  call :FINDGIT
@@ -38,6 +43,16 @@ if "%~1" == "init" (
  )
 )
 
+if "%~1" == "master" (
+call :FINDGIT
+"%GITEXE%" --version
+call :FINDGITHUBCLI
+"%GHEXE%" --version
+call :GITINIT master
+call :GITREMOTE
+goto :end
+)
+
 call :CHECKGIT
 
 call :FINDGIT
@@ -51,10 +66,10 @@ call :CHANGEDIR %ROOTDIR%
 
 if "%~1" == "remote" (
 call :GITREMOTE
-) else (
-call :GITAUTOCOMMIT
+goto :end
 )
 
+call :GITAUTOCOMMIT
 
 :END
 :FAILURE
@@ -66,6 +81,8 @@ goto :eof
 rem ---------------------------------------------------------------------------------------
 
 :CHECKGIT
+set CDIR=%CD%..
+call :LOG_DT "[33mCDIR=%CDIR%"
 call :LOG_DT "[32mCHECK: GIT repositories ..."
 if exist ".git" (
 call :LOG_DT "GIT EXIST - OK ..."
@@ -109,9 +126,8 @@ goto :eof
 
 rem ==========
 :GITINIT
-call :LOG_DT "CREATE ..."
-call :CREATEDIR "mywingit%~1"
-call :CHANGEDIR "mywingit%~1"
+if "%~1" == "master" (
+call :LOG_DT "CREATE MASTER ..."
 call :LOG_DT "COPY FILES ..."
 for %%I in ( "LICENSE.md", "README.md", ".gitignore ", "run_git.cmd" ) do (
 	echo File %%~I
@@ -120,8 +136,22 @@ for %%I in ( "LICENSE.md", "README.md", ".gitignore ", "run_git.cmd" ) do (
 		)
 	)
 
+) else (
+call :LOG_DT "CREATE ..."
+call :CHANGEDIR ..
+"%GITEXE%" init "mywingit%~1"
+rem call :CREATEDIR "mywingit%~1"
+call :CHANGEDIR CopyFiles 
+call :LOG_DT "COPY FILES ..."
+for %%I in ( "copyLICENSE.md", "copyREADME.md", ".gitignore ", "run_git.cmd" ) do (
+	echo File %%~I
+	if not exist "%%~I" (
+		copy "..\%%~I" "%%~I"
+		)
+	)
+)
 call :LOG_DT "INIT GIT ..."
-"%GITEXE%" init
+rem "%GITEXE%" init
 "%GITEXE%" add .
 "%GITEXE%" commit -m "first commit"
 "%GITEXE%" branch -M master
@@ -182,6 +212,18 @@ if exist "%~2" (
 		mklink /d "%~1" "%~2"
 	) else echo "%~1" - EXIST
 ) else echo "%~2" - NO EXIST
+goto :eof
+
+rem ==========
+:CROOTDIR
+set ROOTDIR=%~1
+if not exist %ROOTDIR% (
+call :LOG_DT "CREATE dir '%ROOTDIR%' ..."
+mkdir %projectdirname%
+) else (
+call :LOG_DT "DIR '%ROOTDIR%' ..."
+)
+call :LOG_DT "ROOTDIR = '%ROOTDIR%' ..."
 goto :eof
 
 rem ==========
