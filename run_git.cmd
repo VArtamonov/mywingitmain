@@ -143,7 +143,7 @@ call :LOG_DT "INIT GIT 'mywingit%~1' ..."
 "%GITEXE%" init "mywingit%~1"
 
 set RDIR="%CD%\mywingit%~1"
-call :LOG_DT "DIR REPO 'RDIR'..."
+call :LOG_DT "DIR REPO '%RDIR%'..."
 
 call :CHANGEDIR "%ROOTDIR%"
 call :LOG_DT "COPY FILES ..."
