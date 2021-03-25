@@ -149,7 +149,7 @@ call :CHANGEDIR "%ROOTDIR%"
 call :LOG_DT "COPY FILES ..."
 for %%I in ( "CopyFiles\copyLICENSE.md", "CopyFiles\copyREADME.md", "CopyFiles\.gitignore ", "run_git.cmd" ) do (
 	echo File %%~I
-	if not exist "%%~I" (
+	if exist "%%~I" (
 		call :LOG_DT "COPY '%%~I' ..."
 		copy "%%~I" "%RDIR%\%%~I"
 		)
