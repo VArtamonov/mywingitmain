@@ -137,21 +137,25 @@ for %%I in ( "LICENSE.md", "README.md", ".gitignore ", "run_git.cmd" ) do (
 	)
 
 ) else (
-call :LOG_DT "CREATE ..."
+call :LOG_DT "CREATE REPO 'mywingit%~1' ..."
 call :CHANGEDIR ..
+call :LOG_DT "INIT GIT 'mywingit%~1' ..."
 "%GITEXE%" init "mywingit%~1"
-rem call :CREATEDIR "mywingit%~1"
-call :CHANGEDIR CopyFiles 
+
+set RDIR="%CD%\mywingit%~1"
+call :LOG_DT "DIR REPO 'RDIR'..."
+
+call :CHANGEDIR "%ROOTDIR%\CopyFiles"
 call :LOG_DT "COPY FILES ..."
 for %%I in ( "copyLICENSE.md", "copyREADME.md", ".gitignore ", "run_git.cmd" ) do (
 	echo File %%~I
 	if not exist "%%~I" (
-		copy "..\%%~I" "%%~I"
+		copy "%%~I" "%RDIR%\%%~I"
 		)
 	)
 )
-call :LOG_DT "INIT GIT ..."
-rem "%GITEXE%" init
+
+call :CHANGEDIR %RDIR%
 "%GITEXE%" add .
 "%GITEXE%" commit -m "first commit"
 "%GITEXE%" branch -M master
