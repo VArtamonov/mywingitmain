@@ -151,13 +151,14 @@ call :CHANGEDIR %RDIR%
 "%GITEXE%" add .
 "%GITEXE%" commit -m "first commit"
 "%GITEXE%" branch -M master
+
+call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
+"%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
+
 "%GITEXE%" remote add origin https://github.com/VArtamonov/mywingit%~1.git
 
 rem "%GHEXE%" auth login --web
 rem "%GHEXE%" auth status
-
-call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
-"%GHEXE%" repo create --confirm --public --description "My Repo 'mywingit%~1'"
 
 goto :eof
 

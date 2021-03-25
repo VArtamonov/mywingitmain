@@ -1,4 +1,4 @@
-# MY_GIT_MASTER
+# MY_GIT
 
 Привет всем. Hi everyone. :wave:
 
