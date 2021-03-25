@@ -69,7 +69,7 @@ rem ----------------------------------------------------------------------------
 call :LOG_DT "[32mCHECK: GIT repositories ..."
 if exist ".git" (
 call :LOG_DT "GIT EXIST - OK ..."
-"%GITEXE%" status
+rem "%GITEXE%" status
 call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
 ) else (
 call :LOGERROR "ERROR: no GIT repositories"
