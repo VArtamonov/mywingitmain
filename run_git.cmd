@@ -1,7 +1,7 @@
 @echo off
-rem setlocal
+setlocal
 setlocal enableextensions
-rem setlocal enabledelayedexpansion
+setlocal enabledelayedexpansion
 
 rem if "%~1" == "" goto help
 rem if "%~2" == "" goto help
@@ -87,8 +87,8 @@ rem ==========
 :FINDGIT
 call :LOG_DT "FIND GIT ..."
 FOR %%i IN ("git.exe") DO SET GITEXE=%%~$PATH:i
-IF EXIST "%GITEXE%" (
-	call :LOG_DT "GIT.EXE = '%GITEXE%'"
+IF EXIST "!GITEXE!" (
+	call :LOG_DT "GIT.EXE = '!GITEXE!'"
 	goto :eof
 ) else (
 call :LOGERROR "Git.exe no found"
@@ -126,30 +126,28 @@ for %%I in ( "LICENSE.md", "README.md", ".gitignore ", "run_git.cmd" ) do (
 	)
 
 ) else (
+echo [33m==========================================================================================
 call :CHANGEDIR ..
-call :LOG_DT %cd%
 call :LOG_DT "CREATE REPO 'mywingit%~1' ..."
 call :LOG_DT "INIT GIT 'mywingit%~1' ..."
 "%GITEXE%" init "mywingit%~1"
-call :LOG_DT %CD%
-set MCD=%CD%
-call :LOG_DT %MCD%
-set RDIR=%MCD%\mywingit%~1
-call :LOG_DT "DIR REPO '%RDIR%'..."
-exit 1
-
+set MCD=!CD!
+call :LOG_DT !MCD!
+set RDIR=!MCD!\mywingit%~1
+call :LOG_DT "DIR REPO '!RDIR!' ..."
 call :CHANGEDIR "%ROOTDIR%"
 call :LOG_DT "COPY FILES ..."
-for %%I in ( "CopyFiles\copyLICENSE.md", "CopyFiles\copyREADME.md", "CopyFiles\.gitignore ", "run_git.cmd" ) do (
+for %%I in ( "CopyFiles\LICENSE.md", "CopyFiles\README.md", "CopyFiles\.gitignore ", "run_git.cmd" ) do (
 	rem echo File %%~I
 	if exist "%%~I" (
-		call :LOG_DT "COPY '%%~I' to '%RDIR%\%%~I' ..."
-		copy "%%~I" "%RDIR%\%%~I"
+		call :LOG_DT "COPY '%%~I' to '!RDIR!\%%~nxI' ..."
+		copy %%~I "!RDIR!\%%~nxI"
 		)
 	)
 )
 
 call :CHANGEDIR %RDIR%
+
 "%GITEXE%" add .
 "%GITEXE%" commit -m "first commit"
 "%GITEXE%" branch -M master
