@@ -148,9 +148,9 @@ call :LOG_DT "DIR REPO 'RDIR'..."
 call :CHANGEDIR "%ROOTDIR%"
 call :LOG_DT "COPY FILES ..."
 for %%I in ( "CopyFiles\copyLICENSE.md", "CopyFiles\copyREADME.md", "CopyFiles\.gitignore ", "run_git.cmd" ) do (
-	echo File %%~I
+	rem echo File %%~I
 	if exist "%%~I" (
-		call :LOG_DT "COPY '%%~I' ..."
+		call :LOG_DT "COPY '%%~I' to '%RDIR%\%%~I' ..."
 		copy "%%~I" "%RDIR%\%%~I"
 		)
 	)
