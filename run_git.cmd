@@ -141,6 +141,7 @@ call :CHANGEDIR ..
 call :LOG_DT "CREATE REPO 'mywingit%~1' ..."
 call :LOG_DT "INIT GIT 'mywingit%~1' ..."
 "%GITEXE%" init "mywingit%~1"
+call :LOG_DT %CD%
 set MCD=%CD%
 set RDIR=%MCD%\mywingit%~1
 call :LOG_DT "DIR REPO '%RDIR%'..."
