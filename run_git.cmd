@@ -24,6 +24,8 @@ set ROOTDIR=%CD%
 call :LOG_DT "ROOTDIR = '%ROOTDIR%' ..."
 CALL :CHANGEDIR %ROOTDIR%
 
+rem Read config file
+echo ==========================================================================================
 set MYINI=%~dp0%~n0.ini
 if exist !MYINI! (
 call :LOG_DT "CONFIG = !MYINI! ..."
@@ -150,7 +152,7 @@ for %%I in ( "LICENSE.md", "README.md", ".gitignore ", "run_git.cmd" ) do (
 	)
 
 ) else (
-echo [33m==========================================================================================
+echo ==========================================================================================
 call :CHANGEDIR ..
 call :LOG_DT "CREATE REPO 'mywingit%~1' ..."
 call :LOG_DT "INIT GIT 'mywingit%~1' ..."
