@@ -32,7 +32,9 @@ rem echo %%i %%j
 if "%%i" == "UserName" (
 set USERNAME=%%j
 call :LOG_DT "USERNAME= '!USERNAME!' ..."
-) else ( call :LOGERROR "Config file !MYINI! bad ..." )
+) else ( 
+call :LOGERROR "Config file !MYINI! bad ..."
+)
 )
 ) else (
 call :LOGERROR "Config file !MYINI! no found ..."
