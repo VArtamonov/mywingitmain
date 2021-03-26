@@ -28,7 +28,7 @@ set MYINI=%~dp0%~n0.ini
 if exist !MYINI! (
 call :LOG_DT "CONFIG = !MYINI! ..."
 FOR /F "eol=; tokens=1,2 delims=: " %%a in (!MYINI!) do (
-echo %%a %%b
+rem echo %%a %%b
 if "%%a" == "UserName" (
 set USERNAME=%%b
 call :LOG_DT "USERNAME= '!USERNAME!' ..."
