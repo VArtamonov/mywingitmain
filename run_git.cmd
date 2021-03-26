@@ -59,6 +59,7 @@ if "%~1" == "init" (
  )
 )
 
+rem -----
 if "%~1" == "master" (
 call :GITINIT master
 call :GITREMOTE
@@ -69,6 +70,11 @@ call :CHECKGIT
 
 if "%~1" == "remote" (
 call :GITREMOTE
+goto :end
+)
+
+if "%~1" == "create" (
+call :GITCREATE
 goto :end
 )
 
@@ -166,15 +172,9 @@ call :CHANGEDIR %RDIR%
 "%GITEXE%" add .
 "%GITEXE%" commit -m "first commit"
 "%GITEXE%" branch -M master
-
-call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
-"%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
-
 "%GITEXE%" remote add origin https://github.com/!USERNAME!/mywingit%~1.git
 
-rem "%GHEXE%" auth login --web
-rem "%GHEXE%" auth status
-
+call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 rem ==========
@@ -196,6 +196,18 @@ rem ==========
 call :LOG_DT "GIT PUSH REMOTE ..."
 "%GITEXE%" push -u origin master
 goto :eof
+
+
+rem ==========
+:GITCREATE
+call :LOG_DT "Create remote repo on GitHub"
+rem "%GHEXE%" auth login --web
+"%GHEXE%" auth status
+rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
+call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
+goto :eof
+
+
 
 rem ==========
 :CHANGEDIR
