@@ -24,16 +24,17 @@ set ROOTDIR=%CD%
 call :LOG_DT "ROOTDIR = '%ROOTDIR%' ..."
 CALL :CHANGEDIR %ROOTDIR%
 
-set MYINI="%~dp0%~n0.ini"
+set MYINI=%~dp0%~n0.ini
 if exist !MYINI! (
 call :LOG_DT "CONFIG = !MYINI! ..."
-FOR /F "eol=; tokens=1,2 delims=, " %%i in (%MYINI%) do (
-rem echo %%i %%j
-if "%%i" == "UserName" (
-set USERNAME=%%j
+FOR /F "eol=; tokens=1,2 delims=: " %%a in (!MYINI!) do (
+echo %%a
+if "%%a" == "UserName" (
+set USERNAME=%%b
 call :LOG_DT "USERNAME= '!USERNAME!' ..."
 ) else ( 
 call :LOGERROR "Config file !MYINI! bad ..."
+goto :FAILURE
 )
 )
 ) else (
