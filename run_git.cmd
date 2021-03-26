@@ -186,12 +186,12 @@ echo ===========================================================================
 call :LOG_DT "[32mADD ALL FILES ..."
 "%GITEXE%" add .
 
-call :LOG_DT "ADD AUTO COMMIT ..."
+call :LOG_DT "[32mADD AUTO COMMIT ..."
 call :GET_DT
-call :LOG_DT "Create timestamp %dt%"
+call :LOG_DT "[32mCreate timestamp %dt%"
 "%GITEXE%" commit -a -m "Auto commit '%dt%'"
 
-call :LOG_DT "GIT STATUS ..."
+call :LOG_DT "[32mGIT STATUS ..."
 "%GITEXE%" status
 goto :eof
 
