@@ -183,7 +183,7 @@ goto :eof
 rem ==========
 :GITAUTOCOMMIT
 echo [33m==========================================================================================
-call :LOG_DT "ADD ALL FILES ..."
+call :LOG_DT "[34mADD ALL FILES ..."
 "%GITEXE%" add .
 
 call :LOG_DT "ADD AUTO COMMIT ..."
