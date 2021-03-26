@@ -38,11 +38,12 @@ call :LOG_DT "USERNAME= '!USERNAME!' ..."
 call :LOGERROR "Config file !MYINI! no found ..."
 goto :FAILURE
 )
+
 call :FINDGIT
-"%GITEXE%" --version
+rem "%GITEXE%" --version
 
 call :FINDGITHUBCLI
-"%GHEXE%" --version
+rem "%GHEXE%" --version
 
 if "%~1" == "init" (
  if not "%~2" == "" (
