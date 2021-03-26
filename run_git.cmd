@@ -201,6 +201,7 @@ rem ==========
 :GITREMOTE
 echo ==========================================================================================
 call :LOG_DT "[32mGIT PUSH REMOTE ..."
+"%GHEXE%" auth status
 "%GITEXE%" push -u origin master
 goto :eof
 
