@@ -199,7 +199,8 @@ goto :eof
 
 rem ==========
 :GITREMOTE
-call :LOG_DT "GIT PUSH REMOTE ..."
+echo ==========================================================================================
+call :LOG_DT "[32mGIT PUSH REMOTE ..."
 "%GITEXE%" push -u origin master
 goto :eof
 
