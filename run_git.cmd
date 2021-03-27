@@ -272,12 +272,12 @@ goto :eof
 
 rem ==========
 :LOGINFO
-call :LOG_DT [32m%~1
+call :LOG_DT "[32m%~1"
 goto :eof
 
 rem ==========
 :LOGERROR
-call :LOG_DT [31m%~1
+call :LOG_DT "[31m%~1"
 goto :eof
 
 rem ==========
