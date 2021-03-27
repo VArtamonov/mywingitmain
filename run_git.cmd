@@ -1,18 +1,26 @@
 @echo off
+title "Работа с репозитариеми Git ..."
 setlocal
 setlocal enableextensions
 setlocal enabledelayedexpansion
 
-rem if "%~1" == "" goto help
-rem if "%~2" == "" goto help
-if "%~1" == "help" (
-	:help
+if "%1"=="help" (
+
+:help
 	echo ...
-	echo Please use %~nx0 ^<url^> ^<nametosave^> ^<namelogfile^>
-	echo ...
+	echo Please use
+	echo %~nx0 ^<command^>
+	echo 	help   - эта помощь
+	echo 	create ^<folder^> 	- создание локального репозитария в папке ^<folder^> ^(в родительском каталоге^),
+	echo 				  копирует все необходимое, после создания все вызовы надо делать из ^<folder^>
+	echo 	createmaster 		- создание главного репозитария на GitHub, для хранения этих утилит
+	echo 	createhub		- создание удаленного репозитария на GitHub, для хранения созданного
+	echo 	remote			- отправляет все изменения в удаленный репозитария на GitHub
+	echo 				- без параметров дедает автокоммит в текущей датой и временим
 	exit 0
 	goto end
 )
+
 
 set file_log=%~dp0%~n0.log
 call :LOG_DT "..."

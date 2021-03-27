@@ -17,6 +17,18 @@ So far, I will state everything briefly.
  - делать автоматический коммит с привязкой к времени
  - отправить все изменения на GitHub (обновление удаленной ветки)
 
+## Описание параметров run_git.cmd
+...
+Please use
+run_git.cmd <command>
+	help   - эта помощь
+	create <folder> 	- создание локального репозитария в папке <folder> (в родительском каталоге),
+				  копирует все необходимое, после создания все вызовы надо делать из <folder>
+	createmaster 		- создание главного репозитария на GitHub, для хранения этих утилит
+	createhub		- создание удаленного репозитария на GitHub, для хранения созданного
+	remote			- отправляет все изменения в удаленный репозитария на GitHub
+				- без параметров дедает автокоммит в текущей датой и временим
+
 So far, I will state everything briefly.
 A set of personal programs for automating work with Git. Used as an alternative to the archiver.
 The work is done in Microsoft Windows [https://www.microsoft.com/ru-ru/windows]
