@@ -50,12 +50,12 @@ rem "%GITEXE%" --version
 call :FINDGITHUBCLI
 rem "%GHEXE%" --version
 
-if "%~1" == "init" (
+if "%~1" == "create" (
  if not "%~2" == "" (
 
  call :FINDGIT
  call :FINDGITHUBCLI
- call :GITINIT %~2
+ call :GITCREATE %~2
  
  ) else (
  call :LOG_DT "ERROR ..."	
@@ -65,23 +65,24 @@ if "%~1" == "init" (
 )
 
 rem -----
-if "%~1" == "master" (
-call :GITINIT master
+if "%~1" == "createmaster" (
+call :GITCREATE master
 call :GITREMOTE
 goto :end
 )
 
-call :CHECKGIT
+call :GITCHECK
+
+if "%~1" == "createhub" (
+call :GITCREATEHUB
+goto :end
+)
 
 if "%~1" == "remote" (
 call :GITREMOTE
 goto :end
 )
 
-if "%~1" == "create" (
-call :GITCREATE
-goto :end
-)
 
 call :GITAUTOCOMMIT
 
@@ -94,10 +95,10 @@ goto :eof
 
 rem ---------------------------------------------------------------------------------------
 
-:CHECKGIT
+:GITCHECK
+call :LOGINFO "CHECK: GIT repositories ..."
 set CDIR=%CD%..
-call :LOG_DT "[33mCDIR=%CDIR%"
-call :LOG_DT "[32mCHECK: GIT repositories ..."
+call :LOG_DT "CDIR=%CDIR%"
 if exist ".git" (
 call :LOG_DT "GIT EXIST - OK ..."
 rem "%GITEXE%" status
@@ -111,20 +112,21 @@ goto :eof
 
 rem ==========
 :FINDGIT
-call :LOG_DT "FIND GIT ..."
+call :LOGINFO "FIND GIT ..."
 FOR %%i IN ("git.exe") DO SET GITEXE=%%~$PATH:i
 IF EXIST "!GITEXE!" (
 	call :LOG_DT "GIT.EXE = '!GITEXE!'"
 	goto :eof
 ) else (
 call :LOGERROR "Git.exe no found"
+call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
 goto :FAILURE
 )
 goto :eof
 
 rem ==========
 :FINDGITHUBCLI
-call :LOG_DT "FIND GITHUBCLI ..."
+call :LOGINFO "FIND GITHUBCLI ..."
 for %%i in ("gh.exe", "C:\Program Files (x86)\GitHub CLI\gh.exe", "C:\Program Files\GitHub CLI\gh.exe") do (
 rem echo File '%%~i'
 if exist "%%~i" (
@@ -136,14 +138,16 @@ if exist "%%~i" (
  )
 )
 call :LOGERROR "GitHubCli no found"
+call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
 goto :FAILURE
+
 goto :eof
 
 rem ==========
-:GITINIT
+:GITCREATE
 if "%~1" == "master" (
-call :LOG_DT "CREATE MASTER ..."
-call :LOG_DT "COPY FILES ..."
+call :LOGINFO "CREATE MASTER ..."
+call :LOGINFO "COPY FILES ..."
 for %%I in ( "LICENSE.md", "README.md", ".gitignore ", "run_git.cmd" ) do (
 	echo File %%~I
 	if not exist "%%~I" (
@@ -154,8 +158,8 @@ for %%I in ( "LICENSE.md", "README.md", ".gitignore ", "run_git.cmd" ) do (
 ) else (
 echo ==========================================================================================
 call :CHANGEDIR ..
-call :LOG_DT "CREATE REPO 'mywingit%~1' ..."
-call :LOG_DT "INIT GIT 'mywingit%~1' ..."
+call :LOGINFO "CREATE REPO 'mywingit%~1' ..."
+call :LOGINFO "INIT GIT 'mywingit%~1' ..."
 "%GITEXE%" init "mywingit%~1"
 set MCD=!CD!
 call :LOG_DT !MCD!
@@ -185,36 +189,37 @@ goto :eof
 rem ==========
 :GITAUTOCOMMIT
 echo ==========================================================================================
-call :LOG_DT "[32mADD ALL FILES ..."
+call :LOGINFO "ADD ALL FILES ..."
 "%GITEXE%" add .
 
-call :LOG_DT "[32mADD AUTO COMMIT ..."
+call :LOGINFO "ADD AUTO COMMIT ..."
 call :GET_DT
-call :LOG_DT "[32mCreate timestamp %dt%"
+call :LOGINFO "Create timestamp %dt%"
 "%GITEXE%" commit -a -m "Auto commit '%dt%'"
 
-call :LOG_DT "[32mGIT STATUS ..."
+call :LOG_DT "GIT STATUS ..."
 "%GITEXE%" status
+call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 rem ==========
 :GITREMOTE
 echo ==========================================================================================
-call :LOG_DT "[32mGIT PUSH REMOTE ..."
+call :LOGINFO "GIT PUSH REMOTE ..."
 "%GHEXE%" auth status
 "%GITEXE%" push -u origin master
+call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 
 rem ==========
-:GITCREATE
-call :LOG_DT "Create remote repo on GitHub"
+:GITCREATEHUB
+call :LOGINFO "Create remote repo on GitHub"
 rem "%GHEXE%" auth login --web
 "%GHEXE%" auth status
 rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
 call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
-
 
 
 rem ==========
@@ -232,7 +237,6 @@ call :LOG_DT "CREATE dir '%~1' ..."
 mkdir %~1
 )
 goto :eof
-
 
 rem ==========
 rem %1
@@ -266,6 +270,12 @@ echo %~1
 echo %~1 >> %file_log%
 goto :eof
 
+rem ==========
+:LOGINFO
+call :LOG_DT [32m%1
+goto :eof
+
+rem ==========
 :LOGERROR
 call :LOG_DT [31m%1
 goto :eof
