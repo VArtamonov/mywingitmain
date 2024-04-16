@@ -66,29 +66,23 @@ if "%~1" == "check" goto :check
 if "%~1" == "create" goto :create
 if "%~1" == "autocommint" goto :autocommint
 
-
-
 if "%~1" == "createmaster" (
  call :GITCREATE master
  call :GITREMOTE
  goto :end
 )
 
-
 if "%~1" == "createhub" (
  call :GITCREATEHUB
  goto :end
 )
-
 
 if "%~1" == "remote" (
  call :GITREMOTE
  goto :end
 )
 
-
 goto :help
-
 
 :check
 echo .
@@ -116,17 +110,22 @@ goto :end
 
 
 :autocommint
-call :GITAUTOCOMMIT
-echo .
+ call :GITAUTOCOMMIT
+ echo .
 goto :end
 
 :info
-call :LOGINFO "INFO:"
-echo .
-"%GITEXE%" --version
-echo .
-"%GHEXE%" --version
-echo .
+ call :LOGINFO "INFO:"
+ echo .
+ "%GITEXE%" --version
+
+ echo .
+ "%GHEXE%" --version
+
+ echo .
+ "%GITEXE%" status
+
+ echo .
 goto :end
 
 
