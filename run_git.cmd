@@ -9,7 +9,6 @@ set file_name=%~n0
 rem echo ┌───────────────┬─────┬───────────────────────────────────────────────────────────────────────
 call :LOGLINE1
 call :LOGSTART "START '%~0'"
-title "%~n0 - Работа с PostgreSQL ..."
 call :LOGINFO "Log file - '%file_log%'"
 call :LOGINFO "Текущей каталог: '%CD%'"
 call :LOGINFO "Случайное десятичное число: %RANDOM%"
