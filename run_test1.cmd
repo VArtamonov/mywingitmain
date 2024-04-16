@@ -1,5 +1,5 @@
 @echo off
-chcp 1251 >nul
+chcp 1251 > null
 
 setlocal
 setlocal enableextensions
@@ -18,18 +18,21 @@ call :LOGLINE2
 call :LOGINFO  "TEST INFO  ..."
 call :LOGERROR "TEST ERROR ..."
 
-call :LOGLINE2
-rem root dir
-set ROOTDIR=%CD%
-call :LOGINFO "ROOTDIR = '%ROOTDIR%' ..."
-call :CHANGEDIR %ROOTDIR%
 
 call :LOGLINE2
-call :LOGINFO "Поиск утилит ..."
+rem root dir
+rem set ROOTDIR=%CD%
+rem call :LOGINFO "TEST"
+rem call :LOGINFO "ROOTDIR = '%ROOTDIR%' ..."
+rem call :CHANGEDIR %ROOTDIR%
+
+call :LOGLINE2
+call :LOGINFO "Поиск утилит"
 
 call :FINDZIP
 
 call :FINDWGET
+
 rem set filenameout=%~0
 rem call :MAKENEWFILENAME %filenameout%
 rem call :LOGDEBUG "Filename backup = '%filenameout1%'"
@@ -41,12 +44,13 @@ rem "%GITEXE%" --version
 rem call :FINDGITHUBCLI
 rem "%GHEXE%" --version
 
-
 call :LOGLINE2
+if "%~1" == "" (
+call :info
+)
 
-if "%~1" == "" goto :info
-if "%~1" == "info" goto :info
-if "%~1" == "help" goto :help
+rem if "%~1" == "info" goto :info
+rem if "%~1" == "help" goto :help
 
 goto :end
 
@@ -55,7 +59,7 @@ call :LOGLINE2
 call :LOGINFO "ERRORLEVEL %ERRORLEVEL%"
 call :LOGINFO "END '%~0' ..."
 call :LOGLINE0
-exit 0
+exit /b 0
 goto :eof
 
 :FAILURE
@@ -63,13 +67,14 @@ call :LOGLINE2
 call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
 call :LOGERROR "END '%~0' ..."
 call :LOGLINE0
-exit 1
+exit /b /1
 goto :eof
 
 
 :info
 echo .
-goto :end
+echo off
+goto :eof
 
 :help
  rem ==============================================================================================
@@ -92,8 +97,7 @@ goto :end
  call :LOGINFO " "
 
  rem call :LOGLINE2
-
-goto :end
+goto :eof
 
 rem ---------------------------------------------------------------------------------------
 rem ABBALibraryCmdWgetStart
@@ -156,8 +160,9 @@ rem ============================================================================
 
 rem ==========
 :FINDZIP
+rem call :LOGINFO "FINFILE"
 call :FINDFILE "7z.exe" "ZIPEXE" "C:" "C:\Program Files\7-Zip"
-rem "%ZIPEXE%"
+call :LOGINFO  "ZIPEXE = '%ZIPEXE%'"
 goto :eof
 
 rem ==========
@@ -165,7 +170,6 @@ rem ==========
 call :LOGINFO "FIND '%~1' ..."
 echo off
 for /D %%k in (%3 %4 %5 %6 %7 %8 %9) do (
- rem for '%~1' %%i in ('%~2') do (
  set z1=%%~k\%~1
  rem echo !z1!
  if exist !z1! (
@@ -176,7 +180,6 @@ for /D %%k in (%3 %4 %5 %6 %7 %8 %9) do (
 )
 call :LOGERROR "'%~2' no found"
 call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
-goto :FAILURE
 exit /b 1
 goto :eof
 
@@ -184,14 +187,14 @@ rem ==========
 :CHANGEDIR
 rem call :LOG_DT "CHDIR '%~1' ..."
 cd "%~1"
-call :LOG_DT "CHDIR '%CD%' ..."
+call :LOG "CHDIR '%CD%' ..."
 goto :eof
 
 rem ==========
 :CREATEDIR
-call :LOG_DT "DIR '%~1' ..."
+call :LOG "DIR '%~1' ..."
 if not exist %~1 (
-call :LOG_DT "CREATE dir '%~1' ..."
+call :LOG "CREATE dir '%~1' ..."
 mkdir "%~1"
 )
 goto :eof
@@ -212,10 +215,10 @@ rem ==========
 :CROOTDIR
 set ROOTDIR=%~1
 if not exist %ROOTDIR% (
-call :LOG_DT "CREATE dir '%ROOTDIR%' ..."
-mkdir %projectdirname%
+ call :LOG_DT "CREATE dir '%ROOTDIR%' ..."
+ mkdir %projectdirname%
 ) else (
-call :LOG_DT "DIR '%ROOTDIR%' ..."
+ call :LOG_DT "DIR '%ROOTDIR%' ..."
 )
 call :LOG_DT "ROOTDIR = '%ROOTDIR%' ..."
 goto :eof
@@ -224,33 +227,33 @@ rem ==========
 :CHECKDIR
 call :LOG_DT "CHECK DIR '%~1' ..."
 if not exist "%~1" (
-call :LOGERROR "DIR '%~1' - NOT EXIST ..."
-exit /b 0
+ call :LOGERROR "DIR '%~1' - NOT EXIST ..."
+ exit /b 0
 ) else (
-call :LOGINFO "DIR '%~1' - OK"
+ call :LOGINFO "DIR '%~1' - OK"
 exit /b 1
 )
 goto :eof
 
 rem ABBALibraryFilesEnd
 
-
 rem ABBALibraryCmdLogStart
 rem ==============================================================================================
 
 rem ==========
 :LOGLINE0
-echo +-------------------+-----+-----------------------------------------------------------------------
+echo ----------------------------------------------------------------------------------------------------
 goto :eof
 
 rem ==========
 :LOGLINE1
-echo --------------------+-----+-----------------------------------------------------------------------
+echo ----------------------------------------------------------------------------------------------------
 goto :eof
 
 rem ==========
 :LOGLINE2
-echo +-------------------+-----+-----------------------------------------------------------------------
+rem echo .2
+echo ----------------------------------------------------------------------------------------------------
 goto :eof
 
 rem ==========
@@ -300,7 +303,6 @@ if "%t1%" == " " (
 ) else (
  set mtime=%TIME:~0,2%:%TIME:~3,2%:%TIME:~6,2%
 )
-rem set dt=%mdate%-%mtime%
 goto :eof
 
 rem ==========
@@ -313,12 +315,11 @@ if "%t1%" == " " (
 ) else (
  set mtime=%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%
 )
-rem set dt=%mdate%-%mtime%
 goto :eof
 
 rem ==========
 :LOG
-call :LOGSTR "INFO " "%~1"
+call :LOGSTR "     " "%~1"
 call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[37m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
@@ -354,7 +355,4 @@ goto :eof
 
 rem ABBALibraryCmdLogEnd
 
-
 goto :eof
-:eof
-
