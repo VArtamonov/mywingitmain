@@ -1,5 +1,5 @@
 @echo off
-chcp 1251 > null
+chcp 1251 >nul
 
 setlocal
 setlocal enableextensions
