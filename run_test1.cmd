@@ -10,7 +10,6 @@ set file_name=%~n0
 
 call :LOGLINE1
 call :LOGSTART "START '%~0'"
-title "%~n0 - Работа с PostgreSQL ..."
 call :LOGINFO "Log file - '%file_log%'"
 call :LOGINFO "Текущей каталог: '%CD%'"
 call :LOGINFO "Случайное десятичное число: %RANDOM%"
@@ -190,7 +189,7 @@ call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
-:LOGINFO
+:LOGINFO 
 call :LOGSTR "INFO " "%~1"
 call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[32m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
@@ -208,14 +207,6 @@ rem ==========
 call :LOGSTR "ERROR" "%~1"
 call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[31m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
-goto :eof
-
-rem ==========
-rem %1 "%~1"
-rem call :LOG Logtxt
-:LOG
-echo ... %1[0m
-echo ... %1 >> "%file_log%"
 goto :eof
 
 rem ==========
