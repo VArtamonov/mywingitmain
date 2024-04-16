@@ -131,18 +131,20 @@ rem ABBALibraryFilesEnd
 rem ABBALibraryCmdLogStart
 rem ==============================================================================================
 
+rem ==========
 :LOGLINE0
 echo +-------------------+-----+-----------------------------------------------------------------------
 goto :eof
 
+rem ==========
 :LOGLINE1
 echo --------------------+-----+-----------------------------------------------------------------------
 goto :eof
 
+rem ==========
 :LOGLINE2
 echo +-------------------+-----+-----------------------------------------------------------------------
 goto :eof
-
 
 rem ==========
 :LOG
@@ -170,9 +172,9 @@ rem ==========
 call :LOGSTR "ERROR" "%~1"
 call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[31m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
-
 goto :eof
 
+rem ==========
 rem %1 "%~1"
 rem call :LOG Logtxt
 :LOG
@@ -180,24 +182,33 @@ echo ... %1[0m
 echo ... %1 >> "%file_log%"
 goto :eof
 
+rem ==========
+:LOGSTART
+call :LOGSTR  "     " "%~1"
+call :LOGFILE "%dt% --------------------------------------------------------------------------------------------------------------------"
+call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%"
+call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+goto :eof
+
+rem ==========
 rem %1 "%~1"
 rem call :LOG Logtxt
 :LOGSCR
-echo off
 if "%~2"=="" (
  echo %~1[0m
 ) else if not "%~2"=="" (
  echo %~2%~1[0m
 )
-echo off
 goto :eof
 
+rem ==========
 rem %1 "%~1"
 rem call :LOG Logtxt
 :LOGFILE
 echo "%~1" >> "%file_log%"
 goto :eof
 
+rem ==========
 rem %1 "%~1"
 rem %2 "%~2"
 rem call :LOGSTR INFO LogStr
@@ -209,19 +220,14 @@ set tlogstr2=%~2
 rem echo %tlogstr%
 goto :eof
 
+rem ==========
 :LOG_DT
 call :LOGSTR  "     " "%~1"
 call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
-:LOGSTART
-call :LOGSTR  "     " "%~1"
-call :LOGFILE "%dt% --------------------------------------------------------------------------------------------------------------------"
-call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%"
-call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
-goto :eof
-
+rem ==========
 rem get data and time
 :GET_DT
 set t1=%TIME:~0,1%
@@ -234,6 +240,7 @@ if "%t1%" == " " (
 rem set dt=%mdate%-%mtime%
 goto :eof
 
+rem ==========
 rem get data and time
 :GET_DT1
 set t1=%TIME:~0,1%
