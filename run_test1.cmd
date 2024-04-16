@@ -182,42 +182,6 @@ echo +-------------------+-----+------------------------------------------------
 goto :eof
 
 rem ==========
-:LOG
-call :LOGSTR "INFO " "%~1"
-call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[37m"
-call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
-goto :eof
-
-rem ==========
-:LOGINFO 
-call :LOGSTR "INFO " "%~1"
-call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[32m"
-call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
-goto :eof
-
-rem ==========
-:LOGDEBUG
-call :LOGSTR "INFO " "%~1"
-call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[33m"
-call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
-goto :eof
-
-rem ==========
-:LOGERROR
-call :LOGSTR "ERROR" "%~1"
-call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[31m"
-call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
-goto :eof
-
-rem ==========
-:LOGSTART
-call :LOGSTR  "     " "%~1"
-call :LOGFILE "%dt% --------------------------------------------------------------------------------------------------------------------"
-call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%"
-call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
-goto :eof
-
-rem ==========
 rem %1 "%~1"
 rem call :LOG Logtxt
 :LOGSCR
@@ -278,6 +242,42 @@ if "%t1%" == " " (
  set mtime=%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%
 )
 rem set dt=%mdate%-%mtime%
+goto :eof
+
+rem ==========
+:LOG
+call :LOGSTR "INFO " "%~1"
+call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[37m"
+call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+goto :eof
+
+rem ==========
+:LOGINFO 
+call :LOGSTR "INFO " "%~1"
+call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[32m"
+call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+goto :eof
+
+rem ==========
+:LOGDEBUG
+call :LOGSTR "INFO " "%~1"
+call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[33m"
+call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+goto :eof
+
+rem ==========
+:LOGERROR
+call :LOGSTR "ERROR" "%~1"
+call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[31m"
+call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+goto :eof
+
+rem ==========
+:LOGSTART
+call :LOGSTR  "     " "%~1"
+call :LOGFILE "%dt% --------------------------------------------------------------------------------------------------------------------"
+call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%"
+call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ABBALibraryCmdLogEnd
