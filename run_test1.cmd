@@ -11,20 +11,25 @@ set file_name=%~n0
 call :LOGLINE1
 call :LOGSTART "START '%~0'"
 call :LOGINFO "Log file - '%file_log%'"
+
 call :LOGINFO "Текущей каталог: '%CD%'"
 call :LOGINFO "Случайное десятичное число: %RANDOM%"
 
-call :LOGLINE2
-call :LOGINFO  "TEST INFO  ..."
-call :LOGERROR "TEST ERROR ..."
 
+call :LOGLINE2
+call :LOGINFO  "TEST INFO"
+call :LOGERROR "TEST ERROR"
 
 call :LOGLINE2
 rem root dir
-rem set ROOTDIR=%CD%
-rem call :LOGINFO "TEST"
-rem call :LOGINFO "ROOTDIR = '%ROOTDIR%' ..."
-rem call :CHANGEDIR %ROOTDIR%
+set ROOTDIR=%CD%
+call :LOGINFO "ROOTDIR = '%ROOTDIR%' ..."
+call :CHANGEDIR %ROOTDIR%
+
+if "%~1" == "help" (
+ call :help %~n0
+ goto :end
+)
 
 call :LOGLINE2
 call :LOGINFO "Поиск утилит"
@@ -32,7 +37,6 @@ call :LOGINFO "Поиск утилит"
 call :FINDZIP
 
 call :FINDWGET
-
 rem set filenameout=%~0
 rem call :MAKENEWFILENAME %filenameout%
 rem call :LOGDEBUG "Filename backup = '%filenameout1%'"
@@ -45,44 +49,52 @@ rem call :FINDGITHUBCLI
 rem "%GHEXE%" --version
 
 call :LOGLINE2
+call :READINIFILE1 !file_name!
+if %ERRORLEVEL% equ 1 (goto :fail)
+
+
+call :LOGLINE2
+
 if "%~1" == "" (
-call :info
+ call :info
+ goto :end
 )
 
-rem if "%~1" == "info" goto :info
-rem if "%~1" == "help" goto :help
 
-goto :end
+if "%~1" == "info" (
+ call :info
+ goto :end
+)
+
+goto :fail
+goto :eof
+
+:fail
+ call :LOGLINE2
+ call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
+ call :LOGERROR "END '%~0' ..."
+ call :LOGLINE0
+ exit /b 1
+goto :eof
 
 :END
-call :LOGLINE2
-call :LOGINFO "ERRORLEVEL %ERRORLEVEL%"
-call :LOGINFO "END '%~0' ..."
-call :LOGLINE0
-exit /b 0
+ call :LOGLINE2
+ call :LOGINFO "ERRORLEVEL %ERRORLEVEL%"
+ call :LOGINFO "END '%~0' ..."
+ call :LOGLINE0
+ exit /b 0
 goto :eof
-
-:FAILURE
-call :LOGLINE2
-call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
-call :LOGERROR "END '%~0' ..."
-call :LOGLINE0
-exit /b /1
-goto :eof
-
 
 :info
-echo .
-echo off
+ echo . test
+ echo off
+ exit /b 0
 goto :eof
 
 :help
- rem ==============================================================================================
-
- rem call :LOGLINE2
+ call :LOGLINE2
  call :LOGINFO "Использование:"
- call :LOGINFO "    '%~0' [КОМАНДЫ] [ПАРАМЕТР] ..."
- call :LOGINFO " "
+ call :LOGINFO "    '%~1' [КОМАНДЫ] [ПАРАМЕТР] ..."
  call :LOGINFO "Команды:"
  call :LOGINFO "    info                - Информация, команда по умолчанию"
  call :LOGINFO "    create folder 	- создание локального репозитария в папке folder в родительском каталоге"
@@ -91,13 +103,37 @@ goto :eof
  call :LOGINFO "    createhub           - создание удаленного репозитария на GitHub, для хранения созданного"
  call :LOGINFO "    remote              - отправляет все изменения в удаленный репозитария на GitHub"
  call :LOGINFO "    autocommint		- автокоммит в текущей датой и временим"
- call :LOGINFO " "
  call :LOGINFO "    info                - Информация, команда по умолчанию"
  call :LOGINFO "    help                - Показать эту справку и выйти"
- call :LOGINFO " "
-
- rem call :LOGLINE2
+ call :LOGINFO ""
+ exit /b 0
 goto :eof
+
+
+
+rem ========== Read SET from ini file ==========
+:READINIFILE1
+rem Read config file
+call :LOGINFO "Read config file ..."
+set MYINI=%~1.ini
+if exist !MYINI! (
+ call :LOG_DT "CONFIG = !MYINI! ..."
+ for /F "usebackq eol=; tokens=1,2 delims=, " %%a in (!MYINI!) do (
+  set %%a=%%b
+  if "%%a" == "UserName" (
+   set USERNAME=%%b
+   call :LOG_DT "USERNAME= '!USERNAME!' ..." 
+   ) else (
+   call :LOG_DT "%%a = '%%b' ..."
+   )
+  )
+  exit /b 0
+ ) else (
+  call :LOGERROR "Config file !MYINI! no found ..."
+  exit /b 1
+  )
+goto :eof
+
 
 rem ---------------------------------------------------------------------------------------
 rem ABBALibraryCmdWgetStart
@@ -115,10 +151,9 @@ for %%i in ("%CD%\wget.exe","C:\Windows\wget.exe","C:\Program Files\GnuWin32\bin
   exit /b 0
   )
  )
-  call :LOGERROR "wget.exe no found"
-  call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
-  exit /b 1
-rem )
+call :LOGERROR "wget.exe no found"
+call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
+exit /b 1
 goto :eof
 
 rem ==========
@@ -138,9 +173,8 @@ if "%~2"=="" (
  exit /b 1
 )
 
- rem %wgetexe% --verbose --show-progress "https://downloads.rclone.org/version.txt" --append-output="%file_log%" --output-document="%rclonecurrent_version%"
- "%wgetexe%" --verbose --show-progress --hsts-file=wget.hsts.txt --save-cookies=wget.cookies.txt --load-cookies=wget.cookies.txt --keep-session-cookies "%~1" --append-output="%file_log%" --output-document="%~2"
-
+rem %wgetexe% --verbose --show-progress "https://downloads.rclone.org/version.txt" --append-output="%file_log%" --output-document="%rclonecurrent_version%"
+"%wgetexe%" --verbose --show-progress --hsts-file=wget.hsts.txt --save-cookies=wget.cookies.txt --load-cookies=wget.cookies.txt --keep-session-cookies "%~1" --append-output="%file_log%" --output-document="%~2"
 goto :eof
 
 :MAKENEWFILENAME
@@ -185,18 +219,18 @@ goto :eof
 
 rem ==========
 :CHANGEDIR
-rem call :LOG_DT "CHDIR '%~1' ..."
-cd "%~1"
-call :LOG "CHDIR '%CD%' ..."
+ rem call :LOG_DT "CHDIR '%~1' ..."
+ cd "%~1"
+ call :LOG "CHDIR '%CD%' ..."
 goto :eof
 
 rem ==========
 :CREATEDIR
-call :LOG "DIR '%~1' ..."
-if not exist %~1 (
-call :LOG "CREATE dir '%~1' ..."
-mkdir "%~1"
-)
+ call :LOG "DIR '%~1' ..."
+ if not exist %~1 (
+  call :LOG "CREATE dir '%~1' ..."
+  mkdir "%~1"
+ )
 goto :eof
 
 rem ==========
@@ -242,36 +276,67 @@ rem ============================================================================
 
 rem ==========
 :LOGLINE0
-echo ----------------------------------------------------------------------------------------------------
+ echo ----------------------------------------------------------------------------------------------------
 goto :eof
 
 rem ==========
 :LOGLINE1
-echo ----------------------------------------------------------------------------------------------------
+ echo ----------------------------------------------------------------------------------------------------
 goto :eof
 
 rem ==========
 :LOGLINE2
 rem echo .2
-echo ----------------------------------------------------------------------------------------------------
+ echo ----------------------------------------------------------------------------------------------------
 goto :eof
 
 rem ==========
 rem %1 "%~1"
 rem call :LOG Logtxt
 :LOGSCR
-if "%~2"=="" (
- echo %~1[0m
-) else if not "%~2"=="" (
- echo %~2%~1[0m
-)
+ if "%~2"=="" (
+  echo %~1[0m
+ ) else if not "%~2"=="" (
+  echo %~2%~1[0m
+ )
 goto :eof
 
 rem ==========
 rem %1 "%~1"
 rem call :LOG Logtxt
 :LOGFILE
-echo "%~1" >> "%file_log%"
+ echo "%~1" >> "%file_log%"
+goto :eof
+
+rem ==========
+:LOG_DT
+ call :LOGSTR  "     " "%~1"
+ call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%"
+ call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+goto :eof
+
+rem ==========
+rem get data and time
+:GET_DT
+ set t1=%TIME:~0,1%
+ set mdate=%DATE:~6,4%.%DATE:~3,2%.%DATE:~0,2%
+ if "%t1%" == " " (
+  set mtime=0%TIME:~1,1%:%TIME:~3,2%:%TIME:~6,2%
+ ) else (
+  set mtime=%TIME:~0,2%:%TIME:~3,2%:%TIME:~6,2%
+ )
+goto :eof
+
+rem ==========
+rem get data and time
+:GET_DT1
+ set t1=%TIME:~0,1%
+ set mdate=%DATE:~6,4%%DATE:~3,2%%DATE:~0,2%
+ if "%t1%" == " " (
+  set mtime=0%TIME:~1,1%%TIME:~3,2%%TIME:~6,2%
+ ) else (
+  set mtime=%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%
+ )
 goto :eof
 
 rem ==========
@@ -279,80 +344,48 @@ rem %1 "%~1"
 rem %2 "%~2"
 rem call :LOGSTR INFO LogStr
 :LOGSTR
-call :GET_DT
-set dt=%mdate% %mtime%
-set tlogstr1=%~1
-set tlogstr2=%~2
-rem echo %tlogstr%
-goto :eof
-
-rem ==========
-:LOG_DT
-call :LOGSTR  "     " "%~1"
-call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%"
-call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
-goto :eof
-
-rem ==========
-rem get data and time
-:GET_DT
-set t1=%TIME:~0,1%
-set mdate=%DATE:~6,4%.%DATE:~3,2%.%DATE:~0,2%
-if "%t1%" == " " (
- set mtime=0%TIME:~1,1%:%TIME:~3,2%:%TIME:~6,2%
-) else (
- set mtime=%TIME:~0,2%:%TIME:~3,2%:%TIME:~6,2%
-)
-goto :eof
-
-rem ==========
-rem get data and time
-:GET_DT1
-set t1=%TIME:~0,1%
-set mdate=%DATE:~6,4%%DATE:~3,2%%DATE:~0,2%
-if "%t1%" == " " (
- set mtime=0%TIME:~1,1%%TIME:~3,2%%TIME:~6,2%
-) else (
- set mtime=%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%
-)
+ call :GET_DT
+ set dt=%mdate% %mtime%
+ set tlogstr1='%~1'
+ set tlogstr2=%~2
+ rem echo %tlogstr%
 goto :eof
 
 rem ==========
 :LOG
-call :LOGSTR "     " "%~1"
-call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[37m"
-call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+ call :LOGSTR "     " "%~1"
+ call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[37m"
+ call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGINFO 
-call :LOGSTR "INFO " "%~1"
-call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[32m"
-call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+ call :LOGSTR "INFO " "%~1"
+ call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[32m"
+ call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGDEBUG
-call :LOGSTR "INFO " "%~1"
-call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[33m"
-call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+ call :LOGSTR "INFO " "%~1"
+ call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[33m"
+ call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGERROR
-call :LOGSTR "ERROR" "%~1"
-call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[31m"
-call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+ call :LOGSTR "ERROR" "%~1"
+ call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%" "[31m"
+ call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGSTART
-call :LOGSTR  "     " "%~1"
-call :LOGFILE "%dt% --------------------------------------------------------------------------------------------------------------------"
-call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%"
-call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+ call :LOGSTR "     " "%~1"
+ call :LOGFILE "%dt% --------------------------------------------------------------------------------------------------------------------"
+ call :LOGSCR  "%dt% %tlogstr1% %tlogstr2%"
+ call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ABBALibraryCmdLogEnd
 
-goto :eof
