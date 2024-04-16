@@ -29,7 +29,25 @@ call :LOGLINE2
 if "%~1" == "" goto :info
 if "%~1" == "info" goto :info
 if "%~1" == "help" goto :help
+
 goto :end
+
+:END
+call :LOGLINE2
+call :LOGINFO "ERRORLEVEL %ERRORLEVEL%"
+call :LOGINFO "END '%~0' ..."
+call :LOGLINE0
+exit 0
+goto :eof
+
+:FAILURE
+call :LOGLINE2
+call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
+call :LOGERROR "END '%~0' ..."
+call :LOGLINE0
+exit 1
+goto :eof
+
 
 :info
 echo .
@@ -58,23 +76,6 @@ goto :end
  rem call :LOGLINE2
 
 goto :end
-
-
-:END
-call :LOGLINE2
-call :LOGINFO "ERRORLEVEL %ERRORLEVEL%"
-call :LOGINFO "END '%~0' ..."
-call :LOGLINE0
-exit 0
-goto :eof
-
-:FAILURE
-call :LOGLINE2
-call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
-call :LOGERROR "END '%~0' ..."
-call :LOGLINE0
-exit 1
-goto :eof
 
 
 rem ABBALibraryFilesStart
