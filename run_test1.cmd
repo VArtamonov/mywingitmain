@@ -108,12 +108,12 @@ for %%i in ("%CD%\wget.exe","C:\Windows\wget.exe","C:\Program Files\GnuWin32\bin
  if exist "%%~i" (
   set wgetexe=%%~i
   call :LOG_DT "WGET.EXE = '!wgetexe!'"
-  goto :eof
+  exit /b 0
   )
  )
   call :LOGERROR "wget.exe no found"
   call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
-  goto :FAILURE
+  exit /b 1
 rem )
 goto :eof
 
@@ -126,19 +126,17 @@ call :LOGDEBUG "WGET LOAD '%~1' to '%~2' ..."
 
 if "%~1"=="" (
  call :LOGERROR "WGETLOAD 1"
- goto :eof
+ exit /b 1
 )
 
 if "%~2"=="" (
  call :LOGERROR "WGETLOAD 2"
- goto :eof
+ exit /b 1
 )
 
  rem %wgetexe% --verbose --show-progress "https://downloads.rclone.org/version.txt" --append-output="%file_log%" --output-document="%rclonecurrent_version%"
  "%wgetexe%" --verbose --show-progress --hsts-file=wget.hsts.txt --save-cookies=wget.cookies.txt --load-cookies=wget.cookies.txt --keep-session-cookies "%~1" --append-output="%file_log%" --output-document="%~2"
 
-
-echo off
 goto :eof
 
 :MAKENEWFILENAME
@@ -173,15 +171,13 @@ for /D %%k in (%3 %4 %5 %6 %7 %8 %9) do (
  if exist !z1! (
    set %~2=!z1!
    call :LOG "FOUND %~1 = '!%~2!'"
-   goto :eof
+   exit /b 0
  )
 )
-rem ) else (
-  call :LOGERROR "'%~2' no found"
-  call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
-  goto :FAILURE
-rem )
-echo off
+call :LOGERROR "'%~2' no found"
+call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
+goto :FAILURE
+exit /b 1
 goto :eof
 
 rem ==========
