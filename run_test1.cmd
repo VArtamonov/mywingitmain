@@ -35,10 +35,10 @@ rem call :MAKENEWFILENAME %filenameout%
 rem call :LOGDEBUG "Filename backup = '%filenameout1%'"
 rem call :WGETLOAD "%git_path%" "%filenameout1%"
 
-call :FINDGIT
+rem call :FINDGIT
 rem "%GITEXE%" --version
 
-call :FINDGITHUBCLI
+rem call :FINDGITHUBCLI
 rem "%GHEXE%" --version
 
 
@@ -94,145 +94,6 @@ goto :end
  rem call :LOGLINE2
 
 goto :end
-
-rem ABBALibraryGITStart
-rem ==============================================================================================
-
-rem ==========
-:GITCHECK
-call :LOGINFO "CHECK: GIT repositories ..."
-set CDIR=%CD%..
-call :LOG "CDIR=%CDIR%"
-if exist ".git" (
- call :LOGINFO "GIT EXIST - OK ..."
- rem "%GITEXE%" status
- call :LOG "ERRORLEVEL %ERRORLEVEL%"
- exit /b 1
-) else (
- call :LOGERROR "ERROR: no GIT repositories"
- echo [34mPlease run '%~nx0 init ^<gitname^>'[0m
- goto :FAILURE
-)
-goto :eof
-
-
-rem ==========
-:FINDGIT
-call :LOGINFO "FIND GIT ..."
-FOR %%i IN ("git.exe") DO SET GITEXE=%%~$PATH:i
-IF EXIST "!GITEXE!" (
-	call :LOG "GIT.EXE = '!GITEXE!'"
-	goto :eof
-) else (
-call :LOGERROR "Git.exe no found"
-call :LOG "ERRORLEVEL %ERRORLEVEL%"
-goto :FAILURE
-)
-goto :eof
-
-rem ==========
-:FINDGITHUBCLI
-call :LOGINFO "FIND GITHUBCLI ..."
-for %%i in ("gh.exe", "C:\Program Files (x86)\GitHub CLI\gh.exe", "C:\Program Files\GitHub CLI\gh.exe") do (
-rem echo File '%%~i'
-if exist "%%~i" (
- set GHEXE=%%~i
- call :LOG "GH.EXE = '!GHEXE!'"
- goto :eof
- rem  ) else (
- rem  call :LOG_DT "%%i no found"
- )
-)
-call :LOGERROR "GitHubCli no found"
-call :LOG "ERRORLEVEL %ERRORLEVEL%"
-goto :FAILURE
-
-goto :eof
-
-
-rem - GIT Command
-
-rem ==========
-:GITCREATE
-if "%~1" == "master" (
-call :LOGINFO "CREATE MASTER ..."
-call :LOGINFO "COPY FILES ..."
-for %%I in ( "LICENSE.md", "README.md", ".gitignore ", "run_git.cmd" ) do (
-	echo File %%~I
-	if not exist "%%~I" (
-		copy "..\%%~I" "%%~I"
-		)
-	)
-
-) else (
-echo ==========================================================================================
-call :CHANGEDIR ..
-call :LOGINFO "CREATE REPO 'mywingit%~1' ..."
-call :LOGINFO "INIT GIT 'mywingit%~1' ..."
-"%GITEXE%" init "mywingit%~1"
-set MCD=!CD!
-call :LOG_DT !MCD!
-set RDIR=!MCD!\mywingit%~1
-call :LOG_DT "DIR REPO '!RDIR!' ..."
-call :CHANGEDIR "%ROOTDIR%"
-call :LOG_DT "COPY FILES ..."
-for %%I in ( "CopyFiles\LICENSE.md", "CopyFiles\README.md", "CopyFiles\.gitignore ", "run_git.cmd" ) do (
-	rem echo File %%~I
-	if exist "%%~I" (
-		call :LOG_DT "COPY '%%~I' to '!RDIR!\%%~nxI' ..."
-		copy %%~I "!RDIR!\%%~nxI"
-		)
-	)
-)
-
-call :CHANGEDIR %RDIR%
-
-"%GITEXE%" add .
-"%GITEXE%" commit -m "first commit"
-"%GITEXE%" branch -M master
-"%GITEXE%" remote add origin https://github.com/!USERNAME!/mywingit%~1.git
-
-call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
-goto :eof
-
-rem ==========
-:GITAUTOCOMMIT
-echo ==========================================================================================
-call :LOGINFO "ADD ALL FILES ..."
-"%GITEXE%" add .
-
-call :LOGINFO "ADD AUTO COMMIT ..."
-call :GET_DT
-call :LOGINFO "Create timestamp %dt%"
-"%GITEXE%" commit -a -m "Auto commit '%dt%'"
-
-call :LOG_DT "GIT STATUS ..."
-"%GITEXE%" status
-call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
-goto :eof
-
-rem ==========
-:GITREMOTE
-echo ==========================================================================================
-call :LOGINFO "GIT PUSH REMOTE ..."
-"%GHEXE%" auth status
-"%GITEXE%" push -u origin master
-call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
-goto :eof
-
-
-rem ==========
-:GITCREATEHUB
-call :LOGINFO "Create remote repo on GitHub"
-rem "%GHEXE%" auth login --web
-"%GHEXE%" auth status
-rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
-call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
-goto :eof
-
-
-rem ABBALibraryGITEnd
-
 
 rem ---------------------------------------------------------------------------------------
 rem ABBALibraryCmdWgetStart
