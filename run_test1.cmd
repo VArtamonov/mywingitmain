@@ -25,6 +25,42 @@ set ROOTDIR=%CD%
 call :LOGINFO "ROOTDIR = '%ROOTDIR%' ..."
 call :CHANGEDIR %ROOTDIR%
 
+call :LOGLINE2
+
+if "%~1" == "" goto :info
+if "%~1" == "info" goto :info
+if "%~1" == "help" goto :help
+goto :end
+
+:info
+echo .
+goto :end
+
+:help
+ rem ==============================================================================================
+
+ rem call :LOGLINE2
+ call :LOGINFO "Использование:"
+ call :LOGINFO "    '%~0' [КОМАНДЫ] [ПАРАМЕТР] ..."
+ call :LOGINFO " "
+ call :LOGINFO "Команды:"
+ call :LOGINFO "    info                - Информация, команда по умолчанию"
+ call :LOGINFO "    create folder 	- создание локального репозитария в папке folder в родительском каталоге"
+ call :LOGINFO "                          копирует все необходимое, после создания все вызовы надо делать из folder"
+ call :LOGINFO "    createmaster        - создание главного репозитария на GitHub, для хранения этих утилит"
+ call :LOGINFO "    createhub           - создание удаленного репозитария на GitHub, для хранения созданного"
+ call :LOGINFO "    remote              - отправляет все изменения в удаленный репозитария на GitHub"
+ call :LOGINFO "    autocommint		- автокоммит в текущей датой и временим"
+ call :LOGINFO " "
+ call :LOGINFO "    info                - Информация, команда по умолчанию"
+ call :LOGINFO "    help                - Показать эту справку и выйти"
+ call :LOGINFO " "
+
+ rem call :LOGLINE2
+
+goto :end
+
+
 :END
 call :LOGLINE2
 call :LOGINFO "ERRORLEVEL %ERRORLEVEL%"
