@@ -357,3 +357,8 @@ call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ABBALibraryCmdLogEnd
+
+
+goto :eof
+:eof
+
