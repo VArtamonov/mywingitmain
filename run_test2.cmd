@@ -496,43 +496,39 @@ goto :eof
 
 rem ==========
 :GITAUTOCOMMIT
-echo ==========================================================================================
-call :LOGDEBUG "ADD ALL FILES ..."
-"%GITEXE%" add . --verbose
+ call :LOG ==========================================================================================
+ call :LOGINFO "ADD AUTO COMMIT ..."
 
-call :LOGINFO "ADD AUTO COMMIT ..."
-call :GET_DT
+ call :LOGDEBUG "ADD ALL FILES ..."
+ "%GITEXE%" add . --verbose
 
-call :LOGDEBUG "Create timestamp %dt%"
-"%GITEXE%" commit -a -m "Auto commit '%dt%'" --verbose
+ call :GET_DT
+ call :LOGDEBUG "Create timestamp %dt%"
+ "%GITEXE%" commit -a -m "Auto commit '%dt%'" --verbose
 
-call :LOGDEBUG "GIT STATUS ..."
-"%GITEXE%" status --verbose
-
-call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ call :LOGDEBUG "GIT STATUS ..."
+ "%GITEXE%" status --verbose
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 rem ==========
 :GITREMOTE
 echo ==========================================================================================
-
-rem call :LOGINFO "GIT PUSH REMOTE ..."
-rem "%GHEXE%" auth status
-
-call :LOGDEBUG "GIT PUSH ..."
-"%GITEXE%" push --verbose
-
-call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ rem call :LOGINFO "GIT PUSH REMOTE ..."
+ rem "%GHEXE%" auth status
+ call :LOGDEBUG "GIT PUSH ..."
+ "%GITEXE%" push origin --verbose
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 
 rem ==========
 :GITCREATEHUB
-call :LOGINFO "Create remote repo on GitHub"
-rem "%GHEXE%" auth login --web
-"%GHEXE%" auth status
-rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
-call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ call :LOGINFO "Create remote repo on GitHub"
+ rem "%GHEXE%" auth login --web
+ "%GHEXE%" auth status
+ rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 rem ABBALibraryGITEnd
