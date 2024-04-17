@@ -97,7 +97,7 @@ goto :eof
 
 :END
 call :LOGLINE2
-call :LOGINFO "ERRORLEVEL = '%ERRORLEVEL%'"
+call :LOGDEBUG "ERRORLEVEL = '%ERRORLEVEL%'"
 call :LOGINFO "END '%~0'"
 call :LOGLINE0
 exit /b 0
@@ -423,7 +423,7 @@ IF EXIST "!GITEXE!" (
 	goto :eof
 ) else (
 call :LOGERROR "Git.exe no found"
-call :LOG "ERRORLEVEL %ERRORLEVEL%"
+call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :FAILURE
 )
 goto :eof
@@ -442,7 +442,7 @@ if exist "%%~i" (
  )
 )
 call :LOGERROR "GitHubCli no found"
-call :LOG "ERRORLEVEL %ERRORLEVEL%"
+call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :FAILURE
 
 goto :eof
@@ -465,19 +465,19 @@ for %%I in ( "LICENSE.md", "README.md", ".gitignore ", "run_git.cmd" ) do (
 ) else (
 echo ==========================================================================================
 call :CHANGEDIR ..
-call :LOGINFO "CREATE REPO 'mywingit%~1' ..."
-call :LOGINFO "INIT GIT 'mywingit%~1' ..."
+call :LOGDEBUG "CREATE REPO 'mywingit%~1' ..."
+call :LOGDEBUG "INIT GIT 'mywingit%~1' ..."
 "%GITEXE%" init "mywingit%~1"
 set MCD=!CD!
 call :LOG_DT !MCD!
 set RDIR=!MCD!\mywingit%~1
-call :LOG_DT "DIR REPO '!RDIR!' ..."
+call :LOGDEBUG "DIR REPO '!RDIR!' ..."
 call :CHANGEDIR "%ROOTDIR%"
-call :LOG_DT "COPY FILES ..."
+call :LOGDEBUG "COPY FILES ..."
 for %%I in ( "CopyFiles\LICENSE.md", "CopyFiles\README.md", "CopyFiles\.gitignore ", "run_git.cmd" ) do (
 	rem echo File %%~I
 	if exist "%%~I" (
-		call :LOG_DT "COPY '%%~I' to '!RDIR!\%%~nxI' ..."
+		call :LOGDEBUG "COPY '%%~I' to '!RDIR!\%%~nxI' ..."
 		copy %%~I "!RDIR!\%%~nxI"
 		)
 	)
@@ -490,7 +490,7 @@ call :CHANGEDIR %RDIR%
 "%GITEXE%" branch -M master
 "%GITEXE%" remote add origin https://github.com/!USERNAME!/mywingit%~1.git
 
-call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
+call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 rem ==========
@@ -515,9 +515,9 @@ rem ==========
 :GITREMOTE
 echo ==========================================================================================
 call :LOGINFO "GIT PUSH REMOTE ..."
-"%GHEXE%" auth status
-"%GITEXE%" push -u origin master
-call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
+"%GHEXE%" auth status --verbose
+"%GITEXE%" push -u origin master --verbose
+call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 
@@ -525,9 +525,9 @@ rem ==========
 :GITCREATEHUB
 call :LOGINFO "Create remote repo on GitHub"
 rem "%GHEXE%" auth login --web
-"%GHEXE%" auth status
+"%GHEXE%" auth status --verbose
 rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
-call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
+call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 rem ABBALibraryGITEnd
