@@ -34,17 +34,15 @@ call :LOGINFO "œÓËÒÍ ÛÚËÎËÚ"
 call :FINDZIP
 
 call :FINDWGET
-set filenameout=%~0
-call :MAKENEWFILENAME %filenameout%
-call :LOGDEBUG "Filename backup = '%filenameout1%'"
+rem set filenameout=%~0
+rem call :MAKENEWFILENAME %filenameout%
+rem call :LOGDEBUG "Filename backup = '%filenameout1%'"
 rem call :WGETLOAD "%git_path%" "%filenameout1%"
 
+set GITEXE=echo
+set GHEXE=echo
 call :FINDGIT
-rem "%GITEXE%" --version
-
 call :FINDGITHUBCLI
-rem "%GHEXE%" --version
-
 
 if "%~1" == "" (
  call :info
@@ -92,7 +90,9 @@ if "%~1" == "remote" (
 )
 
 call :LOGERROR "Õ≈»«¬≈—“Õ¿ﬂ  ŒÃ¿Õƒ¿ '%~1'"
-goto :fail
+goto :FAIL
+
+exit /b
 goto :eof
 
 :END
@@ -100,15 +100,15 @@ call :LOGLINE2
 call :LOGDEBUG "ERRORLEVEL = '%ERRORLEVEL%'"
 call :LOGINFO "END '%~0'"
 call :LOGLINE0
-exit /b 0
+exit /b
 goto :eof
 
 :FAIL
- call :LOGLINE2
- call :LOGERROR "ERRORLEVEL = '%ERRORLEVEL%'"
- call :LOGERROR "END '%~0'"
- call :LOGLINE0
- exit /b 1
+call :LOGLINE2
+call :LOGERROR "ERRORLEVEL = '%ERRORLEVEL%'"
+call :LOGERROR "END '%~0'"
+call :LOGLINE0
+exit /b
 goto :eof
 
 rem ==========
@@ -134,6 +134,7 @@ goto :eof
 
 :info
  call :LOGLINE2
+ call :LOGDEBUG "'%0' '%1' '%2'"
  call :LOGINFO "»Õ‘Œ–Ã¿÷»ﬂ"
 
  call :LOGDEBUG "GIT VERSION"
@@ -151,18 +152,8 @@ goto :eof
  exit /b 0
 goto :eof
 
+
 rem ---------------------------------------------------------------------------------------
-
-rem ==========
-:LOGLINE0
- echo +--------------------------------------------------------------------------------------------------+
-goto :eof
-
-rem ==========
-:LOGLINE2
-rem echo .2
- echo +----------+--------+-----+-------------------------------------------------------------------------+
-goto :eof
 
 rem ==========
 :LOGSTART
@@ -229,6 +220,7 @@ rem ==========
  call :LOGSTR "     " %1
  call :LOGSCR  "%dt%" %tlogstr1% %tlogstr2% "[37m"
  call :LOGFILE "%dt%" %tlogstr1% %tlogstr2%
+ exit /b 0
 goto :eof
 
 rem ==========
@@ -236,6 +228,7 @@ rem ==========
  call :LOGSTR "INFO " %1
  call :LOGSCR  "%dt%" %tlogstr1% %tlogstr2% "[32m"
  call :LOGFILE "%dt%" %tlogstr1% %tlogstr2%
+ exit /b 0
 goto :eof
 
 rem ==========
@@ -243,13 +236,15 @@ rem ==========
  call :LOGSTR "ERROR" %1
  call :LOGSCR  "%dt%" %tlogstr1% %tlogstr2% "[31m"
  call :LOGFILE "%dt%" %tlogstr1% %tlogstr2%
+ exit /b 0
 goto :eof
 
 rem ==========
 :LOGDEBUG
  call :LOGSTR "DEBUG" %1
  call :LOGSCR  "%dt%" %tlogstr1% %tlogstr2% "[33m"
- rem call :LOGFILE %dt% %tlogstr1% %tlogstr2%
+ call :LOGFILE "%dt%" %tlogstr1% %tlogstr2%
+ exit /b 0
 goto :eof
 
 
@@ -421,31 +416,36 @@ call :LOGINFO "FIND GIT ..."
 FOR %%i IN ("git.exe") DO SET GITEXE=%%~$PATH:i
 IF EXIST "!GITEXE!" (
 	call :LOG "GIT.EXE = '!GITEXE!'"
-	goto :eof
+	goto :FINDGIT1
 ) else (
-call :LOGERROR "Git.exe no found"
-call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
-goto :FAILURE
+ call :LOGERROR "Git.exe no found"
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ goto :FAILURE
 )
+:FINDGIT1
+call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 rem ==========
 :FINDGITHUBCLI
 call :LOGINFO "FIND GITHUBCLI ..."
+
 for %%i in ("gh.exe", "C:\Program Files (x86)\GitHub CLI\gh.exe", "C:\Program Files\GitHub CLI\gh.exe") do (
 rem echo File '%%~i'
 if exist "%%~i" (
  set GHEXE=%%~i
  call :LOG "GH.EXE = '!GHEXE!'"
- goto :eof
+ goto FINDGITHUBCLI1
  rem  ) else (
  rem  call :LOG_DT "%%i no found"
  )
 )
 call :LOGERROR "GitHubCli no found"
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
-goto :FAILURE
+rem goto :FAILURE
 
+:FINDGITHUBCLI1
+call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 
@@ -532,3 +532,16 @@ rem ==========
 goto :eof
 
 rem ABBALibraryGITEnd
+
+rem ==========
+:LOGLINE0
+ echo +--------------------------------------------------------------------------------------------------+
+ exit /b 0
+goto :eof
+
+rem ==========
+:LOGLINE2
+rem echo .2
+ echo +----------+--------+-----+-------------------------------------------------------------------------+
+ exit /b 0
+goto :eof
