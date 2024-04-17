@@ -505,9 +505,9 @@ call :GET_DT
 call :LOGINFO "Create timestamp %dt%"
 "%GITEXE%" commit -a -m "Auto commit '%dt%'"
 
-call :LOG_DT "GIT STATUS ..."
+call :LOG "GIT STATUS ..."
 "%GITEXE%" status
-call :LOG_DT "ERRORLEVEL %ERRORLEVEL%"
+call :LOG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 rem ==========
