@@ -515,9 +515,13 @@ goto :eof
 rem ==========
 :GITREMOTE
 echo ==========================================================================================
-call :LOGINFO "GIT PUSH REMOTE ..."
-"%GHEXE%" auth status
+
+rem call :LOGINFO "GIT PUSH REMOTE ..."
+rem "%GHEXE%" auth status
+
+call :LOGDEBUG "GIT PUSH ..."
 "%GITEXE%" push --verbose
+
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
