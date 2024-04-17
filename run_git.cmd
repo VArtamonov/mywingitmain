@@ -401,7 +401,7 @@ if exist ".git" (
 ) else (
  call :LOGERROR "ERROR: no GIT repositories"
  echo [34mPlease run '%~nx0 init ^<gitname^>'[0m
- goto :FAILURE
+ goto :FAIL
 )
 goto :eof
 
@@ -416,7 +416,7 @@ IF EXIST "!GITEXE!" (
 ) else (
  call :LOGERROR "Git.exe no found"
  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
- goto :FAILURE
+ goto :FAIL
 )
 :FINDGIT1
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
@@ -438,7 +438,7 @@ if exist "%%~i" (
 )
 call :LOGERROR "GitHubCli no found"
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
-rem goto :FAILURE
+rem goto :FAIL
 
 :FINDGITHUBCLI1
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
