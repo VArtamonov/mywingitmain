@@ -502,12 +502,14 @@ call :LOGINFO "ADD ALL FILES ..."
 
 call :LOGINFO "ADD AUTO COMMIT ..."
 call :GET_DT
+
 call :LOGINFO "Create timestamp %dt%"
 "%GITEXE%" commit -a -m "Auto commit '%dt%'"
 
-call :LOG "GIT STATUS ..."
+call :LOGDEBUG "GIT STATUS ..."
 "%GITEXE%" status
-call :LOG "ERRORLEVEL %ERRORLEVEL%"
+
+call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 rem ==========
