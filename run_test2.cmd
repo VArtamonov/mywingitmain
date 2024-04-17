@@ -31,17 +31,13 @@ if "%~1" == "help" (
 
 call :LOGLINE2
 call :LOGINFO "Поиск утилит"
-call :FINDZIP
 
-call :FINDWGET
-rem set filenameout=%~0
-rem call :MAKENEWFILENAME %filenameout%
-rem call :LOGDEBUG "Filename backup = '%filenameout1%'"
-rem call :WGETLOAD "%git_path%" "%filenameout1%"
-
+call :LOGLINE2
 set GITEXE=echo
 set GHEXE=echo
 call :FINDGIT
+
+call :LOGLINE2
 call :FINDGITHUBCLI
 
 if "%~1" == "" (
@@ -246,46 +242,11 @@ rem ABBALibraryFilesStart
 rem ==============================================================================================
 
 rem ==========
-:FINDZIP
-rem call :LOGINFO "FINFILE"
-call :FINDFILE "7z.exe" "ZIPEXE" "C:" "C:\Program Files\7-Zip"
-call :LOG "ZIPEXE = '%ZIPEXE%'"
-goto :eof
-
-rem ==========
-:FINDFILE
- echo off
- call :LOG "FIND '%~1' ..."
- rem echo %2
- set %~2=""
- for /D %%k in (%3 %4 %5 %6 %7 %8 %9) do (
-  set z1=%%~k\%~1
-  rem echo !z1!
-  if exist !z1! (
-   set %~2=!z1!
-   rem call :LOG1 "FOUND '%~2' = '!%~2!'"
-   set !ret!=0
-   goto :FINDFILE1
-  )
- )
- echo off
-
- if "!%~2!" == "" (
-  call :LOGERROR "'%~2' no found"
-  call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
-  set ret=1
- )
-:FINDFILE1
- rem echo Return = '%ret%'
- echo off
- exit /b %ret%
-goto :eof
-
-rem ==========
 :CHANGEDIR
  rem call :LOG_DT "CHDIR '%~1' ..."
  cd "%~1"
  call :LOG "CHDIR '%CD%' ..."
+ exit /b 0
 goto :eof
 
 rem ==========
@@ -335,9 +296,17 @@ goto :eof
 rem ABBALibraryFilesEnd
 
 rem ABBALibraryCmdWgetStart
+
+rem ==========
+:FINDWGET
+rem call :LOGINFO "FINFILE"
+call :FINDFILE "wget.exe" "WGETEXE" "%CD%" "C:" "C:\Windows"
+call :LOG "WGETEXE = '%WGETEXE%'"
+goto :eof
+
 rem ==========
 rem find wget
-:FINDWGET
+:FINDWGET1
 call :LOG "FIND WGET ..."
 rem call :LOGINFO "Find wget.exe"
 for %%i in ("%CD%\wget.exe","C:\Windows\wget.exe","C:\Program Files\GnuWin32\bin\wget.exe","C:\Program Files (x86)\GnuWin32\bin\wget.exe","C:\Windows\system32\wget.exe") do (
@@ -345,11 +314,12 @@ for %%i in ("%CD%\wget.exe","C:\Windows\wget.exe","C:\Program Files\GnuWin32\bin
  if exist "%%~i" (
   set wgetexe=%%~i
   call :LOG "WGET.EXE = '!wgetexe!'"
-  exit /b 0
+  goto :FINDWGET1
   )
  )
 call :LOGERROR "wget.exe no found"
-exit /b 1
+:FINDWGET1
+call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 rem ==========
