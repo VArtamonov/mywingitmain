@@ -497,7 +497,7 @@ goto :eof
 rem ==========
 :GITAUTOCOMMIT
 echo ==========================================================================================
-call :LOGINFO "ADD ALL FILES ..."
+call :LOGDEBUG "ADD ALL FILES ..."
 "%GITEXE%" add .
 
 call :LOGINFO "ADD AUTO COMMIT ..."
