@@ -120,7 +120,6 @@ rem ==========
  call :LOGINFO "    '%~1' [КОМАНДЫ] [ПАРАМЕТР] "
  call :LOGINFO " "
  call :LOGINFO "Команды: "
- call :LOGINFO "    info                - Информация, команда по умолчанию "
  call :LOGINFO "    create folder 	- создание локального репозитария в папке folder в родительском каталоге "
  call :LOGINFO "                          копирует все необходимое, после создания все вызовы надо делать из folder "
  call :LOGINFO "    createmaster        - создание главного репозитария на GitHub, для хранения этих утилит "
