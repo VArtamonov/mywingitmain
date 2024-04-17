@@ -70,11 +70,6 @@ if "%~1" == "create" (
  goto :end
 )
 
-if "%~1" == "autocommint" (
- call :GITAUTOCOMMIT
- goto :end
-)
-
 if "%~1" == "createmaster" (
  call :GITCREATE master
  call :GITREMOTE
@@ -83,6 +78,11 @@ if "%~1" == "createmaster" (
 
 if "%~1" == "createhub" (
  call :GITCREATEHUB
+ goto :end
+)
+
+if "%~1" == "autocommit" (
+ call :GITAUTOCOMMIT
  goto :end
 )
 
@@ -126,7 +126,7 @@ rem ==========
  call :LOGINFO "    createmaster        - создание главного репозитария на GitHub, для хранения этих утилит "
  call :LOGINFO "    createhub           - создание удаленного репозитария на GitHub, для хранения созданного "
  call :LOGINFO "    remote              - отправляет все изменения в удаленный репозитария на GitHub "
- call :LOGINFO "    autocommint		- автокоммит в текущей датой и временим "
+ call :LOGINFO "    autocommit		- автокоммит в текущей датой и временим "
  call :LOGINFO "    info                - Информация, команда по умолчанию "
  call :LOGINFO "    help                - Показать эту справку и выйти "
  call :LOGINFO " "
