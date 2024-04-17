@@ -517,7 +517,7 @@ rem ==========
 echo ==========================================================================================
 call :LOGINFO "GIT PUSH REMOTE ..."
 "%GHEXE%" auth status
-"%GITEXE%" push -u origin master --verbose
+"%GITEXE%" push --verbose
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
