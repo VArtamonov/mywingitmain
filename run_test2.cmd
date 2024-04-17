@@ -128,7 +128,7 @@ rem ==========
  call :LOGINFO "    info                - Информация, команда по умолчанию "
  call :LOGINFO "    help                - Показать эту справку и выйти "
  call :LOGINFO " "
- rem exit /b 0
+ exit /b 0
 goto :eof
 
 
@@ -148,6 +148,7 @@ goto :eof
  "%GITEXE%" status --verbose
 
  echo off
+ exit /b 0
 goto :eof
 
 rem ---------------------------------------------------------------------------------------
@@ -515,7 +516,7 @@ rem ==========
 :GITREMOTE
 echo ==========================================================================================
 call :LOGINFO "GIT PUSH REMOTE ..."
-"%GHEXE%" auth status --verbose
+"%GHEXE%" auth status
 "%GITEXE%" push -u origin master --verbose
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
@@ -525,7 +526,7 @@ rem ==========
 :GITCREATEHUB
 call :LOGINFO "Create remote repo on GitHub"
 rem "%GHEXE%" auth login --web
-"%GHEXE%" auth status --verbose
+"%GHEXE%" auth status
 rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
