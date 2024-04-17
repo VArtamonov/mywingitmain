@@ -55,7 +55,7 @@ if "%~1" == "info" (
  goto :end
 )
 
-call :LOGLINE2
+rem call :LOGLINE2
 
 if "%~1" == "create" (
  if not "%~2" == "" (
