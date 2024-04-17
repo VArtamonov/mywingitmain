@@ -91,7 +91,6 @@ if "%~1" == "remote" (
  goto :end
 )
 
-
 call :LOGERROR "мехгбеярмюъ йнлюмдю '%~1'"
 goto :fail
 goto :eof
@@ -146,7 +145,7 @@ goto :eof
 
  call :LOGLINE2
  call :LOGDEBUG "GIT STATUS"
- "%GITEXE%" status
+ "%GITEXE%" status --verbose
 
  echo off
 goto :eof
