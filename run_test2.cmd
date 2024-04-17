@@ -504,10 +504,10 @@ call :LOGINFO "ADD AUTO COMMIT ..."
 call :GET_DT
 
 call :LOGDEBUG "Create timestamp %dt%"
-"%GITEXE%" commit -a -m "Auto commit '%dt%'"
+"%GITEXE%" commit -a -m "Auto commit '%dt%'" --verbose
 
 call :LOGDEBUG "GIT STATUS ..."
-"%GITEXE%" status
+"%GITEXE%" status --verbose
 
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
