@@ -3,7 +3,7 @@ chcp 1251 >nul
 
 setlocal
 setlocal enableextensions
-setlocal enabledelayedexpansion
+rem setlocal enabledelayedexpansion
 
 set file_log=%~dp0%~n0.log
 set file_name=%~n0
@@ -11,8 +11,9 @@ set ret=0
 
 call :LOGLINE0
 call :LOGSTART "START '%~0'"
-call :LOGINFO "Log file - '%file_log%'"
-call :LOGINFO "Случайное десятичное число: %RANDOM%"
+rem call :LOGINFO "echo %file_log%"
+call :LOGINFO "Log file '%file_log%'"
+call :LOGINFO "Случайное десятичное число: '%RANDOM%'"
 
 call :LOGLINE2
 call :LOGINFO  "TEST INFO"
@@ -112,6 +113,9 @@ call :LOGERROR "END '%~0'"
 call :LOGLINE0
 exit /b
 goto :eof
+
+:eof
+exit /b
 
 rem ==========
 :help
@@ -221,7 +225,6 @@ rem ==========
  call :LOGSTR "INFO " %1
  call :LOGSCR  "%dt%" %tlogstr1% %tlogstr2% "[32m"
  call :LOGFILE "%dt%" %tlogstr1% %tlogstr2%
- exit /b 0
 goto :eof
 
 rem ==========
@@ -545,9 +548,7 @@ rem ==========
  call :LOGFILE "%dt%" "--------------------------------------------------------------------------------------------------------------------"
  call :LOGSCR  "%dt%" %tlogstr1% %tlogstr2% "[37m"
  call :LOGFILE "%dt%" %tlogstr1% %tlogstr2%
- exit /b 0
 goto :eof
-
 
 exit /b 0
 goto :eof
