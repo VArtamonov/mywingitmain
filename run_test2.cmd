@@ -226,7 +226,7 @@ goto :eof
 
 rem ==========
 :LOG
- call :LOGSTR "INFO " %1
+ call :LOGSTR "     " %1
  call :LOGSCR  "%dt%" %tlogstr1% %tlogstr2% "[37m"
  call :LOGFILE "%dt%" %tlogstr1% %tlogstr2%
 goto :eof
