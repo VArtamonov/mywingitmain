@@ -503,7 +503,7 @@ call :LOGINFO "ADD ALL FILES ..."
 call :LOGINFO "ADD AUTO COMMIT ..."
 call :GET_DT
 
-call :LOGINFO "Create timestamp %dt%"
+call :LOGDEBUG "Create timestamp %dt%"
 "%GITEXE%" commit -a -m "Auto commit '%dt%'"
 
 call :LOGDEBUG "GIT STATUS ..."
