@@ -63,6 +63,7 @@ rem call %ROOTDIR%\.venv\Scripts\activate.bat
 if "%~1" == "" goto :info
 if "%~1" == "info" goto :info
 if "%~1" == "help" goto :help
+
 if "%~1" == "check" goto :check
 if "%~1" == "create" goto :create
 if "%~1" == "autocommint" goto :autocommint
