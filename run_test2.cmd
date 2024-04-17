@@ -158,14 +158,6 @@ goto :eof
 rem ---------------------------------------------------------------------------------------
 
 rem ==========
-:LOGSTART
- call :LOGSTR "     " %1
- call :LOGFILE "%dt%" "--------------------------------------------------------------------------------------------------------------------"
- call :LOGSCR  "%dt%" %tlogstr1% %tlogstr2% "[37m"
- call :LOGFILE "%dt%" %tlogstr1% %tlogstr2%
-goto :eof
-
-rem ==========
 rem %1 "%~1"
 rem %2 "%~2"
 rem call :LOGSTR INFO LogStr
@@ -538,12 +530,25 @@ rem ABBALibraryGITEnd
 rem ==========
 :LOGLINE0
  echo +--------------------------------------------------------------------------------------------------+
- exit /b 0
+ exit /b
 goto :eof
 
 rem ==========
 :LOGLINE2
 rem echo .2
  echo +----------+--------+-----+-------------------------------------------------------------------------+
+ exit /b
+goto :eof
+
+rem ==========
+:LOGSTART
+ call :LOGSTR "     " %1
+ call :LOGFILE "%dt%" "--------------------------------------------------------------------------------------------------------------------"
+ call :LOGSCR  "%dt%" %tlogstr1% %tlogstr2% "[37m"
+ call :LOGFILE "%dt%" %tlogstr1% %tlogstr2%
  exit /b 0
+goto :eof
+
+
+exit /b 0
 goto :eof
