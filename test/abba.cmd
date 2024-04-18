@@ -8,7 +8,7 @@ setlocal enabledelayedexpansion
 set file_log=%~dp0%~n0.log
 set file_name=%~n0
 
-rem echo 旼컴컴컴컴컴컴컴쩡컴컴쩡컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+rem ---------------------------------------------------------------------------------------
 call :LOGLINE1
 call :LOGSTART "START '%~0'"
 call :LOGINFO "LOG FILE - '%file_log%'"
