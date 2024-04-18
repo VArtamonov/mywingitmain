@@ -1,6 +1,7 @@
 @echo off
 chcp 1251 >nul
 rem file
+
 setlocal
 setlocal enableextensions
 rem setlocal enabledelayedexpansion
