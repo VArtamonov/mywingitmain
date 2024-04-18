@@ -32,9 +32,9 @@ if "%~1" == "help" (
 
 call :LOGLINE2
 call :LOGINFO "Поиск утилит"
-call :FINDZIP
 
-call :FINDWGET
+rem call :FINDZIP
+rem call :FINDWGET
 rem set filenameout=%~0
 rem call :MAKENEWFILENAME %filenameout%
 rem call :LOGDEBUG "Filename backup = '%filenameout1%'"
@@ -410,8 +410,9 @@ rem ==========
 :FINDGIT
 call :LOGINFO "FIND GIT ..."
 FOR %%i IN ("git.exe") DO SET GITEXE=%%~$PATH:i
-IF EXIST "!GITEXE!" (
-	call :LOG "GIT.EXE = '!GITEXE!'"
+echo %GITEXE%
+IF EXIST "%GITEXE%" (
+	call :LOG "GIT.EXE = '%GITEXE%'"
 	goto :FINDGIT1
 ) else (
  call :LOGERROR "Git.exe no found"
@@ -427,10 +428,11 @@ rem ==========
 call :LOGINFO "FIND GITHUBCLI ..."
 
 for %%i in ("gh.exe", "C:\Program Files (x86)\GitHub CLI\gh.exe", "C:\Program Files\GitHub CLI\gh.exe") do (
-rem echo File '%%~i'
+echo File '%%~i'
 if exist "%%~i" (
  set GHEXE=%%~i
- call :LOG "GH.EXE = '!GHEXE!'"
+ echo %GHEXE%
+ call :LOG "GH.EXE = '%GHEXE%'"
  goto FINDGITHUBCLI1
  rem  ) else (
  rem  call :LOG_DT "%%i no found"
