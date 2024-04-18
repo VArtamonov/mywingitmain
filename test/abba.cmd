@@ -18,6 +18,8 @@ call :LOGLINE2
 call :LOGINFO  "TEST INFO  ..."
 call :LOGERROR "TEST ERROR ..."
 
+set USERNAME=githubuser
+
 call :LOGLINE2
 rem root dir
 set ROOTDIR=%CD%
@@ -30,7 +32,7 @@ if "%~1" == "help" (
 )
 
 call :LOGLINE2
-call :LOGINFO "èÆ®·™ „‚®´®‚"
+call :LOGINFO "èéàëä ìíàãàí"
 call :FINDZIP
 call :FINDWGET
 call :FINDRCLONE
@@ -46,6 +48,8 @@ call :LOGINFO "GHEXE = '%GHEXE%'"
 
 call :LOGLINE2
 call :LOGINFO "RUN ..."
+
+call :LOGINFO "àåü èéãúáéÇÄíÖãü: '%USERNAME%'"
 
 rem for %%i in ("git.exe") do set FILE1=%%~$PATH:i
 rem call :LOGINFO "FILE1 = '%FILE1%'"
@@ -71,19 +75,49 @@ rem echo on
 rem "%ZIPEXE%" x -y -bb3 -bsp2 -o"%arcdir%" -- "%new_full_file_name%" 1>> "%file_log%"
 rem echo off
 
-
 if "%~1" == "" (
  call :info
  goto :end
 )
-
 
 if "%~1" == "info" (
  call :info
  goto :end
 )
 
+if "%~1" == "create" (
+ if not "%~2" == "" (
+  call :FINDGIT
+  call :FINDGITHUBCLI
+  call :GITCREATE %~2
+ ) else (
+  call :LOGERROR "ERROR ..."	
+  echo Please run '%~nx0 init ^<gitname^>'
+  goto :FAIL
+ )
+ goto :end
+)
 
+if "%~1" == "createmaster" (
+ call :GITCREATE master
+ call :GITREMOTE
+ goto :end
+)
+
+if "%~1" == "createhub" (
+ call :GITCREATEHUB
+ goto :end
+)
+
+if "%~1" == "autocommit" (
+ call :GITAUTOCOMMIT
+ goto :end
+)
+
+if "%~1" == "remote" (
+ call :GITREMOTE
+ goto :end
+)
 call :LOGERROR "çÖàáÇÖëíçÄü äéåÄçÑÄ '%~1'"
 goto :FAILURE
 
@@ -133,21 +167,21 @@ goto :eof
  call :LOGINFO "àçîéêåÄñàü"
 
  call :LOGDEBUG "GIT VERSION"
+ echo .
  "%GITEXE%" --version
+ echo .
 
- call :LOGLINE2
  call :LOGDEBUG "GITHUB VERSION"
+ echo .
  "%GHEXE%" --version
+ echo .
 
- call :LOGLINE2
  call :LOGDEBUG "GIT STATUS"
+ echo .
  "%GITEXE%" status --verbose
 
  echo off
- exit /b 0
 goto :eof
-
-
 
 rem ---------------------------------------------------------------------------------------
 rem ABBALibraryGITStart
@@ -161,6 +195,87 @@ goto :eof
 rem ==========
 :FINDGITHUBCLI
 call :FINDFILE "gh.exe" "GHEXE"
+goto :eof
+
+
+rem - GIT Command
+
+rem ==========
+:GITCREATE
+call :LOGLINE2
+if "%~1" == "master" (
+ call :LOGINFO "CREATE MASTER ..."
+ call :LOGINFO "COPY FILES ..."
+ for %%I in ( "LICENSE.md", "README.md", ".gitignore ", ".gitattributes", "run_git.cmd" ) do (
+  call :LOGDEBUG "COPY FILE '%%~I'"
+  if not exist "%%~I" ( copy "..\%%~I" "%%~I" )
+ )
+) else (
+ echo ==========================================================================================
+ call :CHANGEDIR ..
+ call :LOGDEBUG "CREATE REPO 'mywingit%~1' ..."
+ call :LOGDEBUG "INIT GIT 'mywingit%~1' ..."
+ "%GITEXE%" init "mywingit%~1"
+ set MCD=!CD!
+ call :LOG_DT !MCD!
+ set RDIR=!MCD!\mywingit%~1
+ call :LOGDEBUG "DIR REPO '!RDIR!' ..."
+ call :CHANGEDIR "%ROOTDIR%"
+ call :LOGDEBUG "COPY FILES ..."
+ for %%I in ( "CopyFiles\LICENSE.md", "CopyFiles\README.md", "CopyFiles\.gitignore ", "CopyFiles\.gitattributes", "run_git.cmd" ) do (
+  call :LOGDEBUG "COPY FILE '%%~I'"
+  if exist "%%~I" (
+   call :LOGDEBUG "COPY '%%~I' to '!RDIR!\%%~nxI' ..."
+   copy %%~I "!RDIR!\%%~nxI"
+  )
+ )
+)
+
+call :CHANGEDIR %RDIR%
+
+"%GITEXE%" add .
+"%GITEXE%" commit -m "first commit"
+"%GITEXE%" branch -M master
+"%GITEXE%" remote add origin https://github.com/!USERNAME!/mywingit%~1.git
+
+call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+goto :eof
+
+rem ==========
+:GITAUTOCOMMIT
+ call :LOGLINE2
+ call :LOGINFO "ADD AUTO COMMIT ..."
+
+ call :LOGDEBUG "ADD ALL FILES ..."
+ "%GITEXE%" add . --verbose
+
+ call :GET_DT
+ call :LOGDEBUG "CREATE TIMESTAMP %DT%"
+ "%GITEXE%" commit -a -m "Auto commit '%dt%'" --verbose
+
+ call :LOGDEBUG "GIT STATUS ..."
+ "%GITEXE%" status --verbose
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+goto :eof
+
+rem ==========
+:GITREMOTE
+ call :LOGLINE2
+ call :LOGINFO "GIT PUSH REMOTE ..."
+ rem "%GHEXE%" auth status
+ call :LOGDEBUG "GIT PUSH ..."
+ "%GITEXE%" push origin --verbose
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+goto :eof
+
+rem ==========
+:GITCREATEHUB
+ call :LOGLINE2
+ call :LOGINFO "CREATE REMOTE REPO ON GITHUB"
+ rem "%GHEXE%" auth login --web
+ "%GHEXE%" auth status
+ rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 rem ABBALibraryGITEnd
