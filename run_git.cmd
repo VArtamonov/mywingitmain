@@ -520,7 +520,6 @@ echo ===========================================================================
  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
-
 rem ==========
 :GITCREATEHUB
  call :LOGINFO "Create remote repo on GitHub"
