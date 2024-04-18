@@ -87,13 +87,11 @@ if "%~1" == "info" (
 
 if "%~1" == "create" (
  if not "%~2" == "" (
-  call :FINDGIT
-  call :FINDGITHUBCLI
   call :GITCREATE %~2
  ) else (
   call :LOGERROR "ERROR ..."	
   echo Please run '%~nx0 init ^<gitname^>'
-  goto :FAIL
+  goto :FAILURE
  )
  goto :end
 )
@@ -128,7 +126,7 @@ call :LOGLINE2
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 call :LOGINFO "END '%~0' ..."
 call :LOGLINE0
-exit 0
+exit /b 0
 goto :eof
 
 rem ABBAProgrammMainEnd2
@@ -137,7 +135,7 @@ call :LOGLINE2
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 call :LOGERROR "END '%~0' ..."
 call :LOGLINE0
-exit 1
+exit /b 1
 goto :eof
 rem ABBAProgrammEnd
 
@@ -176,9 +174,15 @@ goto :eof
  "%GHEXE%" --version
  echo .
 
+ call :LOGDEBUG "GIT ÄÑêÖëÄ Ñãü óíÖçàü à áÄèàëà, èêàÇüáÄççõÖ ä êÖèéáàíéêàû:"
+ echo .
+ "%GITEXE%" remote -v
+ echo .
+
  call :LOGDEBUG "GIT STATUS"
  echo .
  "%GITEXE%" status --verbose
+ echo .
 
  echo off
 goto :eof
@@ -217,26 +221,28 @@ if "%~1" == "master" (
  call :LOGDEBUG "INIT GIT 'mywingit%~1' ..."
  "%GITEXE%" init "mywingit%~1"
  set MCD=!CD!
- call :LOG_DT !MCD!
+ call :LOGDEBUG "MCD = '!MCD!'"
  set RDIR=!MCD!\mywingit%~1
  call :LOGDEBUG "DIR REPO '!RDIR!' ..."
  call :CHANGEDIR "%ROOTDIR%"
  call :LOGDEBUG "COPY FILES ..."
  for %%I in ( "CopyFiles\LICENSE.md", "CopyFiles\README.md", "CopyFiles\.gitignore ", "CopyFiles\.gitattributes", "run_git.cmd" ) do (
-  call :LOGDEBUG "COPY FILE '%%~I'"
+  rem call :LOGDEBUG "COPY FILE '%%~I'"
   if exist "%%~I" (
    call :LOGDEBUG "COPY '%%~I' to '!RDIR!\%%~nxI' ..."
-   copy %%~I "!RDIR!\%%~nxI"
+   rem copy %%~I "!RDIR!\%%~nxI"
+   xcopy /YF %%~I "!RDIR!"
   )
  )
 )
 
 call :CHANGEDIR %RDIR%
 
+"%GITEXE%" remote add origin https://github.com/!USERNAME!/mywingit%~1.git
+rem "%GITEXE%" branch master
+rem "%GITEXE%" checkout master
 "%GITEXE%" add .
 "%GITEXE%" commit -m "first commit"
-"%GITEXE%" branch -M master
-"%GITEXE%" remote add origin https://github.com/!USERNAME!/mywingit%~1.git
 
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
@@ -264,8 +270,33 @@ rem ==========
  call :LOGINFO "GIT PUSH REMOTE ..."
  rem "%GHEXE%" auth status
  call :LOGDEBUG "GIT PUSH ..."
- "%GITEXE%" push origin --verbose
- call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+
+ echo off
+ rem for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do ( echo %%a )
+ rem "%GITEXE%" branch"
+ set BRANCH=
+ for /f "tokens=1*" %%a in ('"git branch"') do ( 
+  rem echo %%a,%%b 
+  if %%a==* (
+   if %%b==master (
+    rem echo BRANCH MASTER '%%b'
+    set BRANCH=%%b
+    call :LOGDEBUG "BRANCH = '!BRANCH!'"
+    "%GITEXE%" push --set-upstream origin master --verbose
+   )
+  )
+ )
+ echo off
+ rem call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ rem echo %ERRORLEVEL%
+ echo off
+ if not "%ERRORLEVEL%" == "128" (
+ rem echo "!BRANCH!"
+ if not "!BRANCH!"=="master" ( "%GITEXE%" push --set-upstream origin --verbose )
+  echo off
+  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ )
+
 goto :eof
 
 rem ==========
