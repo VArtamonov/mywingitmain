@@ -250,7 +250,7 @@ rem ==========
  "%GITEXE%" add . --verbose
 
  call :GET_DT
- call :LOGDEBUG "CREATE TIMESTAMP %DT%"
+ call :LOGDEBUG "CREATE TIMESTAMP '%DT%'"
  "%GITEXE%" commit -a -m "Auto commit '%dt%'" --verbose
 
  call :LOGDEBUG "GIT STATUS ..."
