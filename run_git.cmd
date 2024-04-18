@@ -9,6 +9,7 @@ set file_log=%~dp0%~n0.log
 set file_name=%~n0
 set ret=0
 
+rem ---------------------------------------------------------------------------------------
 call :LOGLINE0
 call :LOGSTART "START '%~0'"
 rem call :LOGINFO "echo %file_log%"
