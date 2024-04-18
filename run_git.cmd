@@ -431,7 +431,7 @@ for %%i in ("gh.exe", "C:\Program Files (x86)\GitHub CLI\gh.exe", "C:\Program Fi
 echo File '%%~i'
 if exist "%%~i" (
  set GHEXE=%%~i
- echo %GHEXE%
+ rem echo %GHEXE%
  call :LOG "GH.EXE = '%GHEXE%'"
  goto FINDGITHUBCLI1
  rem  ) else (
