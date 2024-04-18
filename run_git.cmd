@@ -428,7 +428,7 @@ rem ==========
 call :LOGINFO "FIND GITHUBCLI ..."
 
 for %%i in ("gh.exe", "C:\Program Files (x86)\GitHub CLI\gh.exe", "C:\Program Files\GitHub CLI\gh.exe") do (
-echo File '%%~i'
+rem echo File '%%~i'
 if exist "%%~i" (
  set GHEXE=%%~i
  rem echo %GHEXE%
