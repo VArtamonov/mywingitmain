@@ -228,7 +228,7 @@ if "%~2"=="" (
 
 call :LOGINFO "FIND '%~1' ..."
 for %%i in ("%~1") do set %~2=%%~$PATH:i
-echo "!%~2!"
+rem echo "!%~2!"
 if not "!%~2!" == "" (
  rem set %~2=!z1!
  goto :FINDFILE1
