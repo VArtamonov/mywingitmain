@@ -1,4 +1,6 @@
 @echo off
+chcp 866 >nul
+
 setlocal
 setlocal enableextensions
 setlocal enabledelayedexpansion
@@ -29,30 +31,33 @@ if "%~1" == "help" (
 
 
 call :LOGLINE2
-call :FINDZIP1
-call :FINDWGET1
+call :LOGINFO "èÆ®·™ „‚®´®‚"
+call :FINDZIP
+call :FINDWGET
 call :FINDRCLONE
 call :FINDGIT
+call :FINDGITHUBCLI
 
 call :LOGLINE2
 call :LOGINFO "ZIPEXE    = '%ZIPEXE%'"
 call :LOGINFO "WGETEXE   = '%WGETEXE%'"
 call :LOGINFO "RCLONEEXE = '%RCLONEEXE%'"
-
+call :LOGINFO "GITEXE = '%GITEXE%'"
+call :LOGINFO "GHEXE = '%GHEXE%'"
 
 call :LOGLINE2
 call :LOGINFO "RUN ..."
 
-for %%i in ("git.exe") do set FILE1=%%~$PATH:i
-call :LOGINFO "FILE1 = '%FILE1%'"
-for %%i in ("gh.exe") do set FILE2=%%~$PATH:i
-call :LOGINFO "FILE2 = '%FILE2%'"
-for %%i in ("wget.exe") do set FILE3=%%~$PATH:i
-call :LOGINFO "FILE3 = '%FILE3%'"
-for %%i in ("7za.exe") do set FILE4=%%~$PATH:i
-call :LOGINFO "FILE4 = '%FILE4%'"
-
-call :FINDFILE "wget1.exe" "WGETEXE1"
+rem for %%i in ("git.exe") do set FILE1=%%~$PATH:i
+rem call :LOGINFO "FILE1 = '%FILE1%'"
+rem for %%i in ("gh.exe") do set FILE2=%%~$PATH:i
+rem call :LOGINFO "FILE2 = '%FILE2%'"
+rem for %%i in ("wget.exe") do set FILE3=%%~$PATH:i
+rem call :LOGINFO "FILE3 = '%FILE3%'"
+rem for %%i in ("7z.exe") do set FILE4=%%~$PATH:i
+rem call :LOGINFO "FILE4 = '%FILE4%'"
+rem call :FINDFILE "wget.exe" "WGETEXE1"
+rem call :FINDFILE "7z.exe" "ZIPEXE1" "C:\Program Files\7-Zip"
 
 rem call :CREATEDIR arc
 rem set dotnetsamplelink=https://github.com/dotnet/samples/archive/refs/heads/main.zip
@@ -67,10 +72,26 @@ rem echo on
 rem "%ZIPEXE%" x -y -bb3 -bsp2 -o"%arcdir%" -- "%new_full_file_name%" 1>> "%file_log%"
 rem echo off
 
-call :LOGLINE2
+
+if "%~1" == "" (
+ call :info
+ goto :end
+)
+
+
+if "%~1" == "info" (
+ call :info
+ goto :end
+)
+
+
+call :LOGERROR "çÖàáÇÖëíçÄü äéåÄçÑÄ '%~1'"
+goto :FAILURE
+
 
 rem ABBAProgrammMainEnd1
 :END
+call :LOGLINE2
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 call :LOGINFO "END '%~0' ..."
 call :LOGLINE0
@@ -79,13 +100,13 @@ goto :eof
 
 rem ABBAProgrammMainEnd2
 :FAILURE
+call :LOGLINE2
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 call :LOGERROR "END '%~0' ..."
 call :LOGLINE0
 exit 1
 goto :eof
 rem ABBAProgrammEnd
-
 
 rem ==========
 :help
@@ -105,24 +126,44 @@ rem ==========
  call :LOGINFO " "
 goto :eof
 
+
+
+:info
+ call :LOGLINE2
+ call :LOGDEBUG "'%0' '%1' '%2'"
+ call :LOGINFO "àçîéêåÄñàü"
+
+ call :LOGDEBUG "GIT VERSION"
+ "%GITEXE%" --version
+
+ call :LOGLINE2
+ call :LOGDEBUG "GITHUB VERSION"
+ "%GHEXE%" --version
+
+ call :LOGLINE2
+ call :LOGDEBUG "GIT STATUS"
+ "%GITEXE%" status --verbose
+
+ echo off
+ exit /b 0
+goto :eof
+
+
+
 rem ---------------------------------------------------------------------------------------
 rem ABBALibraryGITStart
+
 rem ==========
 :FINDGIT
-call :LOGINFO "FIND GIT ..."
-for %%i in ("git.exe") do set GITEXE=%%~$PATH:i
-rem echo %GITEXE%
-IF EXIST "%GITEXE%" (
-	call :LOG "GIT.EXE = '%GITEXE%'"
-	goto :FINDGIT1
-) else (
- call :LOGERROR "Git.exe no found"
- call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
- goto :FAIL
-)
-:FINDGIT1
-call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+call :FINDFILE "git.exe" "GITEXE"
 goto :eof
+
+
+rem ==========
+:FINDGITHUBCLI
+call :FINDFILE "gh.exe" "GHEXE"
+goto :eof
+
 rem ABBALibraryGITEnd
 
 
@@ -130,25 +171,7 @@ rem ----------------------------------------------------------------------------
 rem ABBALibraryCmdWgetStart
 rem find wget
 :FINDWGET
-call :LOGINFO "FIND WGET ..."
 call :FINDFILE "wget.exe" "WGETEXE"
-goto :eof
-
-:FINDWGET1
-call :LOGINFO "FIND WGET ..."
-rem call :LOG "Find wget.exe"
-for %%i in ("%CD%\wget.exe","C:\Windows\wget.exe","C:\Program Files\GnuWin32\bin\wget.exe","C:\Program Files (x86)\GnuWin32\bin\wget.exe","C:\Windows\system32\wget.exe") do (
- rem call :LOGINFO "%%~i"
- if exist "%%~i" (
-  set wgetexe=%%~i
-  call :LOG "WGET.EXE = '!wgetexe!'"
-  goto :eof
-  )
- )
-  call :LOGERROR "wget.exe no found"
-  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
-  goto :FAILURE
-rem )
 goto :eof
 
 rem ==========
@@ -174,20 +197,7 @@ rem ABBALibraryCmdWgetEnd
 rem ---------------------------------------------------------------------------------------
 rem ABBALibraryCmdCloneStart
 :FINDRCLONE
-call :LOGINFO "FIND RCLONE ..."
-for %%i in ("rclone.exe","..\rclone.exe","D:\0_RCLONE\rclone.exe","Z:\0_RCLONE\rclone.exe") do (
- rem call :LOGINFO "%%~i"
- if exist "%%~i" (
-  set rcloneexe=%%~i
-  call :LOG "RCLONE.EXE = '!RCLONEEXE!'"
-  goto :eof
- )
-)
-rem ) else (
-rem   call :LOGERROR "RCLONE.exe no found"
-rem   call :LOG "ERRORLEVEL %ERRORLEVEL%"
-rem   goto :FAILURE
-rem )
+call :FINDFILE "rclone.exe" "RCLONEEXE" "D:\0_RCLONE" "Z:\0_RCLONE"
 goto :eof
 rem ABBALibraryCmdCloneEnd
 
@@ -197,42 +207,53 @@ rem %1
 rem %2 FILEOUT
 :FINDZIP
 rem call :FINDFILE "%SystemDrive%" "7z.exe" "ZIPEXE"
-call :FINDFILE "7z.exe" "ZIPEXE"
+call :FINDFILE "7z.exe" "ZIPEXE" "C:\Program Files\7-Zip"
 goto :eof
 rem ABBALibraryCmdZipEnd
-
-:FINDZIP1
-call :LOGINFO "FIND 7ZIP ..."
-rem call :LOG "Find wget.exe"
-for %%i in ("%CD%\7z.exe","%CD%\7za.exe","C:\Program Files\7-Zip\7z.exe") do (
- rem call :LOGINFO "%%~i"
- if exist "%%~i" (
-  set ZIPEXE=%%~i
-  call :LOG "7Z.EXE = '!ZIPEXE!'"
-  goto :eof
-  )
- )
-  call :LOGERROR "7ZIP NO FOUND"
-  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
-  goto :FAILURE
-rem )
-goto :eof
-
 
 rem ---------------------------------------------------------------------------------------
 rem ABBALibraryCmdFindStart
 rem call :FINDFILE "wget.exe" "WGETEXE" "%CD%" "C:" "C:\Windows"
 rem call ::FINDFILE1 %1 %2
 :FINDFILE
-call :LOGINFO "FIND '%~1' ..."
-for %%i in ("%~1") do set FILE1=%%~$PATH:i
-if not "%FILE1%" == "" (
- call :LOGINFO "FILE1 = '%FILE1%'"
- call :LOG "FOUND %~1 = '!%~2!'"
-) else (
-  call :LOGERROR "'%~2' no found"
-  call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
+if "%~1"=="" (
+ call :LOGERROR "ARG1 = NULL"
+ goto :FINDFILE2
 )
+
+if "%~2"=="" (
+ call :LOGERROR "ARG2 = NULL"
+ goto :FINDFILE2
+)
+
+call :LOGINFO "FIND '%~1' ..."
+for %%i in ("%~1") do set %~2=%%~$PATH:i
+echo "!%~2!"
+if not "!%~2!" == "" (
+ rem set %~2=!z1!
+ goto :FINDFILE1
+) else (
+ echo off
+ if not "%~3"=="" (
+  for /D %%k in (%3 %4 %5 %6 %7 %8 %9) do (
+   set z1=%%~k\%~1
+   rem echo !z1!
+   if exist !z1! (
+    set %~2=!z1!
+    goto :FINDFILE1
+    )
+   )
+  )
+ )
+
+call :LOGERROR "'%~2' no found"
+call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
+
+:FINDFILE1
+call :LOG "FOUND %~2 = '!%~2!'"
+
+:FINDFILE2
+echo off
 goto :eof
 rem ABBALibraryFindZipEnd
 
