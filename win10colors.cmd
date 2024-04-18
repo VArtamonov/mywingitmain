@@ -1,10 +1,12 @@
 @echo off
+
 rem cls
 echo [101;93m STYLES [0m
 echo ^<ESC^>[0m [0mReset[0m
 echo ^<ESC^>[1m [1mBold[0m
 echo ^<ESC^>[4m [4mUnderline[0m
 echo ^<ESC^>[7m [7mInverse[0m
+
 echo.
 echo [101;93m NORMAL FOREGROUND COLORS [0m
 echo ^<ESC^>[30m [30mBlack[0m (black)
@@ -15,6 +17,7 @@ echo ^<ESC^>[34m [34mBlue[0m
 echo ^<ESC^>[35m [35mMagenta[0m
 echo ^<ESC^>[36m [36mCyan[0m
 echo ^<ESC^>[37m [37mWhite[0m
+
 echo.
 echo [101;93m NORMAL BACKGROUND COLORS [0m
 echo ^<ESC^>[40m [40mBlack[0m
