@@ -174,6 +174,20 @@ goto :eof
  "%GHEXE%" --version
  echo .
 
+ call :LOGDEBUG "GIT ˆŒŸ Ž‹œ‡Ž‚€’…‹Ÿ:"
+ echo .
+
+ for /f "tokens=1" %%a in ('"git config --local --get user.name"') do ( 
+  echo UserName=%%a
+  set USERNAME=%%a
+  call :LOGDEBUG "USERNAME = '%USERNAME%'"
+  call :LOGDEBUG "USERNAME = '!USERNAME!'"
+  call :LOGDEBUG "USERNAME = '%USERNAME%'"
+  )
+
+ git config --local --get user.email
+ echo .
+
  call :LOGDEBUG "GIT €„…‘€ „‹Ÿ —’…ˆŸ ˆ ‡€ˆ‘ˆ, ˆ‚Ÿ‡€›… Š …Ž‡ˆ’Žˆž:"
  echo .
  "%GITEXE%" remote -v
