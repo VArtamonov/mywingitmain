@@ -161,7 +161,7 @@ goto :eof
 
 :info
  call :LOGLINE2
- call :LOGDEBUG "'%0' '%1' '%2'"
+ rem call :LOGDEBUG "'%0' '%1' '%2'"
  call :LOGINFO "àçîéêåÄñàü"
 
  call :LOGDEBUG "GIT VERSION"
