@@ -103,7 +103,7 @@ if "%~1" == "createmaster" (
 )
 
 if "%~1" == "createhub" (
- call :GITCREATEHUB
+ call :GITCREATEHUB %2
  goto :end
 )
 
@@ -116,6 +116,12 @@ if "%~1" == "remote" (
  call :GITREMOTE
  goto :end
 )
+
+if "%~1" == "remoteadd" (
+ call :GITREMOTEADD %2
+ goto :end
+)
+
 
 call :LOGERROR "НЕИЗВЕСТНАЯ КОМАНДА '%~1'"
 goto :FAILURE
@@ -153,6 +159,8 @@ rem ==========
  call :LOGINFO "    createhub           - создание удаленного репозитария на GitHub, для хранения созданного "
  call :LOGINFO "    remote              - отправляет все изменения в удаленный репозитария на GitHub "
  call :LOGINFO "    autocommit		- автокоммит в текущей датой и временим "
+ call :LOGINFO "    remoteadd           - добавление удалённых репозиториев"
+ call :LOGINFO " "
  call :LOGINFO "    info                - Информация, команда по умолчанию "
  call :LOGINFO "    help                - Показать эту справку и выйти "
  call :LOGINFO " "
@@ -253,9 +261,11 @@ if "%~1" == "master" (
 
 call :CHANGEDIR %RDIR%
 
-"%GITEXE%" remote add origin https://github.com/!USERNAME!/mywingit%~1.git
+rem "%GITEXE%" remote add origin https://github.com/!USERNAME!/mywingit%~1.git
 rem "%GITEXE%" branch master
 rem "%GITEXE%" checkout master
+
+echo .
 "%GITEXE%" add .
 "%GITEXE%" commit -m "first commit"
 
@@ -263,11 +273,33 @@ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 rem ==========
+:GITREMOTEADD
+ call :LOGLINE2
+ call :LOGINFO "ДОБАВЛЕНИЕ УДАЛЁННЫХ РЕПОЗИТОРИЕВ ..."
+
+ echo .
+ echo off
+ if not "%~1"=="" (
+
+  "%GITEXE%" remote add origin https://github.com/!USERNAME!/%~1.git
+
+  call :LOGDEBUG "GIT STATUS ..."
+  "%GITEXE%" status --verbose
+
+  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ )
+
+ echo off
+goto :eof
+
+
+rem ==========
 :GITAUTOCOMMIT
  call :LOGLINE2
  call :LOGINFO "ADD AUTO COMMIT ..."
 
  call :LOGDEBUG "ADD ALL FILES ..."
+ echo .
  "%GITEXE%" add . --verbose
 
  call :GET_DT
@@ -319,8 +351,20 @@ rem ==========
  call :LOGLINE2
  call :LOGINFO "CREATE REMOTE REPO ON GITHUB"
  rem "%GHEXE%" auth login --web
- "%GHEXE%" auth status
- rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
+
+ echo .
+ echo off
+ if not "%~1"=="" (
+
+  "%GHEXE%" auth status
+  rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
+
+  echo .
+  "%GHEXE%" repo create %1 --private --source=.
+
+ )
+
+ echo off
  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
