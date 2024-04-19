@@ -18,7 +18,7 @@ call :LOGLINE2
 call :LOGINFO  "TEST INFO  ..."
 call :LOGERROR "TEST ERROR ..."
 
-set USERNAME=githubuser
+set USERNAME=VArtamonov
 
 call :LOGLINE2
 rem root dir
