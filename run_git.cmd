@@ -116,6 +116,7 @@ if "%~1" == "remote" (
  call :GITREMOTE
  goto :end
 )
+
 call :LOGERROR "…ˆ‡‚…‘’€Ÿ ŠŽŒ€„€ '%~1'"
 goto :FAILURE
 
