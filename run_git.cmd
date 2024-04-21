@@ -383,14 +383,12 @@ rem ==========
  rem "%GITEXE%" branch"
  set BRANCH=
  for /f "tokens=1*" %%a in ('"git branch"') do ( 
-  rem echo %%a,%%b 
-  if %%a==* (
-   if %%b==master (
-    rem echo BRANCH MASTER '%%b'
+  rem echo Debug1 %%a,%%b 
+  if "%%a"=="*" (
+   rem echo Debug2 %%a,%%b 
     set BRANCH=%%b
     call :LOGDEBUG "BRANCH = '!BRANCH!'"
-    "%GITEXE%" push --set-upstream origin master --verbose
-   )
+    "%GITEXE%" push --set-upstream origin !BRANCH! --verbose
   )
  )
 
