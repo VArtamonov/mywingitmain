@@ -173,6 +173,23 @@ goto :eof
  rem call :LOGDEBUG "'%0' '%1' '%2'"
  call :LOGINFO "àçîéêåÄñàü"
 
+
+ call :LOGDEBUG "WGET VERSION"
+ rem %WGETEXE% --version --quiet
+ echo off
+ rem GNU Wget 1.21.4 built on mingw32.
+ rem for /f %%a in ('"%WGETEXE% --version"') do ( echo UserName=%%a )
+for /f "usebackq eol= delims=" %%a in (`"%WGETEXE% --version"`) do (
+ rem echo %%a
+ set str1=%%a
+ set str2=!str1:~0,8!
+ rem echo '!str2!'
+ if "!str2!"=="GNU Wget" (
+  call :LOGDEBUG "!str1!"
+ )
+)
+ echo off
+
  call :LOGDEBUG "GIT VERSION"
  echo .
  "%GITEXE%" --version
@@ -417,6 +434,25 @@ rem ABBALibraryCmdZipEnd
 
 rem ---------------------------------------------------------------------------------------
 rem ABBALibraryCmdFindStart
+
+REM
+REM print_head
+REM Prints the first non-blank %1 lines in the file %2.
+REM
+:print_head
+setlocal EnableDelayedExpansion
+set /a counter=0
+
+for /f ^"usebackq^ eol^=^
+
+^ delims^=^" %%a in (%2) do (
+        if "!counter!"=="%1" goto :eof
+        echo %%a
+        set /a counter+=1
+)
+goto :eof
+
+
 rem call :FINDFILE "wget.exe" "WGETEXE" "%CD%" "C:" "C:\Windows"
 rem call ::FINDFILE1 %1 %2
 :FINDFILE
@@ -626,3 +662,5 @@ goto :eof
 
 rem ABBALibraryCmdLogEnd
 goto :eof
+
+
