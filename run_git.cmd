@@ -18,8 +18,6 @@ call :LOGLINE2
 call :LOGINFO  "TEST INFO  ..."
 call :LOGERROR "TEST ERROR ..."
 
-set USERNAME=VArtamonov
-
 call :LOGLINE2
 rem root dir
 set ROOTDIR=%CD%
@@ -30,6 +28,9 @@ if "%~1" == "help" (
  call :help %~n0
  goto :end
 )
+
+call :LOGLINE2
+call :READINIFILE2 !file_name!
 
 call :LOGLINE2
 call :LOGINFO "ПОИСК УТИЛИТ"
@@ -103,7 +104,7 @@ if "%~1" == "createmaster" (
 )
 
 if "%~1" == "createhub" (
- call :GITCREATEHUB %2
+ call :GITHUBCREATE %2
  goto :end
 )
 
@@ -118,10 +119,28 @@ if "%~1" == "remote" (
 )
 
 if "%~1" == "remoteadd" (
- call :GITREMOTEADD %2
+ call :GITREMOTEADD %2 %3
  goto :end
 )
 
+if "%~1" == "gitinit" (
+ call :GITINIT
+ rem call :GITREMOTEADD %USERNAME% %REPONAME%
+ call :GITHUBCREATE %REPONAME%
+ call :GITAUTOCOMMIT
+ call :GITREMOTE
+
+ goto :end
+)
+
+if "%~1" == "githubdelete" (
+ if not "%~2"=="" (
+  call :GITHUBDELETE %2
+ ) else (
+  call :GITHUBDELETE %REPONAME%
+ )
+ goto :end
+)
 
 call :LOGERROR "НЕИЗВЕСТНАЯ КОМАНДА '%~1'"
 goto :FAILURE
@@ -133,7 +152,7 @@ call :LOGLINE2
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 call :LOGINFO "END '%~0' ..."
 call :LOGLINE0
-exit /b 0
+exit 0
 goto :eof
 
 rem ABBAProgrammMainEnd2
@@ -142,7 +161,7 @@ call :LOGLINE2
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 call :LOGERROR "END '%~0' ..."
 call :LOGLINE0
-exit /b 1
+exit 1
 goto :eof
 rem ABBAProgrammEnd
 
@@ -156,6 +175,7 @@ rem ==========
  call :LOGINFO "    create folder 	- создание локального репозитария в папке folder в родительском каталоге "
  call :LOGINFO "                          копирует все необходимое, после создания все вызовы надо делать из folder "
  call :LOGINFO "    createmaster        - создание главного репозитария на GitHub, для хранения этих утилит "
+ call :LOGINFO "    gitinit             - созданиеи и ининциализация репозитария в текущей папке "
  call :LOGINFO "    createhub           - создание удаленного репозитария на GitHub, для хранения созданного "
  call :LOGINFO "    remote              - отправляет все изменения в удаленный репозитария на GitHub "
  call :LOGINFO "    autocommit		- автокоммит в текущей датой и временим "
@@ -165,8 +185,6 @@ rem ==========
  call :LOGINFO "    help                - Показать эту справку и выйти "
  call :LOGINFO " "
 goto :eof
-
-
 
 :info
  call :LOGLINE2
@@ -290,22 +308,49 @@ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
 rem ==========
+:GITINIT
+ call :LOGDEBUG "СОЗДАНИЕ И ИНИЦИАЛИЗАЦИЯ РЕПОЗИТАРИЯ ..."
+ "%GITEXE%" init
+ "%GITEXE%" add . --verbose
+ call :GET_DT
+ call :LOGDEBUG "CREATE TIMESTAMP '%DT%'"
+ "%GITEXE%" commit -a -m "First commit '%dt%'" --verbose
+
+ git branch -M master --verbose
+
+ call :LOGDEBUG "GIT BRANCH LIST"
+ git branch
+
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+goto :eof
+
+rem ==========
 :GITREMOTEADD
  call :LOGLINE2
  call :LOGINFO "ДОБАВЛЕНИЕ УДАЛЁННЫХ РЕПОЗИТОРИЕВ ..."
 
- echo .
- echo off
- if not "%~1"=="" (
-
-  "%GITEXE%" remote add origin https://github.com/!USERNAME!/%~1.git
-
-  call :LOGDEBUG "GIT STATUS ..."
-  "%GITEXE%" status --verbose
-
-  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ if "%~1"=="" (
+  call :LOGERROR "ARG1 = NULL"
+  call :LOGDEBUG "call :GITREMOTEADD UserName RepoName"
+  set errorlevel=1
+  goto :FAILURE
  )
 
+ if "%~2"=="" (
+  call :LOGERROR "ARG2 = NULL"
+  call :LOGDEBUG "call :GITREMOTEADD UserName RepoName"
+  set errorlevel=1
+  goto :FAILURE
+ )
+
+ echo .
+ echo off
+
+ git remote remove origin
+ "%GITEXE%" remote add origin https://github.com/%~1/%~2.git
+ git branch -a
+
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
  echo off
 goto :eof
 
@@ -323,8 +368,8 @@ rem ==========
  call :LOGDEBUG "CREATE TIMESTAMP '%DT%'"
  "%GITEXE%" commit -a -m "Auto commit '%dt%'" --verbose
 
- call :LOGDEBUG "GIT STATUS ..."
- "%GITEXE%" status --verbose
+ rem call :LOGDEBUG "GIT STATUS ..."
+ rem "%GITEXE%" status --verbose
  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
@@ -364,22 +409,50 @@ rem ==========
 goto :eof
 
 rem ==========
-:GITCREATEHUB
+:GITHUBCREATE
  call :LOGLINE2
  call :LOGINFO "CREATE REMOTE REPO ON GITHUB"
  rem "%GHEXE%" auth login --web
 
+ if "%~1"=="" (
+  call :LOGERROR "ARG1 = NULL"
+  call :LOGDEBUG "call :GITHUBCREATE RepoName"
+  set errorlevel=1
+  goto :FAILURE
+ )
+
  echo .
  echo off
- if not "%~1"=="" (
+ "%GHEXE%" auth status
+ rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
 
-  "%GHEXE%" auth status
-  rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
+ echo .
+ "%GHEXE%" repo create %1 --private --source=. --remote=origin --description "My Repo '%1'"
 
-  echo .
-  "%GHEXE%" repo create %1 --private --source=.
+ echo off
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+goto :eof
 
+rem ==========
+:GITHUBDELETE
+ call :LOGLINE2
+ call :LOGINFO "DELETE REMOTE REPO ON GITHUB"
+ rem "%GHEXE%" auth login --web
+ rem gh auth refresh -h github.com -s delete_repo
+
+ if "%~1"=="" (
+  call :LOGERROR "ARG1 = NULL"
+  call :LOGDEBUG "call :GITHUBDELETE RepoName"
+  set errorlevel=1
+  goto :FAILURE
  )
+
+ echo .
+ echo off
+ "%GHEXE%" auth status
+ rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
+ echo .
+  "%GHEXE%" repo delete %1
 
  echo off
  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
@@ -496,6 +569,24 @@ call :LOG "FOUND %~2 = '!%~2!'"
 echo off
 goto :eof
 rem ABBALibraryFindZipEnd
+
+rem ========== Read SET from ini file ==========
+:READINIFILE2
+rem Read config file
+call :LOGINFO "Read config file ..."
+set MYINI=%~1.ini
+if exist !MYINI! (
+		call :LOG_DT "CONFIG = !MYINI! ..."
+		for /F "usebackq eol=; tokens=1,2 delims=, " %%a in (!MYINI!) do (
+			set %%a=%%b
+			call :LOG_DT "%%a = '%%b' ..."
+		)
+	) else (
+		call :LOGERROR "Config file !MYINI! no found ..."
+		set errorlevel=1
+		goto :FAILURE
+	)
+goto :eof
 
 rem ABBALibraryCmdDirStart
 rem ==========
