@@ -113,8 +113,8 @@ if "%~1" == "autocommit" (
  goto :end
 )
 
-if "%~1" == "remote" (
- call :GITREMOTE
+if "%~1" == "autopush" (
+ call :GITAUTOPUSH
  goto :end
 )
 
@@ -177,7 +177,7 @@ rem ==========
  call :LOGINFO "    createmaster        - создание главного репозитария на GitHub, для хранения этих утилит "
  call :LOGINFO "    gitinit             - созданиеи и ининциализация репозитария в текущей папке "
  call :LOGINFO "    createhub           - создание удаленного репозитария на GitHub, для хранения созданного "
- call :LOGINFO "    remote              - отправляет все изменения в удаленный репозитария на GitHub "
+ call :LOGINFO "    autopush            - отправляет все изменения в удаленный репозитария на GitHub "
  call :LOGINFO "    autocommit		- автокоммит в текущей датой и временим "
  call :LOGINFO "    remoteadd           - добавление удалённых репозиториев"
  call :LOGINFO " "
@@ -358,7 +358,7 @@ goto :eof
 rem ==========
 :GITAUTOCOMMIT
  call :LOGLINE2
- call :LOGINFO "ADD AUTO COMMIT ..."
+ call :LOGINFO "GIT ADD AUTO COMMIT ..."
 
  call :LOGDEBUG "ADD ALL FILES ..."
  echo .
@@ -374,11 +374,9 @@ rem ==========
 goto :eof
 
 rem ==========
-:GITREMOTE
+:GITAUTOPUSH
  call :LOGLINE2
- call :LOGINFO "GIT PUSH REMOTE ..."
- rem "%GHEXE%" auth status
- call :LOGDEBUG "GIT PUSH ..."
+ call :LOGINFO "GIT AUTO PUSH REMOTE ..."
 
  echo off
  rem for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do ( echo %%a )
@@ -395,6 +393,7 @@ rem ==========
    )
   )
  )
+
  echo off
  rem call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
  rem echo %ERRORLEVEL%
