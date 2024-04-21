@@ -379,29 +379,30 @@ rem ==========
  call :LOGINFO "GIT AUTO PUSH REMOTE ..."
 
  echo off
- rem for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do ( echo %%a )
- rem "%GITEXE%" branch"
- set BRANCH=
- for /f "tokens=1*" %%a in ('"git branch"') do ( 
-  rem echo Debug1 %%a,%%b 
-  if "%%a"=="*" (
-   rem echo Debug2 %%a,%%b 
-    set BRANCH=%%b
-    call :LOGDEBUG "BRANCH = '!BRANCH!'"
-    "%GITEXE%" push --set-upstream origin !BRANCH! --verbose
+
+ "%GITEXE%" push --verbose
+
+ if "%ERRORLEVEL%" == "128" (
+
+  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+  rem for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do ( echo %%a )
+  rem "%GITEXE%" branch"
+  set BRANCH=
+  for /f "tokens=1*" %%a in ('"git branch"') do ( 
+   rem echo Debug1 %%a,%%b 
+   if "%%a"=="*" (
+    rem echo Debug2 %%a,%%b 
+     set BRANCH=%%b
+     call :LOGDEBUG "BRANCH = '!BRANCH!'"
+     "%GITEXE%" push --set-upstream origin !BRANCH! --verbose
   )
  )
 
+)
+
  echo off
  rem call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
- rem echo %ERRORLEVEL%
- echo off
- if not "%ERRORLEVEL%" == "128" (
- rem echo "!BRANCH!"
- if not "!BRANCH!"=="master" ( "%GITEXE%" push --set-upstream origin --verbose )
-  echo off
-  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
- )
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 
 goto :eof
 
