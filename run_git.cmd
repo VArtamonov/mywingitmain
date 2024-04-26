@@ -30,9 +30,6 @@ if "%~1" == "help" (
 )
 
 call :LOGLINE2
-call :READINIFILE2 !file_name!
-
-call :LOGLINE2
 call :LOGINFO "èéàëä ìíàãàí"
 call :FINDZIP
 call :FINDWGET
@@ -47,9 +44,34 @@ call :LOGINFO "RCLONEEXE = '%RCLONEEXE%'"
 call :LOGINFO "GITEXE = '%GITEXE%'"
 call :LOGINFO "GHEXE = '%GHEXE%'"
 
+if "%~1" == "createini" (
+ call :LOGDEBUG "ëéáÑÄçàÖ îÄâã '!file_name!.ini'"
+ call :GITGETCONFIG
+ call :LOGDEBUG "ÇÇÖÑàíÖ çÄáÇÄçàÖ êÖèéáàíÄêàü:"
+ set /p REPONAME=
+ call :LOGDEBUG "REPONAME = !REPONAME!"
+ call :LOGDEBUG "áÄèàëú Ç îÄâã '!file_name!.ini'"
+ echo ; > !file_name!.ini
+ echo ; >> !file_name!.ini
+ echo USERNAME,!USERNAME! >> !file_name!.ini
+ echo USEREMAIL,!USEREMAIL! >> !file_name!.ini
+ echo REPONAME,!REPONAME! >> !file_name!.ini
+ goto :end
+)
+
+call :LOGLINE2
+call :READINIFILE !file_name!
+if "%ERRORLEVEL%"=="1" (
+ rem call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
+ call :LOGDEBUG "çÖéÅïéÑàåé ëéáÑÄíú îÄâã '!file_name!.ini'"
+ call :LOGDEBUG "àá äéçîàÉìêÄñàà GIT GLOBAL"
+ call :GITGETCONFIG
+ call :LOGDEBUG "àëèéãúáìâíÖ äéåÄçÑì createini"
+ goto :FAILURE
+)
+
 call :LOGLINE2
 call :LOGINFO "RUN ..."
-
 call :LOGINFO "àåü èéãúáéÇÄíÖãü: '%USERNAME%'"
 
 rem for %%i in ("git.exe") do set FILE1=%%~$PATH:i
@@ -190,8 +212,6 @@ goto :eof
  call :LOGLINE2
  rem call :LOGDEBUG "'%0' '%1' '%2'"
  call :LOGINFO "àçîéêåÄñàü"
-
-
  call :LOGDEBUG "WGET VERSION"
  rem %WGETEXE% --version --quiet
  echo off
@@ -216,20 +236,6 @@ for /f "usebackq eol= delims=" %%a in (`"%WGETEXE% --version"`) do (
  call :LOGDEBUG "GITHUB VERSION"
  echo .
  "%GHEXE%" --version
- echo .
-
- call :LOGDEBUG "GIT àåü èéãúáéÇÄíÖãü:"
- echo .
-
- for /f "tokens=1" %%a in ('"git config --local --get user.name"') do ( 
-  echo UserName=%%a
-  set USERNAME=%%a
-  call :LOGDEBUG "USERNAME = '%USERNAME%'"
-  call :LOGDEBUG "USERNAME = '!USERNAME!'"
-  call :LOGDEBUG "USERNAME = '%USERNAME%'"
-  )
-
- git config --local --get user.email
  echo .
 
  call :LOGDEBUG "GIT ÄÑêÖëÄ Ñãü óíÖçàü à áÄèàëà, èêàÇüáÄççõÖ ä êÖèéáàíéêàû:"
@@ -261,6 +267,41 @@ goto :eof
 
 
 rem - GIT Command
+
+rem ==========
+:GITGETCONFIG
+ call :LOGDEBUG "GIT GLOBAL CONFIG: Username Email"
+ rem  for /f "tokens=1" %%a in ('"git config --local --get user.name"') do ( 
+ rem   echo UserName=%%a
+ rem   set USERNAME=%%a
+ rem   call :LOGDEBUG "USERNAME = '%USERNAME%'"
+ rem   call :LOGDEBUG "USERNAME = '!USERNAME!'"
+ rem   call :LOGDEBUG "USERNAME = '%USERNAME%'"
+ rem   )
+ rem  git config --local --get user.email
+ rem  echo .
+
+ for /f "tokens=1* delims==" %%a in ('"git config --global --list"') do ( 
+  rem echo '%%a = %%b'
+  if "%%a" == "user.name" (
+   rem echo '%%a = %%b'
+   set USERNAME=%%b
+   call :LOGDEBUG "USERNAME = '!USERNAME!'"
+  ) else if "%%a" == "user.email" (
+   rem  echo '%%a = %%b'
+   set USEREMAIL=%%b
+   call :LOGDEBUG "USEREMAIL = '!USEREMAIL!'"
+  )
+
+  rem set USERNAME=%%a
+  rem call :LOGDEBUG "USERNAME = '%USERNAME%'"
+  rem call :LOGDEBUG "USERNAME = '!USERNAME!'"
+  rem call :LOGDEBUG "USERNAME = '%USERNAME%'"
+  )
+
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ echo off
+goto :eof
 
 rem ==========
 :GITCREATE
@@ -568,7 +609,7 @@ goto :eof
 rem ABBALibraryFindZipEnd
 
 rem ========== Read SET from ini file ==========
-:READINIFILE2
+:READINIFILE
 rem Read config file
 call :LOGINFO "Read config file ..."
 set MYINI=%~1.ini
@@ -581,8 +622,11 @@ if exist !MYINI! (
 	) else (
 		call :LOGERROR "Config file !MYINI! no found ..."
 		set errorlevel=1
-		goto :FAILURE
+		goto :READINIFILE2
 	)
+
+:READINIFILE2
+
 goto :eof
 
 rem ABBALibraryCmdDirStart
