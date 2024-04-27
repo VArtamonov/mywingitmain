@@ -125,11 +125,6 @@ if "%~1" == "createmaster" (
  goto :end
 )
 
-if "%~1" == "createhub" (
- call :GITHUBCREATE %2
- goto :end
-)
-
 if "%~1" == "autocommit" (
  call :GITAUTOCOMMIT
  goto :end
@@ -152,6 +147,17 @@ if "%~1" == "gitinit" (
  call :GITAUTOCOMMIT
  call :GITREMOTEADD
 
+ goto :end
+)
+
+if "%~1" == "gitbranch" (
+ call :GITBRANCH %2 %3 %4 %5
+ goto :end
+)
+
+
+if "%~1" == "createhub" (
+ call :GITHUBCREATE %2
  goto :end
 )
 
@@ -194,14 +200,20 @@ rem ==========
  call :LOGINFO "    '%~1' [КОМАНДЫ] [ПАРАМЕТР] "
  call :LOGINFO " "
  call :LOGINFO "Команды: "
- call :LOGINFO "    create folder 	- создание локального репозитария в папке folder в родительском каталоге "
- call :LOGINFO "                          копирует все необходимое, после создания все вызовы надо делать из folder "
+ call :LOGINFO "    create folder       - создание локального репозитария в каталоге folder"
+ call :LOGINFO "                          в каталог копирует все необходимое, после создания все вызовы надо делать из folder "
  call :LOGINFO "    createmaster        - создание главного репозитария на GitHub, для хранения этих утилит "
+ call :LOGINFO " "
+ call :LOGINFO " Команды работа с репозитариями:"
  call :LOGINFO "    gitinit             - созданиеи и ининциализация репозитария в текущей папке "
- call :LOGINFO "    createhub           - создание удаленного репозитария на GitHub, для хранения созданного "
  call :LOGINFO "    autopush            - отправляет все изменения в удаленный репозитария на GitHub "
  call :LOGINFO "    autocommit		- автокоммит в текущей датой и временим "
  call :LOGINFO "    remoteadd           - добавление удалённых репозиториев"
+ call :LOGINFO "    gitbranch           - команда для управления ветками в репозитории Git"
+ call :LOGINFO " "
+ call :LOGINFO " Команды для GitHub:"
+ call :LOGINFO "    createhub           - создание удаленного репозитария на GitHub, для хранения созданного "
+ call :LOGINFO "    githubdelete        - удаление репозитария на GitHub"
  call :LOGINFO " "
  call :LOGINFO "    info                - Информация, команда по умолчанию "
  call :LOGINFO "    help                - Показать эту справку и выйти "
@@ -496,6 +508,67 @@ rem ==========
  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 goto :eof
 
+rem ==========
+:GITBRANCH
+ call :LOGLINE2
+ call :LOGINFO "Это команда для управления ветками в репозитории Git"
+ call :LOGDEBUG "CALL %0 %1 %2 %3 %4 %5"
+ set BRANCHINI=!file_name!.branch.ini
+ if exist %BRANCHINI% (
+  call :LOGDEBUG "ЧТЕНИЕ ФАЙЛА '%BRANCHINI%'"
+  for /f "usebackq eol=; tokens=1,2 delims=, " %%a in (%BRANCHINI%) do ( 
+   rem echo %%a,%%b
+   if "%%a"=="BRANCHNAME" ( 
+	set BRANCHNAME=%%b
+   ) else if "%%a"=="BRANCHNUMBER" ( 
+	set BRANCHNUMBER=%%b
+   )
+  )
+ ) else (
+  call :LOGDEBUG "СОЗДАНИЕ ФАЙЛА '%BRANCHINI%'"
+  call :LOGDEBUG "ЗАПИСЬ В ФАЙЛ '%BRANCHINI%'"
+  echo ; > %BRANCHINI%
+  echo BRANCHNAME,test >> %BRANCHINI%
+  echo BRANCHNUMBER,0 >> %BRANCHINI%
+  call :LOGDEBUG "ПОВТОРНЫЙ ВЫЗОВ %0"
+  call :GITBRANCH
+ )
+
+ call :LOGDEBUG "BRANCHNAME   = '!BRANCHNAME!'"
+ call :LOGDEBUG "BRANCHNUMBER = '!BRANCHNUMBER!'"
+
+ if "%1"=="new" (
+  call :LOGDEBUG "КОМАНДА %1"
+  set /a BRANCHNUMBER=!BRANCHNUMBER!+1
+  call :GITBRANCHSAVE
+
+  call :LOGINFO "СОЗДАТЬ НОВУЮ ВЕТКУ '!BRANCHNAME!!BRANCHNUMBER!' И ПЕРЕКЛЮЧИТЬСЯ НА НЕЁ"
+  "%GITEXE%" checkout -b !BRANCHNAME!!BRANCHNUMBER!
+
+ ) else (
+  call :LOGDEBUG "Просмотреть список всех веток в текущем репозитории:"
+  echo .
+  "%GITEXE%" branch
+  echo .
+ )
+
+
+:GITBRANCH1
+ echo off
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+goto :eof
+
+:GITBRANCHSAVE
+ call :LOGDEBUG "ЗАПИСЬ НОВЫХ ДАННЫХ В ФАЙЛ '%BRANCHINI%'"
+ call :LOGDEBUG "BRANCHNAME   = '!BRANCHNAME!'"
+ call :LOGDEBUG "BRANCHNUMBER = '!BRANCHNUMBER!'"
+ echo ; > %BRANCHINI%
+ echo BRANCHNAME,!BRANCHNAME! >> %BRANCHINI%
+ echo BRANCHNUMBER,!BRANCHNUMBER! >> %BRANCHINI%
+ echo off
+ call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+goto :eof
+
 rem ABBALibraryGITEnd
 
 
@@ -617,7 +690,7 @@ if exist !MYINI! (
 		call :LOG_DT "CONFIG = !MYINI! ..."
 		for /F "usebackq eol=; tokens=1,2 delims=, " %%a in (!MYINI!) do (
 			set %%a=%%b
-			call :LOG_DT "%%a = '%%b' ..."
+			call :LOGDEBUG "%%a = '%%b' ..."
 		)
 	) else (
 		call :LOGERROR "Config file !MYINI! no found ..."
