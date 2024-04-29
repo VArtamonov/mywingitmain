@@ -8,6 +8,14 @@ setlocal enabledelayedexpansion
 set file_log=%~dp0%~n0.log
 set file_name=%~n0
 
+if "%2"=="" (
+ set file_log=%~dp0%~n0.log
+ rem set file_name=%~n0
+) else (
+ set file_log=%~2
+ rem set file_name=%~n2
+)
+
 rem ---------------------------------------------------------------------------------------
 call :LOGLINE1
 call :LOGSTART "START '%~0'"
@@ -155,6 +163,10 @@ if "%~1" == "gitbranch" (
  goto :end
 )
 
+if "%~1" == "gitbranchnew" (
+ call :GITBRANCH new %3 %4 %5
+ goto :end
+)
 
 if "%~1" == "createhub" (
  call :GITHUBCREATE %2
@@ -418,8 +430,10 @@ rem ==========
  "%GITEXE%" add . --verbose
 
  call :GET_DT
- call :LOGDEBUG "CREATE TIMESTAMP '%DT%'"
- "%GITEXE%" commit -a -m "Auto commit '%dt%'" --verbose
+ rem call :LOGDEBUG "CREATE TIMESTAMP '%DT%'"
+ set COMMITTXT=Auto commit '%dt%'
+ call :LOGDEBUG "COMMITTXT '%COMMITTXT%'"
+ "%GITEXE%" commit -a -m "%COMMITTXT%" --verbose
 
  rem call :LOGDEBUG "GIT STATUS ..."
  rem "%GITEXE%" status --verbose
