@@ -148,6 +148,11 @@ if "%~1" == "remoteadd" (
  goto :end
 )
 
+if "%~1" == "remoteadd2" (
+ call :GITREMOTEADD !USERNAME! !REPONAME!
+ goto :end
+)
+
 if "%~1" == "gitinit" (
  call :GITINIT
  rem call :GITREMOTEADD %USERNAME% %REPONAME%
