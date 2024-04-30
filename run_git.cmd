@@ -178,6 +178,11 @@ if "%~1" == "createhub" (
  goto :end
 )
 
+if "%~1" == "createhub2" (
+ call :GITHUBCREATE %REPONAME%
+ goto :end
+)
+
 if "%~1" == "githubdelete" (
  if not "%~2"=="" (
   call :GITHUBDELETE %2
