@@ -143,8 +143,19 @@ if "%~1" == "autopush" (
  goto :end
 )
 
+if "%~1" == "autopush2" (
+ rem call :GITAUTOPUSH
+ "%GITEXE%" push --all origin --verbose
+ goto :end
+)
+
 if "%~1" == "remoteadd" (
  call :GITREMOTEADD %2 %3
+ goto :end
+)
+
+if "%~1" == "remoteadd2" (
+ call :GITREMOTEADD !USERNAME! !REPONAME!
  goto :end
 )
 
@@ -159,7 +170,7 @@ if "%~1" == "gitinit" (
 )
 
 if "%~1" == "gitbranch" (
- call :GITBRANCH %2 %3 %4 %5
+ call :GITBRANCH %3 %4 %5
  goto :end
 )
 
@@ -170,6 +181,11 @@ if "%~1" == "gitbranchnew" (
 
 if "%~1" == "createhub" (
  call :GITHUBCREATE %2
+ goto :end
+)
+
+if "%~1" == "createhub2" (
+ call :GITHUBCREATE %REPONAME%
  goto :end
 )
 
@@ -527,7 +543,20 @@ rem ==========
  call :LOGLINE2
  call :LOGINFO "Это команда для управления ветками в репозитории Git"
  call :LOGDEBUG "CALL %0 %1 %2 %3 %4 %5"
- set BRANCHINI=!file_name!.branch.ini
+ echo off
+
+ if "%1"=="new" (
+  if "%2"=="" (
+   set BRANCHINI=!file_name!.branch.ini
+  ) else (
+   set BRANCHINI=%~2
+  )
+ ) else (
+   set BRANCHINI=%~1
+ )
+echo off
+call :LOGDEBUG "ЧТЕНИЕ ФАЙЛА '%BRANCHINI%'"
+
  if exist %BRANCHINI% (
   call :LOGDEBUG "ЧТЕНИЕ ФАЙЛА '%BRANCHINI%'"
   for /f "usebackq eol=; tokens=1,2 delims=, " %%a in (%BRANCHINI%) do ( 
