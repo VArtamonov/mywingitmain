@@ -161,10 +161,9 @@ if "%~1" == "remoteadd2" (
 
 if "%~1" == "gitinit" (
  call :GITINIT
- rem call :GITREMOTEADD %USERNAME% %REPONAME%
  call :GITHUBCREATE %REPONAME%
  call :GITAUTOCOMMIT
- call :GITREMOTEADD
+ call :GITREMOTEADD %OWNER% %REPONAME%
 
  goto :end
 )
@@ -184,17 +183,28 @@ if "%~1" == "createhub" (
  goto :end
 )
 
+if "%~1" == "githubcreate" (
+ call :GITHUBCREATE %2
+ goto :end
+)
+
 if "%~1" == "createhub2" (
  call :GITHUBCREATE %REPONAME%
  goto :end
 )
 
+if "%~1" == "githubcreate2" (
+ call :GITHUBCREATE %REPONAME%
+ goto :end
+)
+
 if "%~1" == "githubdelete" (
- if not "%~2"=="" (
-  call :GITHUBDELETE %2
- ) else (
-  call :GITHUBDELETE %REPONAME%
- )
+ call :GITHUBDELETE %2
+ goto :end
+)
+
+if "%~1" == "githubdelete2" (
+ call :GITHUBDELETE %REPONAME%
  goto :end
 )
 
@@ -241,6 +251,7 @@ rem ==========
  call :LOGINFO " "
  call :LOGINFO " Š®¬ ­¤ë ¤«ï GitHub:"
  call :LOGINFO "    createhub           - á®§¤ ­¨¥ ã¤ «¥­­®£® à¥¯®§¨â à¨ï ­  GitHub, ¤«ï åà ­¥­¨ï á®§¤ ­­®£® "
+ call :LOGINFO "    githubcreate        - á®§¤ ­¨¥ ã¤ «¥­­®£® à¥¯®§¨â à¨ï ­  GitHub, ¤«ï åà ­¥­¨ï á®§¤ ­­®£® "
  call :LOGINFO "    githubdelete        - ã¤ «¥­¨¥ à¥¯®§¨â à¨ï ­  GitHub"
  call :LOGINFO " "
  call :LOGINFO "    info                - ˆ­ä®à¬ æ¨ï, ª®¬ ­¤  ¯® ã¬®«ç ­¨î "
@@ -289,6 +300,7 @@ for /f "usebackq eol= delims=" %%a in (`"%WGETEXE% --version"`) do (
  echo .
 
  echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 rem ---------------------------------------------------------------------------------------
@@ -296,13 +308,15 @@ rem ABBALibraryGITStart
 
 rem ==========
 :FINDGIT
-call :FINDFILE "git.exe" "GITEXE"
+ call :FINDFILE "git.exe" "GITEXE"
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 
 rem ==========
 :FINDGITHUBCLI
-call :FINDFILE "gh.exe" "GHEXE"
+ call :FINDFILE "gh.exe" "GHEXE"
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 
@@ -339,8 +353,8 @@ rem ==========
   rem call :LOGDEBUG "USERNAME = '%USERNAME%'"
   )
 
- call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
  echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 rem ==========
@@ -385,7 +399,8 @@ echo .
 "%GITEXE%" add .
 "%GITEXE%" commit -m "first commit"
 
-call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 rem ==========
@@ -402,13 +417,15 @@ rem ==========
  call :LOGDEBUG "GIT BRANCH LIST"
  git branch
 
- call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 rem ==========
 :GITREMOTEADD
  call :LOGLINE2
  call :LOGINFO "„Ž€‚‹…ˆ… “„€‹ð›• …Ž‡ˆ’Žˆ…‚ ..."
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
 
  if "%~1"=="" (
   call :LOGERROR "ARG1 = NULL"
@@ -431,8 +448,8 @@ rem ==========
  "%GITEXE%" remote add origin https://github.com/%~1/%~2.git
  git branch -a
 
- call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
  echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 
@@ -453,7 +470,9 @@ rem ==========
 
  rem call :LOGDEBUG "GIT STATUS ..."
  rem "%GITEXE%" status --verbose
- call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 rem ==========
@@ -483,6 +502,7 @@ rem ==========
  rem echo "!BRANCH!"
  if not "!BRANCH!"=="master" ( "%GITEXE%" push --set-upstream origin --verbose )
   echo off
+  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
   call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
  )
 
@@ -492,6 +512,8 @@ rem ==========
 :GITHUBCREATE
  call :LOGLINE2
  call :LOGINFO "CREATE REMOTE REPO ON GITHUB"
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
  rem "%GHEXE%" auth login --web
 
  if "%~1"=="" (
@@ -507,16 +529,18 @@ rem ==========
  rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
 
  echo .
- "%GHEXE%" repo create %1 --private --source=. --remote=origin --description "My Repo '%1'"
+ "%GHEXE%" repo create %OWNER%/%1 --private --source=. --remote=origin --description "My Repo '%1'"
 
  echo off
- call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 rem ==========
 :GITHUBDELETE
  call :LOGLINE2
  call :LOGINFO "DELETE REMOTE REPO ON GITHUB"
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
  rem "%GHEXE%" auth login --web
  rem gh auth refresh -h github.com -s delete_repo
 
@@ -527,15 +551,15 @@ rem ==========
   goto :FAILURE
  )
 
- echo .
  echo off
- "%GHEXE%" auth status
- rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
  echo .
-  "%GHEXE%" repo delete %1
+ "%GHEXE%" auth status
+
+ echo .
+ "%GHEXE%" repo delete %OWNER%/%1 --yes
 
  echo off
- call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 rem ==========
@@ -555,9 +579,9 @@ rem ==========
    set BRANCHINI=%~1
  )
 echo off
-call :LOGDEBUG "—’…ˆ… ”€‰‹€ '%BRANCHINI%'"
 
- if exist %BRANCHINI% (
+echo off
+ if exist "%BRANCHINI%" (
   call :LOGDEBUG "—’…ˆ… ”€‰‹€ '%BRANCHINI%'"
   for /f "usebackq eol=; tokens=1,2 delims=, " %%a in (%BRANCHINI%) do ( 
    rem echo %%a,%%b
@@ -574,9 +598,12 @@ call :LOGDEBUG "—’…ˆ… ”€‰‹€ '%BRANCHINI%'"
   echo BRANCHNAME,test >> %BRANCHINI%
   echo BRANCHNUMBER,0 >> %BRANCHINI%
   call :LOGDEBUG "Ž‚’Ž›‰ ‚›‡Ž‚ %0"
-  call :GITBRANCH
+  call :GITBRANCH %~1 %~2
+  echo off
+  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+  exit /b 0
  )
-
+echo off
  call :LOGDEBUG "BRANCHNAME   = '!BRANCHNAME!'"
  call :LOGDEBUG "BRANCHNUMBER = '!BRANCHNUMBER!'"
 
@@ -595,10 +622,9 @@ call :LOGDEBUG "—’…ˆ… ”€‰‹€ '%BRANCHINI%'"
   echo .
  )
 
-
 :GITBRANCH1
  echo off
- call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 :GITBRANCHSAVE
@@ -608,8 +634,9 @@ goto :eof
  echo ; > %BRANCHINI%
  echo BRANCHNAME,!BRANCHNAME! >> %BRANCHINI%
  echo BRANCHNUMBER,!BRANCHNUMBER! >> %BRANCHINI%
+
  echo off
- call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 rem ABBALibraryGITEnd
@@ -619,7 +646,9 @@ rem ----------------------------------------------------------------------------
 rem ABBALibraryCmdWgetStart
 rem find wget
 :FINDWGET
-call :FINDFILE "wget.exe" "WGETEXE"
+ call :FINDFILE "wget.exe" "WGETEXE"
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 rem ==========
@@ -627,17 +656,19 @@ rem %1 URL
 rem %2 FILEOUT
 rem %3 DIROUT
 :WGETLOAD
-rem call :LOGDEBUG "WGET LOAD '%~1' to '%~2' ..."
-call :GET_DT1
-rem echo %file_name_dt%
-set new_file_name=%~n2_%file_name_dt%%~x2
-rem %wgetexe% --verbose --show-progress "https://downloads.rclone.org/version.txt" --append-output="%file_log%" --output-document="%rclonecurrent_version%"
-rem %wgetexe% --verbose --show-progress --hsts-file=wget-hsts.txt --save-cookies=wget-cookies.txt --load-cookies=wget-cookies.txt --keep-session-cookies "%git_path%" --output-document="%DIRPREFIX%\%new_file_name%" --append-output="%file_log%"
+ rem call :LOGDEBUG "WGET LOAD '%~1' to '%~2' ..."
+ call :GET_DT1
+ rem echo %file_name_dt%
+ set new_file_name=%~n2_%file_name_dt%%~x2
+ rem %wgetexe% --verbose --show-progress "https://downloads.rclone.org/version.txt" --append-output="%file_log%" --output-document="%rclonecurrent_version%"
+ rem %wgetexe% --verbose --show-progress --hsts-file=wget-hsts.txt --save-cookies=wget-cookies.txt --load-cookies=wget-cookies.txt --keep-session-cookies "%git_path%" --output-document="%DIRPREFIX%\%new_file_name%" --append-output="%file_log%"
 
-set new_full_file_name=%~dp2%new_file_name%
-call :LOGDEBUG "WGET LOAD '%~1' to"
-call :LOGDEBUG "'%new_full_file_name%'"
-%wgetexe% --verbose --show-progress --hsts-file=wget-hsts.txt --save-cookies=wget-cookies.txt --load-cookies=wget-cookies.txt --keep-session-cookies "%~1" --append-output="%file_log%" --output-document="%new_full_file_name%"
+ set new_full_file_name=%~dp2%new_file_name%
+ call :LOGDEBUG "WGET LOAD '%~1' to"
+ call :LOGDEBUG "'%new_full_file_name%'"
+ %wgetexe% --verbose --show-progress --hsts-file=wget-hsts.txt --save-cookies=wget-cookies.txt --load-cookies=wget-cookies.txt --keep-session-cookies "%~1" --append-output="%file_log%" --output-document="%new_full_file_name%"
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 
 goto :eof
 rem ABBALibraryCmdWgetEnd
@@ -645,7 +676,9 @@ rem ABBALibraryCmdWgetEnd
 rem ---------------------------------------------------------------------------------------
 rem ABBALibraryCmdCloneStart
 :FINDRCLONE
-call :FINDFILE "rclone.exe" "RCLONEEXE" "D:\0_RCLONE" "Z:\0_RCLONE"
+ call :FINDFILE "rclone.exe" "RCLONEEXE" "D:\0_RCLONE" "Z:\0_RCLONE"
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 rem ABBALibraryCmdCloneEnd
 
@@ -655,7 +688,9 @@ rem %1
 rem %2 FILEOUT
 :FINDZIP
 rem call :FINDFILE "%SystemDrive%" "7z.exe" "ZIPEXE"
-call :FINDFILE "7z.exe" "ZIPEXE" "C:\Program Files\7-Zip"
+ call :FINDFILE "7z.exe" "ZIPEXE" "C:\Program Files\7-Zip"
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 rem ABBALibraryCmdZipEnd
 
@@ -720,7 +755,8 @@ call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
 call :LOG "FOUND %~2 = '!%~2!'"
 
 :FINDFILE2
-echo off
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 rem ABBALibraryFindZipEnd
 
@@ -742,7 +778,8 @@ if exist !MYINI! (
 	)
 
 :READINIFILE2
-
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
 rem ABBALibraryCmdDirStart
