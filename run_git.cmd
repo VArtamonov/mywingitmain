@@ -805,7 +805,7 @@ rem ABBALibraryFindZipEnd
 rem ========== Read SET from ini file ==========
 :READINIFILE
 rem Read config file
-call :LOGINFO "Read config file ..."
+call :LOGINFO "‡€ƒ“‡Š€ Š”ˆƒ€ ..."
 set MYINI=%~1.ini
 if exist !MYINI! (
 		call :LOG "CONFIG = !MYINI! ..."
@@ -827,7 +827,7 @@ goto :eof
 rem ========== Read SET from ini file ==========
 :READINIFILE2
 rem Read config file
-call :LOGINFO "Read config file ..."
+call :LOGINFO "‡€ƒ“‡Š€ Š”ˆƒ€ ..."
 set MYINI2=%~1
 if exist !MYINI2! (
 		call :LOG "CONFIG = !MYINI2! ..."
