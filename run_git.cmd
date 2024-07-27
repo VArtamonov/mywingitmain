@@ -326,6 +326,11 @@ for /f "usebackq eol= delims=" %%a in (`"%WGETEXE% --version"`) do (
  "%GHEXE%" --version
  echo .
 
+ call :LOGDEBUG "Ž’Ž€‡ˆ’œ €Š’ˆ‚“ž “—…’“ž ‡€ˆ‘œ ˆ ‘Ž‘’ŽŸˆ… €“’…’ˆ”ˆŠ€–ˆˆ € •Ž‘’ˆƒ… GitHub."
+ echo .
+ "%GHEXE%" auth status
+ echo .
+
  call :LOGDEBUG "GIT €„…‘€ „‹Ÿ —’…ˆŸ ˆ ‡€ˆ‘ˆ, ˆ‚Ÿ‡€›… Š …Ž‡ˆ’Žˆž:"
  echo .
  "%GITEXE%" remote -v
