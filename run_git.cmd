@@ -245,6 +245,12 @@ if "%~1" == "githubdelete2" (
  goto :end
 )
 
+if "%~1" == "checkout" (
+ call :GITCHECKOUT %3 %4 %5
+ goto :end
+)
+
+
 call :LOGERROR "НЕИЗВЕСТНАЯ КОМАНДА '%~1'"
 goto :FAILURE
 
@@ -612,13 +618,22 @@ rem ==========
  echo off
 
  if "%1"=="new" (
+
   if "%2"=="" (
-   set BRANCHINI=!file_name!.branch.ini
+   set BRANCHINI=.mygitbranchini
   ) else (
    set BRANCHINI=%~2
   )
+
  ) else (
+
+  if "%1"=="" (
+   set BRANCHINI=.mygitbranchini
+  ) else (
    set BRANCHINI=%~1
+  )
+
+ rem set BRANCHINI=%~1
  )
 echo off
 
@@ -645,7 +660,8 @@ echo off
   if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
   exit /b 0
  )
-echo off
+
+ echo off
  call :LOGDEBUG "BRANCHNAME   = '!BRANCHNAME!'"
  call :LOGDEBUG "BRANCHNUMBER = '!BRANCHNUMBER!'"
 
@@ -656,14 +672,16 @@ echo off
 
   call :LOGINFO "СОЗДАТЬ НОВУЮ ВЕТКУ '!BRANCHNAME!!BRANCHNUMBER!' И ПЕРЕКЛЮЧИТЬСЯ НА НЕЁ"
   "%GITEXE%" checkout -b !BRANCHNAME!!BRANCHNUMBER!
-
- ) else (
-  call :LOGDEBUG "Просмотреть список всех веток в текущем репозитории:"
-  echo .
-  "%GITEXE%" branch
-  echo .
+  goto :GITBRANCH1
  )
 
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
+ call :LOGDEBUG "Просмотреть список всех веток в текущем репозитории:"
+ echo .
+ "%GITEXE%" branch
+ echo .
+ 
 :GITBRANCH1
  echo off
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
@@ -680,6 +698,23 @@ goto :eof
  echo off
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
+
+:GITCHECKOUT
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+ 
+ if "%~1"=="" (
+  call :LOGERROR "ARG1 = NULL"
+  call :LOGDEBUG "call %0 [наименование ветки]"
+  set errorlevel=1
+  goto :FAILURE
+ )
+
+ "%GITEXE%" checkout %1
+
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+goto :eof
+
 
 rem ABBALibraryGITEnd
 
