@@ -52,32 +52,69 @@ call :LOGINFO "RCLONEEXE = '%RCLONEEXE%'"
 call :LOGINFO "GITEXE = '%GITEXE%'"
 call :LOGINFO "GHEXE = '%GHEXE%'"
 
+
+set mygitini=.mygitini
+
+if "%~1" == "createini2" goto CREATEFILEINI
+if "%~1" == "createini" goto CREATEFILEINI
+goto GOREADINIFILE
+
+:CREATEFILEINI
+call :LOGLINE2
 if "%~1" == "createini" (
- call :LOGDEBUG "‘Ž‡„€ˆ… ”€‰‹ '!file_name!.ini'"
- call :GITGETCONFIG
- call :LOGDEBUG "‚‚…„ˆ’… €‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
- set /p REPONAME=
- call :LOGDEBUG "REPONAME = !REPONAME!"
- call :LOGDEBUG "‡€ˆ‘œ ‚ ”€‰‹ '!file_name!.ini'"
- echo ; > !file_name!.ini
- echo ; >> !file_name!.ini
- echo USERNAME,!USERNAME! >> !file_name!.ini
- echo USEREMAIL,!USEREMAIL! >> !file_name!.ini
- echo REPONAME,!REPONAME! >> !file_name!.ini
- goto :end
+ set file_name_ini=%mygitini%
+)
+
+if "%~1" == "createini2" (
+ set file_name_ini=!file_name!.ini
+)
+
+call :LOGDEBUG "‘Ž‡„€ˆ… ”€‰‹ '%file_name_ini%'"
+call :GITGETCONFIG
+call :LOGDEBUG "‚‚…„ˆ’… €‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
+set /p REPONAME=
+call :LOGDEBUG "REPONAME = !REPONAME!"
+call :LOGDEBUG "‡€ˆ‘œ ‚ ”€‰‹ '%file_name_ini%'"
+
+echo ; > %file_name_ini%
+echo ; >> %file_name_ini%
+echo USERNAME,!USERNAME! >> %file_name_ini%
+echo USEREMAIL,!USEREMAIL! >> %file_name_ini%
+echo REPONAME,!REPONAME! >> %file_name_ini%
+echo BRANCHNAME,test  >> %file_name_ini%
+echo BRANCHNUMBER,1  >> %file_name_ini%
+
+goto :end
+
+:GOREADINIFILE
+call :LOGLINE2
+call :LOGDEBUG "Ž‚…Š€ '%mygitini%'"
+if exist %mygitini% (
+ call :LOGDEBUG "‡€ƒ“‡Š€ ŠŽ”ˆƒ€ ˆ‡ '%mygitini%'"
+ call :READINIFILE2 %mygitini%
+ if "%ERRORLEVEL%"=="0" (
+  goto READINIFILEOK
+ )
+) 
+
+call :LOGDEBUG "Ž‚…Š€ '!file_name!.ini'"
+if exist !file_name!.ini (
+ call :LOGDEBUG "‡€ƒ“‡Š€ ŠŽ”ˆƒ€ ˆ‡ '!file_name!.ini'"
+ call :READINIFILE !file_name!
+ if "%ERRORLEVEL%"=="0" (
+  goto READINIFILEOK
+ )
 )
 
 call :LOGLINE2
-call :READINIFILE !file_name!
-if "%ERRORLEVEL%"=="1" (
- rem call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
- call :LOGDEBUG "…Ž•Ž„ˆŒŽ ‘Ž‡„€’œ ”€‰‹ '!file_name!.ini'"
- call :LOGDEBUG "ˆ‡ ŠŽ”ˆƒ“€–ˆˆ GIT GLOBAL"
- call :GITGETCONFIG
- call :LOGDEBUG "ˆ‘Ž‹œ‡“‰’… ŠŽŒ€„“ createini"
- goto :FAILURE
-)
+rem call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
+call :LOGDEBUG "…Ž•Ž„ˆŒŽ ‘Ž‡„€’œ ”€‰‹ '!file_name!.ini'"
+call :LOGDEBUG "ˆ‡ ŠŽ”ˆƒ“€–ˆˆ GIT GLOBAL"
+call :GITGETCONFIG
+call :LOGDEBUG "ˆ‘Ž‹œ‡“‰’… ŠŽŒ€„“ createini"
+goto :FAILURE
 
+:READINIFILEOK
 call :LOGLINE2
 call :LOGINFO "RUN ..."
 call :LOGINFO "ˆŒŸ Ž‹œ‡Ž‚€’…‹Ÿ: '%USERNAME%'"
@@ -766,7 +803,7 @@ rem Read config file
 call :LOGINFO "Read config file ..."
 set MYINI=%~1.ini
 if exist !MYINI! (
-		call :LOG_DT "CONFIG = !MYINI! ..."
+		call :LOG "CONFIG = !MYINI! ..."
 		for /F "usebackq eol=; tokens=1,2 delims=, " %%a in (!MYINI!) do (
 			set %%a=%%b
 			call :LOGDEBUG "%%a = '%%b' ..."
@@ -774,10 +811,32 @@ if exist !MYINI! (
 	) else (
 		call :LOGERROR "Config file !MYINI! no found ..."
 		set errorlevel=1
-		goto :READINIFILE2
+		goto :READINIFILE12
 	)
 
+:READINIFILE12
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+goto :eof
+
+rem ========== Read SET from ini file ==========
 :READINIFILE2
+rem Read config file
+call :LOGINFO "Read config file ..."
+set MYINI2=%~1
+if exist !MYINI2! (
+		call :LOG "CONFIG = !MYINI2! ..."
+		for /F "usebackq eol=# tokens=1,2 delims=, " %%a in (!MYINI2!) do (
+			set %%a=%%b
+			call :LOGDEBUG "%%a = '%%b' ..."
+		)
+	) else (
+		call :LOGERROR "Config file !MYINI2! no found ..."
+		set errorlevel=1
+		goto :READINIFILE21
+	)
+
+:READINIFILE21
  echo off
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
