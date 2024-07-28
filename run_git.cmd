@@ -1,23 +1,10 @@
 @echo off
 chcp 866 >nul
-
 setlocal
 setlocal enableextensions
 setlocal enabledelayedexpansion
 
-rem Ž„ˆ’…‹œ‘Š€Ÿ €Š€
-for %%i in ("%~dp0.") do set "PARENTFOLDER=%%~ni"
-echo %PARENTFOLDER%
-
-if "%~1" == "install" (
- call :CMDINSTALL %0
- echo .
- echo off
- exit 0
- goto :eof
-)
-
-echo off
+set DEBUG=1
 
 set file_log=%~dp0%~n0.log
 set file_name=%~n0
@@ -35,8 +22,17 @@ call :LOGLINE1
 call :LOGSTART "START '%~0'"
 call :LOGINFO "LOG FILE - '%file_log%'"
 call :LOGINFO "’…Š“™…‰ Š€’€‹Žƒ: '%CD%'"
-call :LOGINFO "‚…•ˆ‰ Š€’€‹Žƒ: '%PARENTFOLDER%'"
 call :LOGINFO "‘‹“—€‰Ž… „…‘Ÿ’ˆ—Ž… —ˆ‘‹Ž: %RANDOM%"
+
+if "%~1" == "install" (
+ call :CMDINSTALL %0
+ echo .
+ echo off
+ rem exit 0
+ rem goto :eof
+ goto :end
+)
+
 call :LOGLINE2
 call :LOGINFO  "TEST INFO  ..."
 call :LOGERROR "TEST ERROR ..."
@@ -49,8 +45,55 @@ CALL :CHANGEDIR "%ROOTDIR%"
 
 if "%~1" == "help" (
  call :help %~n0
- goto :end
+ goto end
 )
+
+call :LOGLINE2
+
+rem set mygitini=.mygitini
+rem if "%~1" == "createini2" goto CREATEFILEINI
+rem if "%~1" == "createini" goto CREATEFILEINI
+rem call :GETGITHUBOWNER
+rem if not defined OWNER (
+rem  call :LOGLINE2
+rem  call :GITREADINIFILE
+rem  rem call :CREATEGITHUBOWNER
+rem  rem set OWNER=!GITUSERNAME!
+rem  rem call :LOGWARNING "OWNER     = !OWNER!"
+rem  goto :FAILURE
+rem )
+rem call :GITGETCONFIG
+rem call :GITREADINIFILE
+rem goto GORUN
+rem :CREATEFILEINI
+rem call :LOGLINE2
+rem if "%~1" == "createini" (
+rem  set file_name_ini=%mygitini%
+rem )
+rem if "%~1" == "createini2" (
+rem  set file_name_ini=!file_name!.ini
+rem )
+rem call :LOG "‘Ž‡„€ˆ… ”€‰‹ '%file_name_ini%'"
+rem call :GITGETCONFIG
+rem call :LOGDEBUG "‚‚…„ˆ’… €‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
+rem set /p REPONAME=
+rem set REPONAME=!PARENTFOLDER!
+call :LOG "€‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
+call :LOG "REPONAME = !REPONAME!"
+call :LOG "‡€ˆ‘œ ‚ ”€‰‹ '%file_name_ini%'"
+rem echo ; > %file_name_ini%
+rem echo ; >> %file_name_ini%
+rem remecho GITUSERNAME,!GITUSERNAME! >> %file_name_ini%
+rem echo GITUSEREMAIL,!GITUSEREMAIL! >> %file_name_ini%
+rem echo REPONAME,!REPONAME! >> %file_name_ini%
+rem !!!
+rem echo OWNER,!GITUSERNAME! >> %file_name_ini%
+rem echo BRANCHNAME,test  >> %file_name_ini%
+rem echo BRANCHNUMBER,1  >> %file_name_ini%
+rem !!!
+rem call :GITREADINIFILE
+rem goto end
+rem :GORUN
 
 call :LOGLINE2
 call :LOGINFO "Žˆ‘Š “’ˆ‹ˆ’"
@@ -64,78 +107,16 @@ call :LOGLINE2
 call :LOGINFO "ZIPEXE    = '%ZIPEXE%'"
 call :LOGINFO "WGETEXE   = '%WGETEXE%'"
 call :LOGINFO "RCLONEEXE = '%RCLONEEXE%'"
-call :LOGINFO "GITEXE = '%GITEXE%'"
-call :LOGINFO "GHEXE = '%GHEXE%'"
+call :LOGINFO "GITEXE    = '%GITEXE%'"
+call :LOGINFO "GHEXE     = '%GHEXE%'"
 
-set mygitini=.mygitini
+echo off
+rem call :GITREADINIFILE
+echo off
 
-if "%~1" == "createini2" goto CREATEFILEINI
-if "%~1" == "createini" goto CREATEFILEINI
-goto GOREADINIFILE
-
-:CREATEFILEINI
-call :LOGLINE2
-if "%~1" == "createini" (
- set file_name_ini=%mygitini%
-)
-
-if "%~1" == "createini2" (
- set file_name_ini=!file_name!.ini
-)
-
-call :LOGDEBUG "‘Ž‡„€ˆ… ”€‰‹ '%file_name_ini%'"
-call :GITGETCONFIG
-
-rem call :LOGDEBUG "‚‚…„ˆ’… €‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
-rem set /p REPONAME=
-
-set REPONAME=%PARENTFOLDER%
-call :LOGDEBUG "€‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
-call :LOGDEBUG "REPONAME = !REPONAME!"
-call :LOGDEBUG "‡€ˆ‘œ ‚ ”€‰‹ '%file_name_ini%'"
-
-echo ; > %file_name_ini%
-echo ; >> %file_name_ini%
-echo USERNAME,!USERNAME! >> %file_name_ini%
-echo USEREMAIL,!USEREMAIL! >> %file_name_ini%
-echo REPONAME,!REPONAME! >> %file_name_ini%
-echo BRANCHNAME,test  >> %file_name_ini%
-echo BRANCHNUMBER,1  >> %file_name_ini%
-
-goto :end
-
-:GOREADINIFILE
-call :LOGLINE2
-call :LOGDEBUG "Ž‚…Š€ '%mygitini%'"
-if exist %mygitini% (
- call :LOGDEBUG "‡€ƒ“‡Š€ ŠŽ”ˆƒ€ ˆ‡ '%mygitini%'"
- call :READINIFILE2 %mygitini%
- if "%ERRORLEVEL%"=="0" (
-  goto READINIFILEOK
- )
-) 
-
-call :LOGDEBUG "Ž‚…Š€ '!file_name!.ini'"
-if exist !file_name!.ini (
- call :LOGDEBUG "‡€ƒ“‡Š€ ŠŽ”ˆƒ€ ˆ‡ '!file_name!.ini'"
- call :READINIFILE !file_name!
- if "%ERRORLEVEL%"=="0" (
-  goto READINIFILEOK
- )
-)
-
-call :LOGLINE2
-rem call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
-call :LOGDEBUG "…Ž•Ž„ˆŒŽ ‘Ž‡„€’œ ”€‰‹ '!file_name!.ini'"
-call :LOGDEBUG "ˆ‡ ŠŽ”ˆƒ“€–ˆˆ GIT GLOBAL"
-call :GITGETCONFIG
-call :LOGDEBUG "ˆ‘Ž‹œ‡“‰’… ŠŽŒ€„“ createini"
-goto :FAILURE
-
-:READINIFILEOK
 call :LOGLINE2
 call :LOGINFO "RUN ..."
-call :LOGINFO "ˆŒŸ Ž‹œ‡Ž‚€’…‹Ÿ: '%USERNAME%'"
+rem call :LOGINFO "ˆŒŸ Ž‹œ‡Ž‚€’…‹Ÿ: '%GITUSERNAME%'"
 
 rem for %%i in ("git.exe") do set FILE1=%%~$PATH:i
 rem call :LOGINFO "FILE1 = '%FILE1%'"
@@ -163,13 +144,67 @@ rem echo off
 
 if "%~1" == "" (
  call :info
- goto :end
+ goto end
 )
 
 if "%~1" == "info" (
  call :info
- goto :end
+ goto end
 )
+
+if "%~1" == "test" ( 
+ goto end
+)
+
+rem --------------------------------------------------------------------------------------------------------------
+rem ’Ž “†Ž
+
+if "%~1" == "gitinit" (
+ call :GETPARENTFOLDER
+ call :LOGINFO "‚…•ˆ‰ Š€’€‹Žƒ: '%PARENTFOLDER%'"
+ call :GITINIT
+ set OWNER=
+ call :GETGITHUBOWNER 
+ call :LOGINFO "REPONAME: '!REPONAME!'"
+ call :LOGINFO "OWNER:    '!OWNER!'"
+ call :GITHUBCREATE !REPONAME!
+ call :GITAUTOCOMMIT
+ call :GITREMOTEADD !OWNER! !REPONAME!
+ goto end
+)
+
+if "%~1" == "autocommit" (
+ call :GITAUTOCOMMIT
+ goto end
+)
+
+if "%~1" == "autopush" (
+ call :GITAUTOPUSH
+ goto end
+)
+
+if "%~1" == "checkout" (
+ call :GITCHECKOUT %3 %4 %5
+ goto end
+)
+
+if "%~1" == "githubdelete" (
+ call :GITHUBDELETE %2
+ goto end
+)
+
+if "%~1" == "gitbranch" (
+ call :GITBRANCH %3 %4 %5
+ goto end
+)
+
+if "%~1" == "gitbranchnew" (
+ call :GITBRANCH new %3 %4 %5
+ goto end
+)
+
+rem --------------------------------------------------------------------------------------------------------------
+rem ’Ž ŽŠ€ … “†Ž
 
 if "%~1" == "create" (
  if not "%~2" == "" (
@@ -177,101 +212,60 @@ if "%~1" == "create" (
  ) else (
   call :LOGERROR "ERROR ..."	
   echo Please run '%~nx0 init ^<gitname^>'
-  goto :FAILURE
+  goto FAILURE
  )
- goto :end
+ goto end
 )
 
 if "%~1" == "createmaster" (
  call :GITCREATE master
  call :GITREMOTEADD
- goto :end
-)
-
-if "%~1" == "autocommit" (
- call :GITAUTOCOMMIT
- goto :end
-)
-
-if "%~1" == "autopush" (
- call :GITAUTOPUSH
- goto :end
+ goto end
 )
 
 if "%~1" == "autopush2" (
  rem call :GITAUTOPUSH
  "%GITEXE%" push --all origin --verbose
- goto :end
+ goto end
 )
 
 if "%~1" == "remoteadd" (
  call :GITREMOTEADD %2 %3
- goto :end
+ goto end
 )
 
 if "%~1" == "remoteadd2" (
- call :GITREMOTEADD !USERNAME! !REPONAME!
- goto :end
-)
-
-if "%~1" == "gitinit" (
- call :GITINIT
- call :GITHUBCREATE %REPONAME%
- call :GITAUTOCOMMIT
- call :GITREMOTEADD %OWNER% %REPONAME%
-
- goto :end
-)
-
-if "%~1" == "gitbranch" (
- call :GITBRANCH %3 %4 %5
- goto :end
-)
-
-if "%~1" == "gitbranchnew" (
- call :GITBRANCH new %3 %4 %5
- goto :end
+ call :GITREMOTEADD !GITUSERNAME! !REPONAME!
+ goto end
 )
 
 if "%~1" == "createhub" (
  call :GITHUBCREATE %2
- goto :end
+ goto end
 )
 
 if "%~1" == "githubcreate" (
  call :GITHUBCREATE %2
- goto :end
+ goto end
 )
 
 if "%~1" == "createhub2" (
  call :GITHUBCREATE %REPONAME%
- goto :end
+ goto end
 )
 
 if "%~1" == "githubcreate2" (
  call :GITHUBCREATE %REPONAME%
- goto :end
-)
-
-if "%~1" == "githubdelete" (
- call :GITHUBDELETE %2
- goto :end
+ goto end
 )
 
 if "%~1" == "githubdelete2" (
  call :GITHUBDELETE %REPONAME%
- goto :end
+ goto end
 )
-
-if "%~1" == "checkout" (
- call :GITCHECKOUT %3 %4 %5
- goto :end
-)
-
 
 call :LOGERROR "…ˆ‡‚…‘’€Ÿ ŠŽŒ€„€ '%~1'"
-goto :FAILURE
-
+goto FAILURE
 
 rem ABBAProgrammMainEnd1
 :END
@@ -291,6 +285,10 @@ call :LOGLINE0
 exit 1
 goto :eof
 rem ABBAProgrammEnd
+
+:END2
+exit 0
+goto :eof
 
 rem ==========
 :help
@@ -373,6 +371,44 @@ rem ----------------------------------------------------------------------------
 rem ABBALibraryGITStart
 
 rem ==========
+:GITREADINIFILE
+call :LOGLINE2
+
+call :LOGDEBUG "Ž‚…Š€ '%mygitini%'"
+if exist %mygitini% (
+ call :LOG "‡€ƒ“‡Š€ ŠŽ”ˆƒ€ ˆ‡ '%mygitini%'"
+ call :READINIFILE2 %mygitini%
+ if "%ERRORLEVEL%"=="0" (
+  goto GITREADINIFILEOK
+ )
+) 
+
+call :LOG "Ž‚…Š€ '!file_name!.ini'"
+if exist !file_name!.ini (
+ call :LOG "‡€ƒ“‡Š€ ŠŽ”ˆƒ€ ˆ‡ '!file_name!.ini'"
+ call :READINIFILE !file_name!
+ if "%ERRORLEVEL%"=="0" (
+  goto GITREADINIFILEOK
+ )
+)
+
+call :LOGLINE2
+rem call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
+call :LOGDEBUG "…Ž•Ž„ˆŒŽ ‘Ž‡„€’œ ”€‰‹ '!file_name!.ini'"
+
+call :GITGETCONFIG
+call :LOGDEBUG "ˆ‘Ž‹œ‡“‰’… ŠŽŒ€„“ createini"
+
+goto FAILURE
+
+:GITREADINIFILEOK
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+goto :eof
+rem ==========
+
+
+rem ==========
 :FINDGIT
  call :FINDFILE "git.exe" "GITEXE"
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
@@ -390,13 +426,94 @@ rem - GIT Command
 
 rem ==========
 :GITGETCONFIG
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
+ rem git config --get user.email
+ for /f "tokens=1* delims==" %%a in ('"git config --get user.email"') do (set GITUSEREMAIL=%%a)
+ rem git config --get user.name
+ for /f "tokens=1* delims==" %%a in ('"git config --get user.name"') do (set GITUSERNAME=%%a)
+
+ call :LOGDEBUG "GITUSERNAME = '%GITUSERNAME%'"
+ call :LOGDEBUG "GITUSEREMAIL = '%GITUSEREMAIL%'"
+
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+goto :eof
+
+rem ==========
+:GETGITHUBOWNER
+ call :LOGDEBUG "CALL '%0'"
+ rem call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+ rem git config --get github.name
+ rem git config --file ..\.gitconfig-work --get github.name
+
+ for /f "tokens=1* delims==" %%a in ('"git config --get github.name"') do (set OWNER=%%a)
+ if not defined OWNER (
+  for /f "tokens=1* delims==" %%a in ('"git config --get user.name"') do (set OWNER=%%a)
+ )
+
+ if not defined OWNER goto :FAILURE
+ call :LOGINFO  "GITHUB OWNER = '%OWNER%'"
+
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+goto :eof
+
+rem ==========
+:CREATEGITHUBOWNER
+ call :LOGDEBUG "CALL '%0'"
+ rem call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+ if "%OWNER%" == "" ( 
+  call :LOGWARNING "----------------------------------------------------------------------------------------------------"
+  call :LOGWARNING " …Ž•Ž„ˆŒŽ “‘’€Ž‚ˆ’œ ‚„€„…‹œ–€ …Ž‡ˆ’€ˆŸ „‹Ÿ GitHub ……„ ‡€“‘ŠŽŒ 'GIT INIT'"
+  call :LOGWARNING " ŠŽŒ€„Ž‰ 'git config github.name "‚„€„…‹œ–"' "
+  call :LOGWARNING "----------------------------------------------------------------------------------------------------" 
+
+  set mygitini=%~dp0%.mygitini
+  call :GITREADINIFILE
+  call :LOG "‚›Ž ‚‹€„…‹–€:"
+  set cint=1
+  for /f "tokens=1* delims==" %%a in ('"set OWNER"') do (
+   set %%a=%%b
+   echo . !cint!.	'%%b'
+   set /a cint=!cint!+1
+  )
+
+  echo.
+  Set /p choice="‚ è ¢ë¡®à: "
+  if not defined choice goto :FAILURE
+  echo !choice!
+  if "!choice!"=="1" (set OWNESELECT=!OWNER1!)
+  if "!choice!"=="2" (set OWNERSELECT=!OWNER2!)
+  if "!choice!"=="3" (set OWNERSELECT=!OWNER3!)
+  if "!choice!"=="4" (set OWNERSELECT=!OWNER4!)
+
+  if defined OWNERSELECT (
+  call :LOG "OWNERSELECT = !OWNERSELECT!"
+   echo .
+   git config --global github.name "!OWNERSELECT!"
+   goto :end
+  )                         
+
+  call :LOGWARNING "----------------------------------------------------------------------------------------------------" 
+  goto :FAILURE
+ )
+
+ call :LOGINFO  "GITHUB OWNER = '%OWNER%'"
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+goto :eof
+
+
+rem ==========
+:GITGETCONFIGGLOBAL
  call :LOGDEBUG "GIT GLOBAL CONFIG: Username Email"
  rem  for /f "tokens=1" %%a in ('"git config --local --get user.name"') do ( 
- rem   echo UserName=%%a
- rem   set USERNAME=%%a
- rem   call :LOGDEBUG "USERNAME = '%USERNAME%'"
- rem   call :LOGDEBUG "USERNAME = '!USERNAME!'"
- rem   call :LOGDEBUG "USERNAME = '%USERNAME%'"
+ rem   echo GITUSERNAME=%%a
+ rem   set GITUSERNAME=%%a
+ rem   call :LOGDEBUG "GITUSERNAME = '%GITUSERNAME%'"
+ rem   call :LOGDEBUG "GITUSERNAME = '!GITUSERNAME!'"
+ rem   call :LOGDEBUG "GITUSERNAME = '%GITUSERNAME%'"
  rem   )
  rem  git config --local --get user.email
  rem  echo .
@@ -405,18 +522,18 @@ rem ==========
   rem echo '%%a = %%b'
   if "%%a" == "user.name" (
    rem echo '%%a = %%b'
-   set USERNAME=%%b
-   call :LOGDEBUG "USERNAME = '!USERNAME!'"
+   set GITUSERNAME=%%b
+   call :LOGDEBUG "GITUSERNAME = '!GITUSERNAME!'"
   ) else if "%%a" == "user.email" (
    rem  echo '%%a = %%b'
-   set USEREMAIL=%%b
-   call :LOGDEBUG "USEREMAIL = '!USEREMAIL!'"
+   set GITUSEREMAIL=%%b
+   call :LOGDEBUG "GITUSEREMAIL = '!GITUSEREMAIL!'"
   )
 
-  rem set USERNAME=%%a
-  rem call :LOGDEBUG "USERNAME = '%USERNAME%'"
-  rem call :LOGDEBUG "USERNAME = '!USERNAME!'"
-  rem call :LOGDEBUG "USERNAME = '%USERNAME%'"
+  rem set GITUSERNAME=%%a
+  rem call :LOGDEBUG "GITUSERNAME = '%GITUSERNAME%'"
+  rem call :LOGDEBUG "GITUSERNAME = '!GITUSERNAME!'"
+  rem call :LOGDEBUG "GITUSERNAME = '%GITUSERNAME%'"
   )
 
  echo off
@@ -457,7 +574,7 @@ if "%~1" == "master" (
 
 call :CHANGEDIR %RDIR%
 
-rem "%GITEXE%" remote add origin https://github.com/!USERNAME!/mywingit%~1.git
+rem "%GITEXE%" remote add origin https://github.com/!GITUSERNAME!/mywingit%~1.git
 rem "%GITEXE%" branch master
 rem "%GITEXE%" checkout master
 
@@ -495,16 +612,16 @@ rem ==========
 
  if "%~1"=="" (
   call :LOGERROR "ARG1 = NULL"
-  call :LOGDEBUG "call :GITREMOTEADD UserName RepoName"
+  call :LOGDEBUG "call :GITREMOTEADD GITUSERNAME RepoName"
   set errorlevel=1
-  goto :FAILURE
+  goto FAILURE
  )
 
  if "%~2"=="" (
   call :LOGERROR "ARG2 = NULL"
-  call :LOGDEBUG "call :GITREMOTEADD UserName RepoName"
+  call :LOGDEBUG "call :GITREMOTEADD GITUSERNAME RepoName"
   set errorlevel=1
-  goto :FAILURE
+  goto FAILURE
  )
 
  echo .
@@ -517,7 +634,6 @@ rem ==========
  echo off
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
-
 
 rem ==========
 :GITAUTOCOMMIT
@@ -586,7 +702,7 @@ rem ==========
   call :LOGERROR "ARG1 = NULL"
   call :LOGDEBUG "call :GITHUBCREATE RepoName"
   set errorlevel=1
-  goto :FAILURE
+  goto FAILURE
  )
 
  echo .
@@ -614,7 +730,7 @@ rem ==========
   call :LOGERROR "ARG1 = NULL"
   call :LOGDEBUG "call :GITHUBDELETE RepoName"
   set errorlevel=1
-  goto :FAILURE
+  goto FAILURE
  )
 
  echo off
@@ -690,7 +806,7 @@ echo off
 
   call :LOGINFO "‘Ž‡„€’œ Ž‚“ž ‚…’Š“ '!BRANCHNAME!!BRANCHNUMBER!' ˆ ……Š‹ž—ˆ’œ‘Ÿ € …ð"
   "%GITEXE%" checkout -b !BRANCHNAME!!BRANCHNUMBER!
-  goto :GITBRANCH1
+  goto GITBRANCH1
  )
 
  call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
@@ -724,7 +840,7 @@ goto :eof
   call :LOGERROR "ARG1 = NULL"
   call :LOGDEBUG "call %0 [­ ¨¬¥­®¢ ­¨¥ ¢¥âª¨]"
   set errorlevel=1
-  goto :FAILURE
+  goto FAILURE
  )
 
  "%GITEXE%" checkout %1
@@ -815,12 +931,12 @@ rem call ::FINDFILE1 %1 %2
 :FINDFILE
 if "%~1"=="" (
  call :LOGERROR "ARG1 = NULL"
- goto :FINDFILE2
+ goto FINDFILE2
 )
 
 if "%~2"=="" (
  call :LOGERROR "ARG2 = NULL"
- goto :FINDFILE2
+ goto FINDFILE2
 )
 
 call :LOGINFO "FIND '%~1' ..."
@@ -828,7 +944,7 @@ for %%i in ("%~1") do set %~2=%%~$PATH:i
 rem echo "!%~2!"
 if not "!%~2!" == "" (
  rem set %~2=!z1!
- goto :FINDFILE1
+ goto FINDFILE1
 ) else (
  echo off
  if not "%~3"=="" (
@@ -837,7 +953,7 @@ if not "!%~2!" == "" (
    rem echo !z1!
    if exist !z1! (
     set %~2=!z1!
-    goto :FINDFILE1
+    goto FINDFILE1
     )
    )
   )
@@ -858,10 +974,9 @@ rem ABBALibraryFindZipEnd
 rem ========== Read SET from ini file ==========
 :READINIFILE
 rem Read config file
-call :LOGINFO "‡€ƒ“‡Š€ ŠŽ”ˆƒ€ ..."
 set MYINI=%~1.ini
 if exist !MYINI! (
-		call :LOG "CONFIG = !MYINI! ..."
+		call :LOGINFO "—’…ˆ… ”€‰‹€ '!MYINI!' ..."
 		for /F "usebackq eol=; tokens=1,2 delims=, " %%a in (!MYINI!) do (
 			set %%a=%%b
 			call :LOGDEBUG "%%a = '%%b' ..."
@@ -869,7 +984,7 @@ if exist !MYINI! (
 	) else (
 		call :LOGERROR "Config file !MYINI! no found ..."
 		set errorlevel=1
-		goto :READINIFILE12
+		goto READINIFILE12
 	)
 
 :READINIFILE12
@@ -880,18 +995,17 @@ goto :eof
 rem ========== Read SET from ini file ==========
 :READINIFILE2
 rem Read config file
-call :LOGINFO "‡€ƒ“‡Š€ ŠŽ”ˆƒ€ ..."
 set MYINI2=%~1
 if exist !MYINI2! (
-		call :LOG "CONFIG = !MYINI2! ..."
-		for /F "usebackq eol=# tokens=1,2 delims=, " %%a in (!MYINI2!) do (
+		call :LOGINFO "—’…ˆ… ”€‰‹€ '!MYINI2!' ..."
+		for /F "usebackq eol=; tokens=1,2 delims=, " %%a in (!MYINI2!) do (
 			set %%a=%%b
 			call :LOGDEBUG "%%a = '%%b' ..."
 		)
 	) else (
 		call :LOGERROR "Config file !MYINI2! no found ..."
 		set errorlevel=1
-		goto :READINIFILE21
+		goto READINIFILE21
 	)
 
 :READINIFILE21
@@ -949,6 +1063,19 @@ if not exist %~1 (
  call :LOGINFO "DIR '%~1' - OK"
 )
 goto :eof
+
+rem ==========
+rem %1
+rem %2
+:FILEDELETE
+if exist "%~1" (
+	call :LOGINFO "FILE DELETE '%~1' ..."
+	del /f "%~1"
+) else (
+	call :LOGERROR "FILE '%~1' - NO EXIST"
+)
+goto :eof
+
 rem ABBALibraryCmdDirEnd
 
 rem ABBALibraryCmdLogStart
@@ -975,15 +1102,24 @@ goto :eof
 rem ==========
 :LOGINFO
 call :LOGSTR  "INFO " "%~1"
-call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%" "[32m"
+call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%" "[92m"
+call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+goto :eof
+
+rem ==========
+:LOGWARNING
+call :LOGSTR  "INFO " "%~1"
+call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%" "[95m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGDEBUG
-call :LOGSTR  "DEBUG" "%~1"
-call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%" "[33m"
-call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+ if "%DEBUG%"== "0" goto :eof
+ call :LOGSTR  "DEBUG" "%~1"
+ call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%" "[93m"
+ call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+rem )
 goto :eof
 
 rem ==========
@@ -1100,8 +1236,43 @@ goto :eof
  rem dir run_git.cmd.*.cmd
  xcopy "%~dp0\run_git.cmd.*.cmd" "!pathcmd!" /Y /F
 
+
+ rem echo .
+ rem echo Copy '.mygitini' to '!pathcmd!\.mygitini'
+ rem copy /y ".mygitini" "%USERPROFILE%\.mygitini"
+
  echo .
  echo [32mEnd '%~0' ...[0m
 
+goto :eof
+
+rem ==========
+:ECHOFILE
+rem %~1 %~2
+echo %~1 >> %~2
+goto :eof
+
+rem ==========
+rem Ž„ˆ’…‹œ‘Š€Ÿ €Š€
+:GETPARENTFOLDER
+ call :LOGDEBUG "CALL '%0'"
+ rem call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+ set FILEVBS1=%CD%\File%RANDOM%.vbs
+ call :LOGDEBUG "FILEVBS1 = %FILEVBS1%"
+ rem call :FILEDELETE "%FILEVBS1%"
+ call :ECHOFILE "Rem WScript.Echo "Run_CreateShortcut"" "%FILEVBS1%"
+ call :ECHOFILE "Set objFSO = CreateObject("Scripting.FileSystemObject")" "%FILEVBS1%"
+ call :ECHOFILE "RootDir = objFSO.GetParentFolderName(WScript.ScriptFullName)" "%FILEVBS1%"
+ call :ECHOFILE "Set objF4 = objFSO.getFolder(RootDir)" "%FILEVBS1%"
+ call :ECHOFILE "WScript.Echo (objF4.Name)" "%FILEVBS1%"
+ rem cscript //nologo //E:VBScript "%FILEVBS1%"
+ for /F "delims=" %%a in ('cscript //nologo //E:VBScript "%FILEVBS1%"') do (
+	rem echo %%a
+	set PARENTFOLDER=%%a
+   )
+ call :FILEDELETE "%FILEVBS1%"
+ call :LOG "PARENTFOLDER = %PARENTFOLDER%"
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 

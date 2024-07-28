@@ -16,18 +16,6 @@ if "%2"=="" (
  rem set file_name=%~n2
 )
 
-@echo off
-:parse
-if "%~1"=="" goto endparse
-if "%~1"=="-install" ( echo . Install )
-
-rem if "%~1"=="-b" rem do something else
-shift
-goto parse
-:endparse
-rem ready for action!
-@echo off
-
 rem ---------------------------------------------------------------------------------------
 call :LOGLINE1
 call :LOGSTART "START '%~0'"
@@ -49,7 +37,7 @@ if "%~1" == "help" (
  goto :end
 )
 
-if "%~1" == "" (
+if "%~1" == "test" (
  call :info
  goto :end
 )
@@ -61,6 +49,7 @@ if "%~1" == "info" (
 
 call :LOGLINE2
 call :LOGINFO "Žˆ‘Š “’ˆ‹ˆ’"
+call :GETPARENTFOLDER
 
 call :LOGERROR "…ˆ‡‚…‘’€Ÿ ŠŽŒ€„€ '%~1'"
 goto :FAILURE
@@ -110,23 +99,35 @@ goto :eof
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
-rem ---------------------------------------------------------------------------------------
 
-rem ABBALibraryCMDStart
+:wait
+echo .
+timeout 5 /nobreak
+pause
+goto :eof
 
 rem ==========
-:CMDTEST1
- call :LOGLINE2
- call :LOGINFO "CMDTEST1"
+rem Ž„ˆ’…‹œ‘Š€Ÿ €Š€
+:GETPARENTFOLDER
  call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
-
-
+ set FILEVBS1=%CD%\File%RANDOM%.vbs
+ call :LOGINFO "FILEVBS1 = %FILEVBS1%"
+ rem call :FILEDELETE "%FILEVBS1%"
+ call :ECHOFILE "Rem WScript.Echo "Run_CreateShortcut"" "%FILEVBS1%"
+ call :ECHOFILE "Set objFSO = CreateObject("Scripting.FileSystemObject")" "%FILEVBS1%"
+ call :ECHOFILE "RootDir = objFSO.GetParentFolderName(WScript.ScriptFullName)" "%FILEVBS1%"
+ call :ECHOFILE "Set objF4 = objFSO.getFolder(RootDir)" "%FILEVBS1%"
+ call :ECHOFILE "WScript.Echo (objF4.Name)" "%FILEVBS1%"
+ rem cscript //nologo //E:VBScript "%FILEVBS1%"
+ for /F "delims=" %%a in ('cscript //nologo //E:VBScript "%FILEVBS1%"') do (
+	rem echo %%a
+	set PARENTFOLDER=%%a
+   )
+ call :FILEDELETE "%FILEVBS1%"
+ call :LOGINFO "PARENTFOLDER = %PARENTFOLDER%"
  echo off
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
-
-rem ABBALibraryCMDEnd
-
 
 rem ABBALibraryCmdDirStart
 rem ==========
@@ -178,6 +179,20 @@ if not exist %~1 (
  call :LOGINFO "DIR '%~1' - OK"
 )
 goto :eof
+
+rem ==========
+rem %1
+rem %2
+:FILEDELETE
+if exist "%~1" (
+	call :LOGINFO "FILE DELETE '%~1' ..."
+	del /f "%~1"
+) else (
+	call :LOGERROR "FILE '%~1' - NO EXIST"
+)
+goto :eof
+
+
 rem ABBALibraryCmdDirEnd
 
 
@@ -296,3 +311,8 @@ goto :eof
 rem ABBALibraryCmdLogEnd
 goto :eof
 
+rem ==========
+:ECHOFILE
+rem %~1 %~2
+echo %~1 >> %~2
+goto :eof
