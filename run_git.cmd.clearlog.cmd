@@ -11,6 +11,6 @@ set file_name=%~n0
 rem run_git.cmd install %file_log%
 
 echo .
-echo ╙фрыхэшх тёхї ыюуют *.log ...
+echo Удаление всех логов *.log ...
 del /s /q *.log
 echo .
