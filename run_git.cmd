@@ -78,9 +78,9 @@ rem call :GITGETCONFIG
 rem call :LOGDEBUG "‚‚…„ˆ’… €‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
 rem set /p REPONAME=
 rem set REPONAME=!PARENTFOLDER!
-call :LOG "€‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
-call :LOG "REPONAME = !REPONAME!"
-call :LOG "‡€ˆ‘œ ‚ ”€‰‹ '%file_name_ini%'"
+rem call :LOG "€‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
+rem call :LOG "REPONAME = !REPONAME!"
+rem call :LOG "‡€ˆ‘œ ‚ ”€‰‹ '%file_name_ini%'"
 rem echo ; > %file_name_ini%
 rem echo ; >> %file_name_ini%
 rem remecho GITUSERNAME,!GITUSERNAME! >> %file_name_ini%
@@ -116,6 +116,16 @@ echo off
 
 call :LOGLINE2
 call :LOGINFO "RUN ..."
+
+if not exist .git (
+  call :LOGWARNING "----------------------------------------------------------------------------------------------------"
+  call :LOGWARNING " ‚ ’Ž‰ €Š… Ž’‘“’‘’‚“…’ …Ž‡ˆ’€ˆ‰ "
+  call :LOGWARNING " …Ž•Ž„ˆŒŽ …ƒŽ ‘Ž‡„€’œ "
+  call :LOGWARNING " ŠŽŒ€„Ž‰ 'run_git.cmd.git.init.cmd' "
+  call :LOGWARNING " ˆ‹ˆ ŠŽŒ€„Ž‰ 'run_git.cmd gitinit' "
+  call :LOGWARNING "----------------------------------------------------------------------------------------------------" 
+  goto :FAILURE
+)
 
 call :GETPARENTFOLDER
 call :LOGINFO "‚…•ˆ‰ Š€’€‹Žƒ: '!PARENTFOLDER!'"
