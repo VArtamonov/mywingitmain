@@ -351,6 +351,8 @@ goto :eof
  for /f "tokens=1* delims==" %%a in ('"git config --get remote.origin.url"')	do ( call :LOGINFO2 "URL:                        '%%a'")
  for /f "tokens=1* delims==" %%a in ('"git rev-parse --abbrev-ref HEAD"')	do ( call :LOGINFO2 "çÄáÇÄçàÖ íÖäìôÖâ ÇÖíäà:     '%%a'")
 
+ call :GITCONFIGSAFEDIRECTORY
+
  echo off
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
@@ -460,6 +462,34 @@ goto :eof
 
 
 rem - GIT Command
+
+rem ==========
+:GITCONFIGSAFEDIRECTORY
+ rem call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
+ echo off
+ rem git config --global --get-all safe.directory
+
+ for /f "tokens=1*" %%a in ('"git config --global --get-all safe.directory"') do (
+	if not %%a == "" (
+	if %%a == '%CD%' (
+	  rem echo %%a
+	  set safedir=%%a
+	  call :LOGINFO2 "SAFE.DIRECTORY              %%a"
+	  rem "%GITEXE%" config --global --add safe.directory '%CD%'
+	 )
+        )
+   )
+
+ if not defined safedir (
+  call :LOG      "ADD SAFE.DIRECTORY          '%CD%'"
+  "%GITEXE%" config --global --add safe.directory '%CD%'
+ )
+
+
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+goto :eof
 
 rem ==========
 :GITGETCONFIG
