@@ -5,6 +5,10 @@ setlocal
 setlocal enableextensions
 setlocal enabledelayedexpansion
 
+rem Ž„ˆ’…‹œ‘Š€Ÿ €Š€
+for %%i in ("%~dp0.") do set "PARENTFOLDER=%%~ni"
+echo %PARENTFOLDER%
+
 if "%~1" == "install" (
  call :CMDINSTALL %0
  echo .
@@ -31,6 +35,7 @@ call :LOGLINE1
 call :LOGSTART "START '%~0'"
 call :LOGINFO "LOG FILE - '%file_log%'"
 call :LOGINFO "’…Š“™…‰ Š€’€‹Žƒ: '%CD%'"
+call :LOGINFO "‚…•ˆ‰ Š€’€‹Žƒ: '%PARENTFOLDER%'"
 call :LOGINFO "‘‹“—€‰Ž… „…‘Ÿ’ˆ—Ž… —ˆ‘‹Ž: %RANDOM%"
 call :LOGLINE2
 call :LOGINFO  "TEST INFO  ..."
@@ -80,8 +85,12 @@ if "%~1" == "createini2" (
 
 call :LOGDEBUG "‘Ž‡„€ˆ… ”€‰‹ '%file_name_ini%'"
 call :GITGETCONFIG
-call :LOGDEBUG "‚‚…„ˆ’… €‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
-set /p REPONAME=
+
+rem call :LOGDEBUG "‚‚…„ˆ’… €‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
+rem set /p REPONAME=
+
+set REPONAME=%PARENTFOLDER%
+call :LOGDEBUG "€‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
 call :LOGDEBUG "REPONAME = !REPONAME!"
 call :LOGDEBUG "‡€ˆ‘œ ‚ ”€‰‹ '%file_name_ini%'"
 
@@ -1089,7 +1098,7 @@ goto :eof
 
  echo .
  rem dir run_git.cmd.*.cmd
- xcopy "%~dp0\run_git.cmd.*.cmd" "!pathcmd!" /Y /F /E
+ xcopy "%~dp0\run_git.cmd.*.cmd" "!pathcmd!" /Y /F
 
  echo .
  echo [32mEnd '%~0' ...[0m
