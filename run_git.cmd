@@ -4,6 +4,8 @@ setlocal
 setlocal enableextensions
 setlocal enabledelayedexpansion
 
+title mygit
+
 set DEBUG=1
 
 set file_log=%~dp0%~n0.log
@@ -94,6 +96,11 @@ rem call :GITREADINIFILE
 rem goto :end
 rem :GORUN
 
+if "%~1" == "gitscan" (
+ call :gitscan
+ goto :end
+)
+
 if not exist .git (
  if not "%~1" == "gitinit" (
   call :LOGLINE2
@@ -125,7 +132,6 @@ call :LOGINFO "GHEXE     = '%GHEXE%'"
 echo off
 rem call :GITREADINIFILE
 echo off
-
 
 if "%~1" == "" (
  call :gitinfo
@@ -339,12 +345,42 @@ rem ==========
  call :LOGINFO " "
 goto :eof
 
+rem ==========
+:gitscan
+ call :LOGLINE2
+ rem call :LOGDEBUG "'%0' '%1' '%2'"
+ call :LOGINFO "Žˆ‘Š “’ˆ‹ˆ’"
+ call :FINDGIT
+ call :FINDGITHUBCLI
+ call :LOGINFO2 "‘Š€ˆŽ‚€ˆ… €ŽŠ ‘ …Ž‡ˆ’€ˆŸŒˆ '%CD%'..."
+ 
+ for /d %%i in (*) do (
+  cd %%i
+  if exist .git (
+    rem call :LOGINFO2 "€Š€:                      '%CD%\%%i'"
+    rem call :LOG      "ADD SAFE.DIRECTORY          '!f!'"
+    call :GITCONFIGSAFEDIRECTORY
+   )
+  cd ..
+  ) 
+
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+goto :eof
+
+rem ==========
 :gitinfo
  call :LOGLINE2
  rem call :LOGDEBUG "'%0' '%1' '%2'"
  call :LOGINFO2 "ˆ”ŽŒ€–ˆŸ Ž …Ž‡ˆ’€ˆˆ"
- 
+
+ call :GETPARENTFOLDER
+ set REPONAME=!PARENTFOLDER!
  call :LOGINFO2 "€‡‚€ˆ…:                   '!REPONAME!'"
+
+ call :GETGITHUBOWNER 
+ if not defined OWNER goto :FAILURE
+ call :LOGINFO2  "‚‹€„…‹…–:                   '%OWNER%'"
                                                                                            
  for /f "tokens=1* delims==" %%a in ('"git config --get user.name"')   		do ( call :LOGINFO2 "ˆŒŸ Ž‹œ‡Ž‚€’…‹Ÿ:           '%%a'")
  for /f "tokens=1* delims==" %%a in ('"git config --get user.email"')		do ( call :LOGINFO2 "‹.Ž—’€:                   '%%a'")
@@ -470,20 +506,24 @@ rem ==========
  echo off
  rem git config --global --get-all safe.directory
 
+ set f=%CD%
+ set "f=!f:\=/!"
+ rem echo !f!
+
  for /f "tokens=1*" %%a in ('"git config --global --get-all safe.directory"') do (
 	if not %%a == "" (
-	if %%a == '%CD%' (
+	if %%a == !f! (
 	  rem echo %%a
 	  set safedir=%%a
-	  call :LOGINFO2 "SAFE.DIRECTORY              %%a"
+	  call :LOGINFO2 "SAFE.DIRECTORY              '%%a'"
 	  rem "%GITEXE%" config --global --add safe.directory '%CD%'
 	 )
         )
    )
 
  if not defined safedir (
-  call :LOG      "ADD SAFE.DIRECTORY          '%CD%'"
-  "%GITEXE%" config --global --add safe.directory '%CD%'
+  call :LOG      "ADD SAFE.DIRECTORY          '!f!'"
+  "%GITEXE%" config --global --add safe.directory !f!
  )
 
 
@@ -520,7 +560,7 @@ rem ==========
  )
 
  if not defined OWNER goto :FAILURE
- call :LOGINFO  "‚‹€„…‹…– = '%OWNER%'"
+ rem call :LOGINFO  "‚‹€„…‹…– = '%OWNER%'"
 
  echo off
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
@@ -1272,6 +1312,7 @@ call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
+
 rem ABBALibraryCmdLogEnd
 goto :eof
 
@@ -1298,6 +1339,44 @@ goto :eof
   goto :eof
  )
 
+ echo .
+ call :LOGINFO2 "Ž‚…Š€ ……Œ…Ž‰ ŽŠ“†…ˆŸ PATH"
+ echo off
+ for %%G in ("%path:;=" "%") do (
+  rem echo %%G
+  if "%pathcmd%" == %%G (
+    set pathcmd1=%%G
+  )
+ )
+
+ if not defined pathcmd1 (
+  echo . „®¡ ¢«¥­¨¥ ¢ PATH ¯ãâ¨ '%pathcmd%' ¤® ª®¬ ­¤
+  rem setx path "%path%;%pathcmd%" -- ­¥ ¨á¯®«ì§®¢ âì ®£à ­¨ç¥­¨¥ 1024 á¨¬¢®« 
+  echo on
+  rem powershell -version 5 -Command { $PATH=[Environment]::GetEnvironmentVariable("PATH") & $my_path = "%pathcmd%"; [Environment]::SetEnvironmentVariable("PATH", "$PATH;$my_path", "User") }
+  powershell -version 5 -Command "& { $PATH=[Environment]::GetEnvironmentVariable('PATH'); [Environment]::SetEnvironmentVariable('PATH', $PATH+';%pathcmd%', 'User'); }"
+  echo off
+  call :LOGWARNING "----------------------------------------------------------------------------------------------------"
+  call :LOGWARNING "---                      …Ž•Ž„ˆŒŽ ……‡€ƒ“‡ˆ’œ ŠŽŒœž’…                                      ---"
+  call :LOGWARNING "----------------------------------------------------------------------------------------------------"
+  echo .
+  timeout 5 /nobreak
+  pause
+  echo off
+  rem exit 2
+  rem goto :eof
+ ) else (
+  call :LOGINFO2 "“‘’€Ž‚‹… = '%pathcmd%'"
+)
+
+ rem tasklist.exe /fo csv /nh /fi "imagename eq far.exe"
+ rem @for /f %%i in ('set "x=%~f0"^& call wmic process where "CommandLine like '%%%%x:\=\\%%%%'" get ProcessId^| findstr [0-9]') do @set PID=%%i& call echo %%PID%%& pause>nul& exit /b
+ 
+ echo off
+ rem exit 2
+ rem goto :eof
+
+ echo .
  rem echo '!filenamecmdfull!'
  rem echo '!pathcmd!\!filenamecmd!'
  echo Install to '!pathcmd!'
@@ -1317,6 +1396,12 @@ goto :eof
 
  echo .
  echo [32mEnd '%~0' ...[0m
+
+ echo .
+ if not defined pathcmd1 (
+  timeout 5 /nobreak
+  pause
+ )
 
 goto :eof
 
