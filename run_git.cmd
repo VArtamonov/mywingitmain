@@ -159,9 +159,14 @@ if "%~1" == "test" (
 rem --------------------------------------------------------------------------------------------------------------
 rem ùíé çìÜçé
 
+call :GETPARENTFOLDER
+call :LOGINFO "ÇÖêïçàâ äÄíÄãéÉ: '!PARENTFOLDER!'"
+call :GETGITHUBOWNER 
+set REPONAME=!PARENTFOLDER!
+call :LOG "çÄáÇÄçàÖ êÖèéáàíÄêàü:"
+call :LOG "REPONAME = !REPONAME!"
+
 if "%~1" == "gitinit" (
- call :GETPARENTFOLDER
- call :LOGINFO "ÇÖêïçàâ äÄíÄãéÉ: '%PARENTFOLDER%'"
  call :GITINIT
  set OWNER=
  call :GETGITHUBOWNER 
@@ -188,11 +193,6 @@ if "%~1" == "checkout" (
  goto end
 )
 
-if "%~1" == "githubdelete" (
- call :GITHUBDELETE %2
- goto end
-)
-
 if "%~1" == "gitbranch" (
  call :GITBRANCH %3 %4 %5
  goto end
@@ -200,6 +200,21 @@ if "%~1" == "gitbranch" (
 
 if "%~1" == "gitbranchnew" (
  call :GITBRANCH new %3 %4 %5
+ goto end
+)
+
+if "%~1" == "githubcreate2" (
+ call :GITHUBCREATE !REPONAME!
+ goto end
+)
+
+if "%~1" == "githubdelete2" (
+ call :GITHUBDELETE !REPONAME!
+ goto end
+)
+
+if "%~1" == "githubdelete" (
+ call :GITHUBDELETE %2
  goto end
 )
 
@@ -250,17 +265,7 @@ if "%~1" == "githubcreate" (
 )
 
 if "%~1" == "createhub2" (
- call :GITHUBCREATE %REPONAME%
- goto end
-)
-
-if "%~1" == "githubcreate2" (
- call :GITHUBCREATE %REPONAME%
- goto end
-)
-
-if "%~1" == "githubdelete2" (
- call :GITHUBDELETE %REPONAME%
+ call :GITHUBCREATE !REPONAME!
  goto end
 )
 
