@@ -116,6 +116,14 @@ echo off
 
 call :LOGLINE2
 call :LOGINFO "RUN ..."
+
+call :GETPARENTFOLDER
+call :LOGINFO "‚…•ˆ‰ Š€’€‹Žƒ: '!PARENTFOLDER!'"
+call :GETGITHUBOWNER 
+set REPONAME=!PARENTFOLDER!
+call :LOG "€‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
+call :LOG "REPONAME = !REPONAME!"
+
 rem call :LOGINFO "ˆŒŸ Ž‹œ‡Ž‚€’…‹Ÿ: '%GITUSERNAME%'"
 
 rem for %%i in ("git.exe") do set FILE1=%%~$PATH:i
@@ -158,13 +166,6 @@ if "%~1" == "test" (
 
 rem --------------------------------------------------------------------------------------------------------------
 rem ’Ž “†Ž
-
-call :GETPARENTFOLDER
-call :LOGINFO "‚…•ˆ‰ Š€’€‹Žƒ: '!PARENTFOLDER!'"
-call :GETGITHUBOWNER 
-set REPONAME=!PARENTFOLDER!
-call :LOG "€‡‚€ˆ… …Ž‡ˆ’€ˆŸ:"
-call :LOG "REPONAME = !REPONAME!"
 
 if "%~1" == "gitinit" (
  call :GITINIT
