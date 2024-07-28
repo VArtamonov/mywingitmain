@@ -5,6 +5,16 @@ setlocal
 setlocal enableextensions
 setlocal enabledelayedexpansion
 
+if "%~1" == "install" (
+ call :CMDINSTALL %0
+ echo .
+ echo off
+ exit 0
+ goto :eof
+)
+
+echo off
+
 set file_log=%~dp0%~n0.log
 set file_name=%~n0
 
@@ -29,7 +39,7 @@ call :LOGERROR "TEST ERROR ..."
 call :LOGLINE2
 rem root dir
 set ROOTDIR=%CD%
-call :LOG "ROOTDIR = '%ROOTDIR%' ..."
+call :LOG "ROOTDIR = '!ROOTDIR!' ..."
 CALL :CHANGEDIR "%ROOTDIR%"
 
 if "%~1" == "help" (
@@ -51,7 +61,6 @@ call :LOGINFO "WGETEXE   = '%WGETEXE%'"
 call :LOGINFO "RCLONEEXE = '%RCLONEEXE%'"
 call :LOGINFO "GITEXE = '%GITEXE%'"
 call :LOGINFO "GHEXE = '%GHEXE%'"
-
 
 set mygitini=.mygitini
 
@@ -1047,4 +1056,43 @@ goto :eof
 rem ABBALibraryCmdLogEnd
 goto :eof
 
+:CMDINSTALL
+ echo off
+ echo .
+ echo [32mStart '%~0' ...[0m
+
+ rem echo "%~0"
+ rem echo "%USERPROFILE%\.spbcmd\%~0"
+
+ set filenamecmdfull=%~dpnx0
+ set filenamecmd=%~nx0
+ set pathcmd=%USERPROFILE%\.spbcmd
+
+ rem echo "%~dp0"
+ rem echo "!pathcmd!"
+
+ if "%~dp0" == "!pathcmd!\" (
+  echo [31mError install path '%~dp0' [0m
+  echo .
+  echo [32mEnd '%~0' ...[0m
+  exit 2
+  goto :eof
+ )
+
+ rem echo '!filenamecmdfull!'
+ rem echo '!pathcmd!\!filenamecmd!'
+ echo Install to '!pathcmd!'
+
+ echo .
+ echo Copy '!filenamecmdfull!' to '!pathcmd!\!filenamecmd!'
+ copy /y "!filenamecmdfull!" "!pathcmd!\!filenamecmd!"
+
+ echo .
+ rem dir run_git.cmd.*.cmd
+ xcopy "%~dp0\run_git.cmd.*.cmd" "!pathcmd!" /Y /F /E
+
+ echo .
+ echo [32mEnd '%~0' ...[0m
+
+goto :eof
 
