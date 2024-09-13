@@ -959,7 +959,6 @@ goto :eof
 
 rem ABBALibraryGITEnd
 
-
 rem ---------------------------------------------------------------------------------------
 rem ABBALibraryCmdWgetStart
 rem find wget
@@ -1312,10 +1311,10 @@ call :LOGSCR  "≥%dt%≥%tlogstr1%≥%tlogstr2%"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
-
 rem ABBALibraryCmdLogEnd
 goto :eof
 
+rem ABBALibraryCmdInstallStart
 :CMDINSTALL
  echo off
  echo .
@@ -1436,3 +1435,4 @@ rem êéÑàíÖãúëäÄü èÄèäÄ
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
+rem ABBALibraryCmdInstallEnd
