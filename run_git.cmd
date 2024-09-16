@@ -1314,7 +1314,9 @@ goto :eof
 rem ABBALibraryCmdLogEnd
 goto :eof
 
+rem ---------------------------------------------------------------------------------------
 rem ABBALibraryCmdInstallStart
+
 :CMDINSTALL
  echo off
  echo .
@@ -1327,8 +1329,8 @@ rem ABBALibraryCmdInstallStart
  set filenamecmd=%~nx0
  set pathcmd=%USERPROFILE%\.spbcmd
 
- rem echo "%~dp0"
- rem echo "!pathcmd!"
+ echo .. "%~dp0"
+ echo .. "!pathcmd!"
 
  if "%~dp0" == "!pathcmd!\" (
   echo [31mError install path '%~dp0' [0m
@@ -1386,12 +1388,17 @@ rem ABBALibraryCmdInstallStart
 
  echo .
  rem dir run_git.cmd.*.cmd
- xcopy "%~dp0\run_git.cmd.*.cmd" "!pathcmd!" /Y /F
-
+ echo Copy "%~dp0!filenamecmd!.*.cmd" to "!pathcmd!"
+ xcopy "%~dp0!filenamecmd!.*.cmd" "!pathcmd!" /Y /F
 
  rem echo .
  rem echo Copy '.mygitini' to '!pathcmd!\.mygitini'
  rem copy /y ".mygitini" "%USERPROFILE%\.mygitini"
+
+ echo .
+ echo Вывод списка файлов и подкаталогов в каталоге !pathcmd! ...
+ cd !pathcmd!
+ dir /w
 
  echo .
  echo [32mEnd '%~0' ...[0m
@@ -1436,3 +1443,6 @@ rem РОДИТЕЛЬСКАЯ ПАПКА
 goto :eof
 
 rem ABBALibraryCmdInstallEnd
+
+goto :eof
+
