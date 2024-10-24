@@ -761,9 +761,14 @@ rem ==========
  call :GET_DT
  rem call :LOGDEBUG "CREATE TIMESTAMP '%DT%'"
  
- 
- set COMMITTXT=Auto commit '%dt%'
- call :LOGDEBUG "COMMITTXT '%COMMITTXT%'"
+ if "%~1" == "" (
+  set COMMITTXT=The autocommit has been added to '%dt%'
+  call :LOGDEBUG "COMMITTXT '%COMMITTXT%'"
+ ) else (
+  set COMMITTXT=Commit '%~1' has been added to '%dt%'
+  call :LOGDEBUG "COMMITTXT '%COMMITTXT%'"
+ )
+
  "%GITEXE%" commit -a -m "%COMMITTXT%" --verbose
 
  rem call :LOGDEBUG "GIT STATUS ..."
