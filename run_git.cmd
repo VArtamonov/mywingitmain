@@ -554,7 +554,13 @@ rem ==========
  rem git config --get github.name
  rem git config --file ..\.gitconfig-work --get github.name
 
- for /f "tokens=1* delims==" %%a in ('"git config --get github.name"') do (set OWNER=%%a)
+ rem echo "!ROOTDIR!\..\.gitconfig-work"
+ set GITCONFIG-WORK="!ROOTDIR!\..\.gitconfig-work"
+ if exist %GITCONFIG-WORK% (
+  call :LOGDEBUG "GITCONFIG-WORK = '%GITCONFIG-WORK%'"
+  for /f "tokens=1* delims==" %%a in ('"git config --file %GITCONFIG-WORK% --get github.name"') do (set OWNER=%%a)
+ )
+
  if not defined OWNER (
   for /f "tokens=1* delims==" %%a in ('"git config --get user.name"') do (set OWNER=%%a)
  )
@@ -1230,7 +1236,7 @@ rem ==========
 :LOGDEBUG
  if "%DEBUG%"== "0" goto :eof
  call :LOGSTR  "DEBUG" "%~1"
- call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%" "[93m"
+ call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%" "[94m"
  call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 rem )
 goto :eof
