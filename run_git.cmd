@@ -201,7 +201,7 @@ rem ----------------------------------------------------------------------------
 rem ùíé çìÜçé
 
 if "%~1" == "autocommit" (
- call :GITAUTOCOMMIT
+ call :GITAUTOCOMMIT %3
  goto :end
 )
 
@@ -752,6 +752,7 @@ rem ==========
 :GITAUTOCOMMIT
  call :LOGLINE2
  call :LOGINFO "GIT ADD AUTO COMMIT ..."
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
 
  call :LOGDEBUG "ADD ALL FILES ..."
  echo .
@@ -1207,7 +1208,7 @@ goto :eof
 rem ==========
 :LOG
 call :LOGSTR  "     " "%~1"
-call :LOGSCR  "≥%dt%≥%tlogstr1%≥%tlogstr2%" "[37m"
+call :LOGSCR  "≥%dt%≥%tlogstr1%≥%tlogstr2%" "[97m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
@@ -1244,7 +1245,7 @@ goto :eof
 rem ==========
 :LOGERROR
 call :LOGSTR  "ERROR" "%~1"
-call :LOGSCR  "≥%dt%≥%tlogstr1%≥%tlogstr2%" "[31m"
+call :LOGSCR  "≥%dt%≥%tlogstr1%≥%tlogstr2%" "[91m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 
 goto :eof
