@@ -770,6 +770,7 @@ rem ==========
  )
 
  echo .
+ echo on
  "%GITEXE%" commit -a -m "%COMMITTXT%" --verbose
  echo .
 
