@@ -760,6 +760,8 @@ rem ==========
 
  call :GET_DT
  rem call :LOGDEBUG "CREATE TIMESTAMP '%DT%'"
+ 
+ 
  set COMMITTXT=Auto commit '%dt%'
  call :LOGDEBUG "COMMITTXT '%COMMITTXT%'"
  "%GITEXE%" commit -a -m "%COMMITTXT%" --verbose
