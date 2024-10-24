@@ -797,7 +797,9 @@ rem ==========
    rem echo Debug2 %%a,%%b 
     set BRANCH=%%b
     call :LOGDEBUG "BRANCH = '!BRANCH!'"
+    echo .
     "%GITEXE%" push --set-upstream origin !BRANCH! --verbose
+    echo .
   )
  )
 
