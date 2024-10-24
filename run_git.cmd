@@ -755,8 +755,10 @@ rem ==========
  call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
 
  call :LOGDEBUG "ADD ALL FILES ..."
+
  echo .
  "%GITEXE%" add . --verbose
+ echo .
 
  call :GET_DT
  rem call :LOGDEBUG "CREATE TIMESTAMP '%DT%'"
