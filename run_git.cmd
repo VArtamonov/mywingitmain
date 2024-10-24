@@ -769,7 +769,9 @@ rem ==========
   call :LOGDEBUG "COMMITTXT '%COMMITTXT%'"
  )
 
+ echo .
  "%GITEXE%" commit -a -m "%COMMITTXT%" --verbose
+ echo .
 
  rem call :LOGDEBUG "GIT STATUS ..."
  rem "%GITEXE%" status --verbose
