@@ -765,14 +765,14 @@ rem ==========
  
  if "%~1" == "" (
   set COMMITTXT=The autocommit has been added to '%dt%'
-  call :LOGDEBUG "COMMITTXT '%COMMITTXT%'"
+  call :LOGDEBUG "COMMITTXT '!COMMITTXT!'"
  ) else (
   set COMMITTXT=Commit '%~1' has been added to '%dt%'
-  call :LOGDEBUG "COMMITTXT '%COMMITTXT%'"
+  call :LOGDEBUG "COMMITTXT '!COMMITTXT!'"
  )
 
  echo .
- "%GITEXE%" commit -a -m "%COMMITTXT%" --verbose
+ "%GITEXE%" commit -a -m "!COMMITTXT!" --verbose
  echo .
 
  rem call :LOGDEBUG "GIT STATUS ..."
