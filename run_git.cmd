@@ -300,7 +300,7 @@ call :LOGLINE2
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 call :LOGINFO "END '%~0' ..."
 call :LOGLINE0
-exit 0
+exit /b 0
 goto :eof
 
 rem ABBAProgrammMainEnd2
@@ -309,7 +309,7 @@ call :LOGLINE2
 call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 call :LOGERROR "END '%~0' ..."
 call :LOGLINE0
-exit 1
+exit /b 1
 goto :eof
 rem ABBAProgrammEnd
 
