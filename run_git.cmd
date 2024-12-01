@@ -101,6 +101,12 @@ if "%~1" == "gitscan" (
  goto :end
 )
 
+if "%~1" == "autoscangit" (
+ call :AUTOSCANGIT
+ goto :end
+)
+
+
 if not exist .git (
  if not "%~1" == "gitinit" (
   call :LOGLINE2
@@ -974,6 +980,71 @@ goto :eof
 
  echo off
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+goto :eof
+
+:AUTOSCANGIT
+ call :LOGLINE2
+ call :LOGDEBUG "CALL %0 %1 %2 %3 %4 %5"
+ call :LOGINFO2 "‘Š€ˆŽ‚€ˆ… €ŽŠ ‘ …Ž‡ˆ’€ˆŸŒˆ '%CD%'..."
+ echo off
+
+ set scan=
+ echo .
+ call :SCANDIR "%ROOTDIR%"
+ echo .
+ echo SCAN='!scan!'
+ call :RUNGITCMD "!scan!"
+ echo .
+
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+goto :eof
+
+:SCANDIR
+rem call :LOGDEBUG "CALL '%0' '%1' %2 %3 %4 %5"
+rem echo %~1
+cd "%~1"
+echo off
+FOR /F "tokens=*" %%i IN ('"DIR /A:D-S /b"') do (
+ rem echo %%i
+
+  if %%i == .git (
+   echo [2K %~1\\.git - OK   
+   echo .
+   rem echo scan=!scan!
+    if "!scan!" == "" ( 
+	set scan="%~1" 
+     ) else (
+	set scan=!scan!,"%~1"
+	)
+  ) else (
+  if exist %~1\%%i (
+   echo [2K Scan '%~1\%%i' - OK
+   echo [2F  
+   call :SCANDIR "%~1\%%i"
+   cd ..
+  )                                                         
+ )
+)
+echo off
+goto :eof
+
+:RUNGITCMD
+call :LOGLINE2
+call :LOGDEBUG "CALL %0 %1 %2 %3 %4 %5"
+echo %~1
+for /d %%i in (%~1) do (
+  if exist %%i (
+    if exist %%i\.git (
+      cd %%i
+      echo .
+      echo [2K Run GIT '%%i'
+      echo ========== '%~0' Run GIT '%%i' ==========  >> "%file_log%"
+      rem call run_git.cmd.auto.commit.cmd "%file_log%"
+      echo .
+    )
+  )
+)
 goto :eof
 
 
