@@ -14,6 +14,7 @@ set file_name=%~n0
 if "%2"=="" (
  set file_log=%~dp0%~n0.log
  rem set file_name=%~n0
+ set file_log=%cd%\%~n0.log
 ) else (
  set file_log=%~2
  rem set file_name=%~n2
@@ -36,8 +37,11 @@ if "%~1" == "install" (
 )
 
 call :LOGLINE2
-call :LOGINFO  "TEST INFO  ..."
-call :LOGERROR "TEST ERROR ..."
+call :LOGINFO		"TEST INFO	..."
+call :LOGINFO2		"TEST INFO2	..."
+call :LOGERROR		"TEST ERROR	..."
+call :LOGDEBUG		"TEST DEBUG	..."
+call :LOGWARNING	"TEST WARNING	..."
 
 call :LOGLINE2
 rem root dir
@@ -989,28 +993,32 @@ goto :eof
  echo off
 
  set scan=
- echo .
  call :SCANDIR "%ROOTDIR%"
- echo .
- echo SCAN='!scan!'
+ rem call :LOGINFO "SCAN='!scan!'"
  call :RUNGITCMD "!scan!"
- echo .
 
  echo off
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
+
+
+rem ESC (ASCII: 27 / 0x1B / 033
+rem [2K Удаляет часть строки. Если n равно двум, очищает всю строку. Положение курсора не меняется.
+rem [2F Перемещает курсор в начало n-ой (по умолчанию 1-й) строки сверху относительно текущей.
 
 :SCANDIR
 rem call :LOGDEBUG "CALL '%0' '%1' %2 %3 %4 %5"
 rem echo %~1
 cd "%~1"
 echo off
-FOR /F "tokens=*" %%i IN ('"DIR /A:D-S /b"') do (
- rem echo %%i
-
-  if %%i == .git (
-   echo [2K %~1\\.git - OK   
-   echo .
+rem echo .
+for /f "tokens=*" %%i in ('"dir /a:d-s /b"') do (
+  rem echo %%i
+  if "%%i" == ".git" (
+   rem echo [2K %~1\\.git - OK   
+   rem echo .
+   rem echo [1F
+   call :LOGINFO "КАТАЛОГ '%~1' - OK"
    rem echo scan=!scan!
     if "!scan!" == "" ( 
 	set scan="%~1" 
@@ -1018,30 +1026,31 @@ FOR /F "tokens=*" %%i IN ('"DIR /A:D-S /b"') do (
 	set scan=!scan!,"%~1"
 	)
   ) else (
-  if exist %~1\%%i (
-   echo [2K Scan '%~1\%%i' - OK
-   echo [2F  
+  if exist "%~1\%%i" (
+   echo .1
+   echo [1F[0K Scan '%~1\%%i'[1F
    call :SCANDIR "%~1\%%i"
    cd ..
   )                                                         
  )
 )
+
 echo off
 goto :eof
 
 :RUNGITCMD
 call :LOGLINE2
 call :LOGDEBUG "CALL %0 %1 %2 %3 %4 %5"
-echo %~1
 for /d %%i in (%~1) do (
   if exist %%i (
     if exist %%i\.git (
       cd %%i
-      echo .
-      echo [2K Run GIT '%%i'
-      echo ========== '%~0' Run GIT '%%i' ==========  >> "%file_log%"
-      rem call run_git.cmd.auto.commit.cmd "%file_log%"
-      echo .
+      rem echo .
+      rem echo [2K Run GIT '%%i'
+      rem echo ========== '%~0' Run GIT '%%i' ==========  >> "%file_log%"
+      call :LOGINFO "=============================================================================================================="
+      call :LOGINFO "КАТАЛОГ Run GIT '%%i' "
+      call run_git.cmd.auto.commit.cmd "%file_log%"      
     )
   )
 )
