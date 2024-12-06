@@ -109,12 +109,12 @@ set file_scan_ini=%cd%\run_git.cmd.auto.scan.ini
 
 if "%~1" == "autoscangit" (
  call :LOG "FILE_SCAN_INI = '%file_scan_ini%'"
- call :AUTOSCANGIT %file_scan_ini%
+ call :AUTOSCANGIT %file_scan_ini% %3 %4 %5
  goto :end
 )
 
 if "%~1" == "autoscanrun" (
- call :AUTOSCANRUN %file_scan_ini%
+ call :AUTOSCANRUN %file_scan_ini% %3 %4 %5
  goto :end
 )
 
@@ -993,6 +993,7 @@ goto :eof
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
+rem ==========
 :AUTOSCANGIT
  call :LOGLINE2
  call :LOGDEBUG "CALL %0 %1 %2 %3 %4 %5"
@@ -1018,12 +1019,25 @@ goto :eof
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
-
+rem ==========
 :AUTOSCANRUN
  call :LOGLINE2
- call :LOGDEBUG "CALL %0 %1 %2 %3 %4 %5"
+ call :LOGDEBUG "CALL 0='%0' 1='%1' 2='%2' 3='%3' 4='%4' 5='%5'"
  call :LOGINFO2 "ëäÄçàêéÇÄçàÖ èÄèéä ë êÖèéáàíÄêàüåà à áÄèìëä ..."
  echo off
+
+ if "%~1"=="" (
+  call :LOGERROR "ARG1 = NULL"
+  set errorlevel=1
+  goto FAILURE
+ )
+
+ if "%~2"=="" (
+  call :LOGERROR "ARG2 = NULL"
+  call :LOGWARNING "ARG2 = 'commit' 'push' "
+  set errorlevel=1
+  goto FAILURE
+ )
 
  set autoscanini=%~dp1%~n1.ini
  call :LOGDEBUG "èêéÇÖêäÄ '%autoscanini%'"
@@ -1032,10 +1046,21 @@ goto :eof
  
   for /F "usebackq eol=; tokens=1" %%a in (!autoscanini!) do (
    call :LOGDEBUG "%%a"
-      cd %%a
-      call :LOGINFO "=============================================================================================================="
-      call :LOGINFO "äÄíÄãéÉ Run GIT '%%a' "
-      call run_git.cmd.auto.commit.cmd "%file_log%"      
+
+   if "%~2"=="commit" (     
+    cd %%a
+    call :LOGINFO "=============================================================================================================="
+    call :LOGINFO "äÄíÄãéÉ Run GIT '%%a' "
+    call run_git.cmd.auto.commit.cmd "%file_log%"      
+   )
+
+   if "%~2"=="push" (     
+    cd %%a
+    call :LOGINFO "=============================================================================================================="
+    call :LOGINFO "äÄíÄãéÉ Run GIT '%%a' "
+    call run_git.cmd.auto.push.cmd "%file_log%"      
+   )
+
  )
 
 
@@ -1369,7 +1394,7 @@ goto :eof
 
 rem ==========
 :LOGWARNING
-call :LOGSTR  "INFO " "%~1"
+call :LOGSTR  "WARN " "%~1"
 call :LOGSCR  "≥%dt%≥%tlogstr1%≥%tlogstr2%" "[95m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
