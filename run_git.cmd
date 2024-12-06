@@ -105,11 +105,18 @@ if "%~1" == "gitscan" (
  goto :end
 )
 
+set file_scan_ini=%cd%\run_git.cmd.auto.scan.ini
+
 if "%~1" == "autoscangit" (
- call :AUTOSCANGIT
+ call :LOG "FILE_SCAN_INI = '%file_scan_ini%'"
+ call :AUTOSCANGIT %file_scan_ini%
  goto :end
 )
 
+if "%~1" == "autoscanrun" (
+ call :AUTOSCANRUN %file_scan_ini%
+ goto :end
+)
 
 if not exist .git (
  if not "%~1" == "gitinit" (
@@ -994,13 +1001,54 @@ goto :eof
 
  set scan=
  call :SCANDIR "%ROOTDIR%"
- rem call :LOGINFO "SCAN='!scan!'"
- call :RUNGITCMD "!scan!"
+ call :LOGLINE2
+ call :LOGINFO "SCAN='!scan!'"
+
+ set autoscanini=%~dp1%~n1.ini
+ call :LOG "ПРОВЕРКА '%autoscanini%'"
+ echo ;%autoscanini% > %autoscanini%
+ for /d %%i in (!scan!) do (
+  call :LOG "ЗАПИСЬ В '%autoscanini%' - '%%~i'"
+  echo %%~i >> %autoscanini%
+ )
+
+ rem call :RUNGITCMD "!scan!"
 
  echo off
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
 goto :eof
 
+
+:AUTOSCANRUN
+ call :LOGLINE2
+ call :LOGDEBUG "CALL %0 %1 %2 %3 %4 %5"
+ call :LOGINFO2 "СКАНИРОВАНИЕ ПАПОК С РЕПОЗИТАРИЯМИ И ЗАПУСК ..."
+ echo off
+
+ set autoscanini=%~dp1%~n1.ini
+ call :LOGDEBUG "ПРОВЕРКА '%autoscanini%'"
+ if exist %autoscanini% (
+  call :LOGINFO "ПРОВЕРКА '%autoscanini%' - OK"
+ 
+  for /F "usebackq eol=; tokens=1" %%a in (!autoscanini!) do (
+   call :LOGDEBUG "%%a"
+      cd %%a
+      call :LOGINFO "=============================================================================================================="
+      call :LOGINFO "КАТАЛОГ Run GIT '%%a' "
+      call run_git.cmd.auto.commit.cmd "%file_log%"      
+ )
+
+
+ ) else (
+  call :LOGERROR "ПРОВЕРКА '%autoscanini%' - НЕТ"
+  set errorlevel=1
+)
+
+ rem call :RUNGITCMD "!scan!"
+
+ echo off
+ if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+goto :eof
 
 rem ESC (ASCII: 27 / 0x1B / 033
 rem [2K Удаляет часть строки. Если n равно двум, очищает всю строку. Положение курсора не меняется.
