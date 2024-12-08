@@ -1,17 +1,13 @@
 @echo off
-chcp 866 >nul
-
 setlocal
 setlocal enableextensions
 setlocal enabledelayedexpansion
 
 echo .
-rem echo %~dp0%~n0%~x0
-echo Run '%~n0%~x0'
-echo .
-
 echo -------------------------------------------------
-for /r %%a in (obj,bin,.vs) do (
+set p=obj,bin,.vs,OutputPath,artifacts
+echo Удаление всех '%p%' ...
+for /r %%a in (%p%) do (
  if exist "%%a" (
   echo %%a
   rem del /f /s /q "%%a"
@@ -20,8 +16,8 @@ for /r %%a in (obj,bin,.vs) do (
 )
 
 echo .
+echo -------------------------------------------------
 echo Удаление всех логов *.log ...
 del /s /q *.log
+
 echo .
-timeout 2 /nobreak
-pause

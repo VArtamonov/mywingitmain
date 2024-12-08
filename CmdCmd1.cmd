@@ -30,7 +30,7 @@ call :LOGLINE2
 rem root dir
 set ROOTDIR=%CD%
 call :LOG "ROOTDIR = '%ROOTDIR%' ..."
-CALL :CHANGEDIR "%ROOTDIR%"
+call :CHANGEDIR "%ROOTDIR%"
 
 if "%~1" == "help" (
  call :help %~n0
@@ -49,7 +49,8 @@ if "%~1" == "info" (
 
 call :LOGLINE2
 call :LOGINFO "Žˆ‘Š “’ˆ‹ˆ’"
-call :GETPARENTFOLDER
+
+rem call :GETPARENTFOLDER
 
 call :LOGERROR "…ˆ‡‚…‘’€Ÿ ŠŽŒ€„€ '%~1'"
 goto :FAILURE

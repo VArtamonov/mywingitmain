@@ -118,19 +118,6 @@ if "%~1" == "autoscanrun" (
  goto :end
 )
 
-if not exist .git (
- if not "%~1" == "gitinit" (
-  call :LOGLINE2
-  call :LOGWARNING "----------------------------------------------------------------------------------------------------"
-  call :LOGWARNING " ‚ ’‰ €Š… ’‘“’‘’‚“…’ …‡ˆ’€ˆ‰ "
-  call :LOGWARNING " …•„ˆŒ …ƒ ‘‡„€’œ "
-  call :LOGWARNING " ŠŒ€„‰ 'run_git.cmd.git.init.cmd' "
-  call :LOGWARNING " ˆ‹ˆ ŠŒ€„‰ 'run_git.cmd gitinit' "
-  call :LOGWARNING "----------------------------------------------------------------------------------------------------" 
-  goto :FAILURE
- )
-)
-
 call :LOGLINE2
 call :LOGINFO "ˆ‘Š “’ˆ‹ˆ’"
 call :FINDZIP
@@ -155,17 +142,39 @@ if "%~1" == "" (
  goto :end
 )
 
+if "%~1" == "info" (
+ call :info
+ goto :end
+)
+
+if "%~1" == "test" ( 
+ goto :end
+)
+
+if not exist .git (
+ if not "%~1" == "gitinit" (
+  call :LOGLINE2
+  call :LOGWARNING "----------------------------------------------------------------------------------------------------"
+  call :LOGWARNING " ‚ ’‰ €Š… ’‘“’‘’‚“…’ …‡ˆ’€ˆ‰ "
+  call :LOGWARNING " …•„ˆŒ …ƒ ‘‡„€’œ "
+  call :LOGWARNING " ŠŒ€„‰ 'run_git.cmd.git.init.cmd' "
+  call :LOGWARNING " ˆ‹ˆ ŠŒ€„‰ 'run_git.cmd gitinit' "
+  call :LOGWARNING "----------------------------------------------------------------------------------------------------" 
+  goto :FAILURE
+ )
+)
+
 call :gitinfo
 
 call :LOGLINE2
 call :LOGINFO "RUN COMMAND '%1' ..."
-
 
 if "%~1" == "gitinit" (
  call :GETPARENTFOLDER
  call :LOGINFO "‚…•ˆ‰ Š€’€‹ƒ: '!PARENTFOLDER!'"
 
  call :GETGITHUBOWNER
+ call :LOGINFO "REPONAME: '!REPONAME!'"
  set REPONAME=!PARENTFOLDER!
 
  call :GITINIT
@@ -204,15 +213,6 @@ rem "%ZIPEXE%" x -y -bb3 -bsp2 -o%arcdir% -- "%new_full_file_name%" 1>> "%file_l
 rem echo on
 rem "%ZIPEXE%" x -y -bb3 -bsp2 -o"%arcdir%" -- "%new_full_file_name%" 1>> "%file_log%"
 rem echo off
-
-if "%~1" == "info" (
- call :info
- goto :end
-)
-
-if "%~1" == "test" ( 
- goto :end
-)
 
 rem --------------------------------------------------------------------------------------------------------------
 rem ’ “†
@@ -398,13 +398,41 @@ rem ==========
  call :GETGITHUBOWNER 
  if not defined OWNER goto :FAILURE
  call :LOGINFO2  "‚‹€„…‹…–:                   '%OWNER%'"
-                                                                                           
- for /f "tokens=1* delims==" %%a in ('"git config --get user.name"')   		do ( call :LOGINFO2 "ˆŒŸ ‹œ‡‚€’…‹Ÿ:           '%%a'")
- for /f "tokens=1* delims==" %%a in ('"git config --get user.email"')		do ( call :LOGINFO2 "‹.—’€:                   '%%a'")
- for /f "tokens=1* delims==" %%a in ('"git config --get remote.origin.url"')	do ( call :LOGINFO2 "URL:                        '%%a'")
- for /f "tokens=1* delims==" %%a in ('"git rev-parse --abbrev-ref HEAD"')	do ( call :LOGINFO2 "€‡‚€ˆ… ’…Š“™…‰ ‚…’Šˆ:     '%%a'")
 
- call :GITCONFIGSAFEDIRECTORY
+ call :LOGLINE2 
+ call :LOGINFO2 "GIT CONFIG GLOBAL"
+ for /f "tokens=1* delims==" %%a in ('"git config --global --get user.name"') do ( call :LOGINFO2 "ˆŒŸ ‹œ‡‚€’…‹Ÿ:           '%%a'")
+ for /f "tokens=1* delims==" %%a in ('"git config --global --get user.email"') do ( call :LOGINFO2 "‹.—’€:                   '%%a'")
+
+ if exist .git (
+  call :LOGLINE2 
+  call :LOGINFO2 "GIT CONFIG LOCAL"
+  for /f "tokens=1* delims==" %%a in ('"git config --local --get user.name"') do ( call :LOGINFO2 "ˆŒŸ ‹œ‡‚€’…‹Ÿ:           '%%a'")
+  for /f "tokens=1* delims==" %%a in ('"git config --local --get user.email"') do ( call :LOGINFO2 "‹.—’€:                   '%%a'")
+
+  call :LOGLINE2 
+  call :LOGINFO2 "GIT CONFIG WORKTREE"
+  for /f "tokens=1* delims==" %%a in ('"git config --worktree --get user.name"') do ( call :LOGINFO2 "ˆŒŸ ‹œ‡‚€’…‹Ÿ:           '%%a'")
+  for /f "tokens=1* delims==" %%a in ('"git config --worktree --get user.email"') do ( call :LOGINFO2 "‹.—’€:                   '%%a'")
+
+  call :LOGLINE2 
+  call :LOGINFO2 "GIT CONFIG"
+  for /f "tokens=1* delims==" %%a in ('"git config --get user.name"') do ( call :LOGINFO2 "ˆŒŸ ‹œ‡‚€’…‹Ÿ:           '%%a'")
+  for /f "tokens=1* delims==" %%a in ('"git config --get user.email"') do ( call :LOGINFO2 "‹.—’€:                   '%%a'")
+
+ ) else (
+  call :LOGWARNING "----------------------------------------------------------------------------------------------------"
+  call :LOGWARNING " ‚ ’‰ €Š… ’‘“’‘’‚“…’ …‡ˆ’€ˆ‰ "
+  call :LOGWARNING "----------------------------------------------------------------------------------------------------"
+ 
+  for /f "tokens=1* delims==" %%a in ('"git config --worktree --get user.name"') do ( call :LOGINFO2 "ˆŒŸ ‹œ‡‚€’…‹Ÿ:           '%%a'")
+  for /f "tokens=1* delims==" %%a in ('"git config --worktree --get user.email"') do ( call :LOGINFO2 "‹.—’€:                   '%%a'")
+ )
+
+ rem for /f "tokens=1* delims==" %%a in ('"git config --get remote.origin.url"')	do ( call :LOGINFO2 "URL:                        '%%a'")
+ rem for /f "tokens=1* delims==" %%a in ('"git rev-parse --abbrev-ref HEAD"')	do ( call :LOGINFO2 "€‡‚€ˆ… ’…Š“™…‰ ‚…’Šˆ:     '%%a'")
+
+ rem call :GITCONFIGSAFEDIRECTORY
 
  echo off
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
@@ -413,8 +441,8 @@ goto :eof
 :info
  call :LOGLINE2
  rem call :LOGDEBUG "'%0' '%1' '%2'"
- call :LOGINFO "ˆ”Œ€–ˆŸ"
- call :LOGDEBUG "WGET VERSION"
+ call :LOGINFO2 "ˆ”Œ€–ˆŸ"
+ call :LOGINFO2 "WGET VERSION"
  rem %WGETEXE% --version --quiet
  echo off
  rem GNU Wget 1.21.4 built on mingw32.
@@ -425,32 +453,32 @@ for /f "usebackq eol= delims=" %%a in (`"%WGETEXE% --version"`) do (
  set str2=!str1:~0,8!
  rem echo '!str2!'
  if "!str2!"=="GNU Wget" (
-  call :LOGDEBUG "!str1!"
+  call :LOGINFO2 "!str1!"
  )
 )
  echo off
 
- call :LOGDEBUG "GIT VERSION"
+ call :LOGINFO2 "GIT VERSION"
  echo .
  "%GITEXE%" --version
  echo .
 
- call :LOGDEBUG "GITHUB VERSION"
+ call :LOGINFO2 "GITHUB VERSION"
  echo .
  "%GHEXE%" --version
  echo .
 
- call :LOGDEBUG "’€‡ˆ’œ €Š’ˆ‚“ “—…’“ ‡€ˆ‘œ ˆ ‘‘’Ÿˆ… €“’…’ˆ”ˆŠ€–ˆˆ € •‘’ˆƒ… GitHub."
+ call :LOGINFO2 "’€‡ˆ’œ €Š’ˆ‚“ “—…’“ ‡€ˆ‘œ ˆ ‘‘’Ÿˆ… €“’…’ˆ”ˆŠ€–ˆˆ € •‘’ˆƒ… GitHub."
  echo .
  "%GHEXE%" auth status
  echo .
 
- call :LOGDEBUG "GIT €„…‘€ „‹Ÿ —’…ˆŸ ˆ ‡€ˆ‘ˆ, ˆ‚Ÿ‡€›… Š …‡ˆ’ˆ:"
+ call :LOGINFO2 "GIT €„…‘€ „‹Ÿ —’…ˆŸ ˆ ‡€ˆ‘ˆ, ˆ‚Ÿ‡€›… Š …‡ˆ’ˆ:"
  echo .
  "%GITEXE%" remote -v
  echo .
 
- call :LOGDEBUG "GIT STATUS"
+ call :LOGINFO2 "GIT STATUS"
  echo .
  "%GITEXE%" status --verbose
  echo .
@@ -852,10 +880,21 @@ rem ==========
  echo .
  echo off
  "%GHEXE%" auth status
- rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
 
  echo .
- "%GHEXE%" repo create %OWNER%/%1 --private --source=. --remote=origin --description "My Repo '%1'"
+ rem Create a new GitHub repository.
+ rem gh repo create [<name>] [flags]
+ rem --private                Make the new repository private
+ rem --public                 Make the new repository public
+ rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
+ "%GHEXE%" repo create %OWNER%/%1 --private --source=. --remote=origin 
+
+ echo .
+ rem Edit repository settings.
+ rem gh repo edit [<repository>] [flags]
+ rem --description string       Description of the repository
+ rem t OWNER/REPO -d "new Description"
+ "%GHEXE%" repo edit %OWNER%/%1 --description "My Repo '%1'"
 
  echo off
  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
@@ -1561,17 +1600,23 @@ rem ABBALibraryCmdInstallStart
 
  echo .
  rem dir run_git.cmd.*.cmd
- echo Copy "%~dp0!filenamecmd!.*.cmd" to "!pathcmd!"
- xcopy "%~dp0!filenamecmd!.*.cmd" "!pathcmd!" /Y /F
+ rem run_git.cmd.install.cmd 
+ set XCOPYEXCLUDE=%~dp0!filenamecmd!.install.list-of-excluded-files.txt
+ echo run_git.cmd.install.cmd > !XCOPYEXCLUDE!
 
+ echo Copy "%~dp0!filenamecmd!.*.cmd" to "!pathcmd!"
+ xcopy "%~dp0!filenamecmd!.*.cmd" "!pathcmd!" /Y /F /EXCLUDE:!XCOPYEXCLUDE!
+ 
  rem echo .
  rem echo Copy '.mygitini' to '!pathcmd!\.mygitini'
  rem copy /y ".mygitini" "%USERPROFILE%\.mygitini"
 
- echo .
- echo ‚ë¢®¤ á¯¨áª  ä ©«®¢ ¨ ¯®¤ª â «®£®¢ ¢ ª â «®£¥ !pathcmd! ...
- cd !pathcmd!
- dir /w
+ rem echo .
+ rem echo ‚ë¢®¤ á¯¨áª  ä ©«®¢ ¨ ¯®¤ª â «®£®¢ ¢ ª â «®£¥ !pathcmd! ...
+ rem cd !pathcmd!
+ rem dir /w
+
+ rem del !XCOPYEXCLUDE!
 
  echo .
  echo [32mEnd '%~0' ...[0m
