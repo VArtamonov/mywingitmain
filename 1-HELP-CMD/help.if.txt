@@ -1,0 +1,105 @@
+Оператор условного выполнения команд в пакетном файле.
+
+IF [NOT] ERRORLEVEL число команда
+IF [NOT] строка1==строка2 команда
+IF [NOT] EXIST имя_файла команда
+
+  NOT               Указывает, что Windows должна выполнить
+                    эту команду, только если условие является ложным.
+
+  ERRORLEVEL число  Условие является истинным, если код возврата последней
+                    выполненной программы не меньше указанного числа.
+ 
+
+  строка1==строка2  Условие является истинным, если указанные строки совпадают.
+ 
+
+  EXIST имя_файла   Условие является истинным, если файл с указанным
+                    именем существует.
+
+  команда           Задает команду, выполняемую при истинности условия.
+                    За этой командой может следовать ключевое слово ELSE
+                    В случае, если указанное условие ложно,
+                    будет выполнена команда, находящаяся после слова ELSE.
+
+Предложение ELSE должно располагаться в той же строке, что и команда, следующая
+за ключевым словом IF. Например:
+
+    IF EXIST имя_файла. (
+        del имя_файла.
+    ) ELSE (
+        echo имя_файла. missing.
+    )
+
+Следующий пример содержит ОШИБКУ, поскольку команда del должна заканчиваться
+переходом на новую строку:
+
+    IF EXIST имя_файла. del имя_файла. ELSE echo имя_файла. missing
+
+Следующий пример также содержит ОШИБКУ, поскольку команда ELSE должна
+располагаться в той же строке, что и команда, следующая за IF:
+
+    IF EXIST имя_файла. del имя_файла.
+    ELSE echo имя_файла. missing
+
+Вот правильный пример, где все команды расположены в одной строке:
+
+    IF EXIST имя_файла. (del имя_файла.) ELSE echo имя_файла. missing
+
+If Command Extensions are enabled IF changes as follows:
+
+    IF [/I] string1 compare-op string2 command
+    IF CMDEXTVERSION number command
+    IF DEFINED variable command
+
+where compare-op may be one of:
+
+    EQU - equal
+    NEQ - not equal
+    LSS - less than
+    LEQ - less than or equal
+    GTR - greater than
+    GEQ - greater than or equal
+
+and the /I switch, if specified, says to do case insensitive string
+compares.  The /I switch can also be used on the string1==string2 form
+of IF.  These comparisons are generic, in that if both string1 and
+string2 are both comprised of all numeric digits, then the strings are
+converted to numbers and a numeric comparison is performed.
+
+The CMDEXTVERSION conditional works just like ERRORLEVEL, except it is
+comparing against an internal version number associated with the Command
+Extensions.  The first version is 1.  It will be incremented by one when
+significant enhancements are added to the Command Extensions.
+CMDEXTVERSION conditional is never true when Command Extensions are
+disabled.
+
+The DEFINED conditional works just like EXIST except it takes an
+environment variable name and returns true if the environment variable
+is defined.
+
+Строка %ERRORLEVEL% будет развернута в строковое представление текущего
+значения кода ошибки ERRORLEVEL, за исключением ситуации, когда уже имеется
+переменная среды с именем ERRORLEVEL; в подобном случае подставляется
+значение этой переменной. Например, с помощью данной строки можно выполнить
+следующее:
+
+    goto answer%ERRORLEVEL%
+    :answer0
+    echo Получен код возврата 0
+    :answer1
+    echo Получен код возврата 1
+
+Допускается и применение описанных выше операторов числового сравнения:
+
+    IF %ERRORLEVEL% LEQ 1 goto okay
+
+Строка %CMDCMDLINE% будет развернута в исходную командную строку, переданную
+CMD.EXE до любой обработки, за исключением ситуации, когда уже определена
+переменная среды с именем CMDCMDLINE; в подобном случае подставляется
+значение этой переменной.
+
+Строка %CMDEXTVERSION% будет развернута в строку, представляющую собой
+текущее значение CMDEXTVERSION, за исключением ситуации, когда уже имеется
+переменная среды с именем CMDEXTVERSION; в подобном случае подставляется
+значение этой переменной.
