@@ -6,13 +6,13 @@ setlocal enabledelayedexpansion
 
 title mygit
 
-set file_log=%~dp0%~n0.log
+set file_log=%~dp0%~n0%~x0.log
 set file_name=%~n0
 
 if "%2"=="" (
- set file_log=%~dp0%~n0.log
+ rem set file_log=%~dp0%~n0%~x0.log
  rem set file_name=%~n0
- set file_log=%cd%\%~n0.log
+ set file_log=%cd%\%~n0%~x0.1.log
 ) else (
  set file_log=%~2
  rem set file_name=%~n2
