@@ -1,5 +1,7 @@
 # Программа для управления репозиториями.
 
+![Batchfile](https://img.shields.io/badge/-Batchfile-090909?style=for-the-badge&logo=Batchfile&logoColor=097CDB)
+
 Привет всем. Hi everyone. :wave:
 
 Пока все изложу все кратко. 
