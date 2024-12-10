@@ -4,6 +4,8 @@
 ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 ![Batchfile](https://img.shields.io/badge/-Batchfile-090909?style=for-the-badge&logo=Batchfile&logoColor=097CDB)
 
+![TEST](https://img.shields.io/badge/TEST-you_like-blue)
+
 Привет всем. Hi everyone. :wave:
 
 Пока все изложу все кратко. 
