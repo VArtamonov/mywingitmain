@@ -18,7 +18,7 @@ if "%2"=="" (
  rem set file_name=%~n2
 )
 
-set MAINTITLE=%~n0 - Программа для управления репозитариями.
+set MAINTITLE=%~n0 - Программа для управления репозиториями.
 
 rem ---------------------------------------------------------------------------------------
 call :LOGLINE1
@@ -116,10 +116,10 @@ rem  set file_name_ini=!file_name!.ini
 rem )
 rem call :LOG "СОЗДАНИЕ ФАЙЛ '%file_name_ini%'"
 rem call :GITGETCONFIG
-rem call :LOGDEBUG "ВВЕДИТЕ НАЗВАНИЕ РЕПОЗИТАРИЯ:"
+rem call :LOGDEBUG "ВВЕДИТЕ НАЗВАНИЕ РЕПОЗИТОРИЯ:"
 rem set /p REPONAME=
 rem set REPONAME=!PARENTFOLDER!
-rem call :LOG "НАЗВАНИЕ РЕПОЗИТАРИЯ:"
+rem call :LOG "НАЗВАНИЕ РЕПОЗИТОРИЯ:"
 rem call :LOG "REPONAME = !REPONAME!"
 rem call :LOG "ЗАПИСЬ В ФАЙЛ '%file_name_ini%'"
 rem echo ; > %file_name_ini%
@@ -186,7 +186,7 @@ if not exist .git (
  if not "%~1" == "gitinit" (
   call :LOGLINE3
   call :LOGWARNING "------------------------------------------------------------------------------------------"
-  call :LOGWARNING " В ЭТОЙ ПАПКЕ ОТСУТСТВУЕТ РЕПОЗИТАРИЙ "
+  call :LOGWARNING " В ЭТОЙ ПАПКЕ ОТСУТСТВУЕТ РЕПОЗИТОРИЙ "
   call :LOGWARNING " НЕОБХОДИМО ЕГО СОЗДАТЬ "
   call :LOGWARNING " КОМАНДОЙ 'run_git.cmd.git.init.cmd' "
   call :LOGWARNING " ИЛИ КОМАНДОЙ 'run_git.cmd gitinit' "
@@ -213,7 +213,7 @@ if "%~1" == "gitinfo" (
 )
 
 if "%~1" == "gitinit" (
- call :LOGDEBUG "СОЗДАНИЕ И ИНИЦИАЛИЗАЦИЯ РЕПОЗИТАРИЯ"
+ call :LOGDEBUG "СОЗДАНИЕ И ИНИЦИАЛИЗАЦИЯ РЕПОЗИТОРИЯ"
 
  call :GETPARENTFOLDER
  call :LOGINFO "ВЕРХНИЙ КАТАЛОГ: '!PARENTFOLDER!'"
@@ -402,21 +402,21 @@ rem ==========
  call :LOGINFO "    '%~1' [КОМАНДЫ] [ПАРАМЕТР] "
  call :LOGINFO " "
  call :LOGINFO "Команды: "
- call :LOGINFO "    create folder       - создание локального репозитария в каталоге folder"
+ call :LOGINFO "    create folder       - создание локального репозитория в каталоге folder"
  call :LOGINFO "                          в каталог копирует все необходимое, после создания все вызовы надо делать из folder "
- call :LOGINFO "    createmaster        - создание главного репозитария на GitHub, для хранения этих утилит "
+ call :LOGINFO "    createmaster        - создание главного репозитория на GitHub, для хранения этих утилит "
  call :LOGINFO " "
- call :LOGINFO " Команды работа с репозитариями:"
- call :LOGINFO "    gitinit             - созданиеи и ининциализация репозитария в текущей папке "
- call :LOGINFO "    autopush            - отправляет все изменения в удаленный репозитария на GitHub "
+ call :LOGINFO " Команды работа с репозиториями:"
+ call :LOGINFO "    gitinit             - созданиеи и ининциализация репозитория в текущей папке "
+ call :LOGINFO "    autopush            - отправляет все изменения в удаленный репозитория на GitHub "
  call :LOGINFO "    autocommit		- автокоммит в текущей датой и временим "
  call :LOGINFO "    remoteadd           - добавление удалённых репозиториев"
  call :LOGINFO "    gitbranch           - команда для управления ветками в репозитории Git"
  call :LOGINFO " "
  call :LOGINFO " Команды для GitHub:"
- call :LOGINFO "    createhub           - создание удаленного репозитария на GitHub, для хранения созданного "
- call :LOGINFO "    githubcreate        - создание удаленного репозитария на GitHub, для хранения созданного "
- call :LOGINFO "    githubdelete        - удаление репозитария на GitHub"
+ call :LOGINFO "    createhub           - создание удаленного репозитория на GitHub, для хранения созданного "
+ call :LOGINFO "    githubcreate        - создание удаленного репозитория на GitHub, для хранения созданного "
+ call :LOGINFO "    githubdelete        - удаление репозитория на GitHub"
  call :LOGINFO " "
  call :LOGINFO "    info                - Информация, команда по умолчанию "
  call :LOGINFO "    help                - Показать эту справку и выйти "
@@ -433,7 +433,7 @@ rem ==========
  call :LOGINFO "ПОИСК УТИЛИТ"
  call :FINDGIT
  call :FINDGITHUBCLI
- call :LOGINFO2 "СКАНИРОВАНИЕ ПАПОК С РЕПОЗИТАРИЯМИ '%CD%'..."
+ call :LOGINFO2 "СКАНИРОВАНИЕ ПАПОК С РЕПОЗИТОРИЯМИ '%CD%'..."
  
  for /d %%i in (*) do (
   cd %%i
@@ -453,7 +453,7 @@ rem ==========
 :gitinfo
  call :LOGLINE2
  rem call :LOGDEBUG "'%0' '%1' '%2'"
- call :LOGINFO2 "ИНФОРМАЦИЯ О РЕПОЗИТАРИИ"
+ call :LOGINFO2 "ИНФОРМАЦИЯ О РЕПОЗИТОРИИ"
 
  call :GETPARENTFOLDER
  set REPONAME=!PARENTFOLDER!
@@ -500,7 +500,7 @@ rem ==========
  ) else (
   call :LOGLINE3
   call :LOGWARNING "------------------------------------------------------------------------------------------"
-  call :LOGWARNING " В ЭТОЙ ПАПКЕ ОТСУТСТВУЕТ РЕПОЗИТАРИЙ "
+  call :LOGWARNING " В ЭТОЙ ПАПКЕ ОТСУТСТВУЕТ РЕПОЗИТОРИЙ "
   call :LOGWARNING "------------------------------------------------------------------------------------------"
   call :LOGLINE3
  )
@@ -565,7 +565,7 @@ for /f "usebackq eol= delims=" %%a in (`"%WGETEXE% --version"`) do (
  ) else (
   call :LOGLINE3
   call :LOGWARNING "------------------------------------------------------------------------------------------"
-  call :LOGWARNING " В ЭТОЙ ПАПКЕ ОТСУТСТВУЕТ РЕПОЗИТАРИЙ "
+  call :LOGWARNING " В ЭТОЙ ПАПКЕ ОТСУТСТВУЕТ РЕПОЗИТОРИЙ "
   call :LOGWARNING "------------------------------------------------------------------------------------------"
   call :LOGLINE3
  )
@@ -711,7 +711,7 @@ rem ==========
  rem call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
  if "%OWNER%" == "" ( 
   call :LOGWARNING "----------------------------------------------------------------------------------------------------"
-  call :LOGWARNING " НЕОБХОДИМО УСТАНОВИТЬ ВЛАДЕЛЬЦА РЕПОЗИТАРИЯ ДЛЯ GitHub ПЕРЕД ЗАПУСКОМ 'GIT INIT'"
+  call :LOGWARNING " НЕОБХОДИМО УСТАНОВИТЬ ВЛАДЕЛЬЦА РЕПОЗИТОРИЯ ДЛЯ GitHub ПЕРЕД ЗАПУСКОМ 'GIT INIT'"
   call :LOGWARNING " КОМАНДОЙ 'git config github.name "ВЛАДЕЛЕЦ"' "
   call :LOGWARNING "----------------------------------------------------------------------------------------------------" 
 
@@ -836,7 +836,7 @@ rem ==========
 :GITINITFILES
  call :LOGLINE2
  call :LOGCALLSTART %0
- call :LOGINFO "СОЗДАНИЕ ФАЙЛОВ В РЕПОЗИТАРИИ ..."
+ call :LOGINFO "СОЗДАНИЕ ФАЙЛОВ В РЕПОЗИТОРИИ ..."
  call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
 
  set pathfiles1=%~dp1GitCopyFiles
@@ -861,7 +861,7 @@ goto :eof
 rem ==========
 :GITINIT
  call :LOGCALLSTART %0
- call :LOGINFO "СОЗДАНИЕ И ИНИЦИАЛИЗАЦИЯ РЕПОЗИТАРИЯ ..."
+ call :LOGINFO "СОЗДАНИЕ И ИНИЦИАЛИЗАЦИЯ РЕПОЗИТОРИЯ ..."
 
 rem ------------------------------------------------------------------------
 rem create a new repository on the command line
@@ -1231,7 +1231,7 @@ rem ==========
 :AUTOSCANGIT
  call :LOGLINE2
  call :LOGDEBUG "CALL %0 %1 %2 %3 %4 %5"
- call :LOGINFO2 "СКАНИРОВАНИЕ ПАПОК С РЕПОЗИТАРИЯМИ '%CD%'..."
+ call :LOGINFO2 "СКАНИРОВАНИЕ ПАПОК С РЕПОЗИТОРИЯМИ '%CD%'..."
  echo off
 
  set scan=
@@ -1257,7 +1257,7 @@ rem ==========
 :AUTOSCANRUN
  call :LOGLINE2
  call :LOGDEBUG "CALL 0='%0' 1='%1' 2='%2' 3='%3' 4='%4' 5='%5'"
- call :LOGINFO2 "СКАНИРОВАНИЕ ПАПОК С РЕПОЗИТАРИЯМИ И ЗАПУСК ..."
+ call :LOGINFO2 "СКАНИРОВАНИЕ ПАПОК С РЕПОЗИТОРИЯМИ И ЗАПУСК ..."
  echo off
 
  if "%~1"=="" (
