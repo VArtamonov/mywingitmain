@@ -67,13 +67,15 @@ README_USE.md - этот файл
 >>`run_git.cmd.createini.cmd`
 
 
-5. Информационные
+### 2.5. Информационные
 
 >>`run_git.cmd.help.cmd` - вывод помощи
 
 >>`run_git.cmd.info.cmd` - вывод информации о установленных программах
 
-6. Набор файлов для сканирования текущего катклога и подкаталогов на наличие репозитариев,
+
+### 2.6. Работа с репозитариями - сканирование папок
+Набор файлов для сканирования текущего катклога и подкаталогов на наличие репозитариев,
 по завершению создаеться файл `run_git.cmd.auto.scan.ini` со списком папок и запуска пакетного режима
 
 >>`run_git.cmd.auto.scan.cmd` - запуск скнирования
@@ -85,7 +87,7 @@ README_USE.md - этот файл
 >>`run_git.cmd.auto.scan.run.push.cmd` - запуск для всех репотазираев команды push
 
 
-7. Набор файлов для тестирования
+### 2.7. Набор файлов для тестирования
 
 >>`run_git.cmd.test.cmd`
 
@@ -95,18 +97,19 @@ README_USE.md - этот файл
 
 >>`run_git.cmd.test.nodebug.cmd`
 
-8. Набор файлов для установки программы в папку **%USERPROFILE%\.spbcmd**
+
+### 2.8. Набор файлов для установки программы в папку **%USERPROFILE%\.spbcmd**
 
 >>`run_git.cmd.install.cmd`
 
 >>`run_git.cmd.install.list-of-excluded-files.txt`
 
 
-9. Используемые программы, ссылки:
-Programs used, links:
-1. **Git for Windows**	https://git-scm.com/download/win
-2. **GitHub CLI**	https://cli.github.com/
-3. **Far Manager**	https://farmanager.com/
+### 2.9. Используемые программы, ссылки:
+ Programs used, links:
+ 1. **Git for Windows**	https://git-scm.com/download/win
+ 2. **GitHub CLI**	https://cli.github.com/
+ 3. **Far Manager**	https://farmanager.com/
 
 Кое какие ссылки:
  How to echo with different colors in the Windows command line https://stackoverflow.com/questions/2048509/how-to-echo-with-different-colors-in-the-windows-command-line
