@@ -13,7 +13,7 @@ So far, I will state everything briefly.
 
 ## Общее описание
 
-Набор личных программ для автоматизации работы с Git.
+Набор личных программ для автоматизации работы с Git ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) .
 Используется как альтернатива архиваторам.
 Работа производиться в Microsoft Windows [https://www.microsoft.com/ru-ru/windows]
 
