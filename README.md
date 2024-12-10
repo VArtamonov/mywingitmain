@@ -1,5 +1,8 @@
 # Программа для управления репозиториями.
 
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/github.svg?style=for-the-badge&logo=github&logoColor=white)
 ![Batchfile](https://img.shields.io/badge/-Batchfile-090909?style=for-the-badge&logo=Batchfile&logoColor=097CDB)
 
 Привет всем. Hi everyone. :wave:
@@ -13,7 +16,7 @@ So far, I will state everything briefly.
 
 ## Общее описание
 
-Набор личных программ для автоматизации работы с Git ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) .
+Набор личных программ для автоматизации работы с Git  .
 Используется как альтернатива архиваторам.
 Работа производиться в Microsoft Windows [https://www.microsoft.com/ru-ru/windows]
 
