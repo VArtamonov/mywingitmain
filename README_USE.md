@@ -28,54 +28,81 @@ README_USE.md - этот файл
 
 >`run_git.cmd` - Главный коммандный (пакетный) файл
 
-`run_git.cmd.auto.commit.add.cmd`
 
-> Работа с репозитариями локально
+1. Работа с репозитариями локально
+
 >>`run_git.cmd.git.init.cmd` - создание репозитария в текущей папке и создание удаленного репозитария на GitHub с именем папки
+
 >>`run_git.cmd.auto.commit.cmd` - выполнение команды commit
+
+>>`run_git.cmd.auto.commit.add.cmd`
+
 >>`run_git.cmd.auto.push.cmd` - выполнение команды push
+
 >>`run_git.cmd.git.info.cmd` - информация о репозитарии
 
-> Работа с репозитариями - Управление ветками
+2. Работа с репозитариями - Управление ветками
+
 >>`run_git.cmd.git.branch.cmd` - команда branch
+
 >>`run_git.cmd.git.branch.new.cmd` - команда branch new
+
 >>`run_git.cmd.git.checkout.cmd` - команда checkout
+
 >>`run_git.cmd.git.checkout.master.cmd`- команда checkout master
 
-> Работа с репозитариями локально - GitHub
+3. Работа с репозитариями локально - GitHub
+
 >>`run_git.cmd.github.create.cmd` - создание репозитария
+
 >>`run_git.cmd.github.delete.cmd` - удаление репозитария
 
 
-> Вспомагательные
+4. Вспомагательные
+
 >>`run_git.cmd.clearlog.cmd` - Удаление всех логов `*.log`
+
 >>`ProjectClean.cmd` - Удаление всех логов `*.log`
+
 >>`run_git.cmd.createini.cmd`
 
-> Информационные
+
+5. Информационные
+
 >>`run_git.cmd.help.cmd` - вывод помощи
+
 >>`run_git.cmd.info.cmd` - вывод информации о установленных программах
 
-> Набор файлов для сканирования текущего катклога и подкаталогов на наличие репозитариев,
+6. Набор файлов для сканирования текущего катклога и подкаталогов на наличие репозитариев,
 по завершению создаеться файл `run_git.cmd.auto.scan.ini` со списком папок и запуска пакетного режима
+
 >>`run_git.cmd.auto.scan.cmd` - запуск скнирования
+
 >>`run_git.cmd.auto.scan.run.cmd`
+
 >>`run_git.cmd.auto.scan.run.commit.cmd` - запуск для всех репотазираев команды commit
+
 >>`run_git.cmd.auto.scan.run.push.cmd` - запуск для всех репотазираев команды push
 
 
-> Набор файлов для тестирования
+7. Набор файлов для тестирования
+
 >>`run_git.cmd.test.cmd`
+
 >>`run_git.cmd.test.debug.cmd`
+
 >>`run_git.cmd.test.debug0.cmd`
+
 >>`run_git.cmd.test.nodebug.cmd`
 
-> Набор файлов для установки программы в папку **%USERPROFILE%\.spbcmd**
+8. Набор файлов для установки программы в папку **%USERPROFILE%\.spbcmd**
+
 >>`run_git.cmd.install.cmd`
+
 >>`run_git.cmd.install.list-of-excluded-files.txt`
 
 
-Используемые программы, ссылки:
+9. Используемые программы, ссылки:
 Programs used, links:
 1. **Git for Windows**	https://git-scm.com/download/win
 2. **GitHub CLI**	https://cli.github.com/
