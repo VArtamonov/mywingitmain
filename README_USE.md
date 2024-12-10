@@ -10,7 +10,7 @@ So far, I will state everything briefly.
 2. [Описание использования](#2-Описание-использования)
 
 ## 1. Общее описание
-
+____
 Набор личных программ для автоматизации работы с Git.
 Используется как альтернатива архиваторам.
 Работа производиться в Microsoft Windows [https://www.microsoft.com/ru-ru/windows]
@@ -27,14 +27,14 @@ So far, I will state everything briefly.
 
 
 ## 2. Описание использования
-
+____
 README_USE.md - этот файл
 
 >`run_git.cmd` - Главный коммандный (пакетный) файл
 
 
 ### 2.1 Работа с репозиториями локально
-
+____
 Working with repositories locally
 
 >>`run_git.cmd.git.init.cmd` - создание репозитория в текущей папке и создание удаленного репозитория на GitHub с именем папки
