@@ -72,6 +72,7 @@ Programs used, links:
  How to echo with different colors in the Windows command line https://stackoverflow.com/questions/2048509/how-to-echo-with-different-colors-in-the-windows-command-line
 
 ____
-УВЫ. ALAS! :raised_hands:
-Перевод делал через Яндекс Переводчик.
-The translation was done through Yandex Translator. https://translate.yandex.ru
+УВЫ. ALAS! :raised_hands:  
+Перевод делал через `Яндекс Переводчик`.  
+The translation was done through `Yandex Translator`. https://translate.yandex.ru  
+Ответы и некоторый текст сформирован `YandexGPT` на основе текстов сайтов. В нём могут быть неточности.  

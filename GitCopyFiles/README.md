@@ -26,6 +26,7 @@ So far, I will state everything briefly.
 
 
 ____
-УВЫ. ALAS! :raised_hands:
-Перевод делал через Яндекс Переводчик.
-The translation was done through Yandex Translator. https://translate.yandex.ru
+УВЫ. ALAS! :raised_hands:  
+Перевод делал через `Яндекс Переводчик`.  
+The translation was done through `Yandex Translator`. https://translate.yandex.ru  
+Ответы и некоторый текст сформирован `YandexGPT` на основе текстов сайтов. В нём могут быть неточности.  
