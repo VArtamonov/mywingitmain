@@ -17,11 +17,11 @@ if "%~1"=="" (
 
 set DEBUG=0
 
-echo .
+echo .1
 run_git.cmd autocommit "%file_log%"
 
-echo .
+echo .2
 run_git.cmd autopush "%file_log%"
 
-echo .
+echo .3
 
