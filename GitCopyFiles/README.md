@@ -28,4 +28,4 @@ So far, I will state everything briefly.
 ____
 УВЫ. ALAS! :raised_hands:
 Перевод делал через Яндекс Переводчик.
-The translation was done through Yandex Translator. https://translate.yandex.ru]
+The translation was done through Yandex Translator. https://translate.yandex.ru
