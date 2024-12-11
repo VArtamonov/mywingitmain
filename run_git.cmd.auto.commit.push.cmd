@@ -1,9 +1,9 @@
 @echo off
 chcp 866 >nul
 
-setlocal
-setlocal enableextensions
-setlocal enabledelayedexpansion
+rem setlocal
+rem setlocal enableextensions
+rem setlocal enabledelayedexpansion
 
 rem set file_log=%~dp0%~n0.log
 rem set file_name=%~n0
