@@ -376,7 +376,8 @@ rem call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 rem call :LOGINFO "END '%~0' ..."
 call :LOGCALLEND %0 "%ERRORLEVEL%"
 call :LOGLINE0
-rem exit /b 0
+endlocal
+exit /b 0
 goto :eof
 
 rem ABBAProgrammMainEnd2
@@ -386,12 +387,14 @@ rem call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 rem call :LOGERROR "END '%~0' ..."
 call :LOGCALLEND %0 "%ERRORLEVEL%"
 call :LOGLINE0
-rem exit /b 1
+endlocal
+exit /b 1
 goto :eof
 rem ABBAProgrammEnd
 
 :END2
-rem exit /b /0
+endlocal
+exit /b /0
 goto :eof
 
 rem ==========
@@ -1800,7 +1803,7 @@ rem ABBALibraryCmdInstallStart
   echo [31mError install path '%~dp0' [0m
   echo .
   echo [32mEnd '%~0' ...[0m
-  exit 2
+  exit /b 2
   goto :eof
  )
 
@@ -1966,4 +1969,7 @@ rem ESC (ASCII: 27 / 0x1B / 033
 rem [nK  Удаляет часть строки. Если n равно двум, очищает всю строку. Положение курсора не меняется.
 rem [nF  Перемещает курсор в начало n-ой (по умолчанию 1-й) строки сверху относительно текущей.
 rem [nG Cursor Horizontal Absolute Перемещает курсор в столбец n.
+goto :eof
+
+exit /b 0
 goto :eof
