@@ -284,6 +284,12 @@ if "%~1" == "autopush" (
  goto :end
 )
 
+if "%~1" == "autocommitpush" (
+ call :GITAUTOCOMMIT %3
+ call :GITAUTOPUSH
+ goto :end
+)
+
 if "%~1" == "checkout" (
  call :GITCHECKOUT %3 %4 %5
  goto :end
