@@ -15,5 +15,5 @@ if "%~1"=="" (
  set file_log=%~1
 )
 
-run_git.cmd autopush "%file_log%"
+call run_git.cmd autopush "%file_log%"
 exit /b

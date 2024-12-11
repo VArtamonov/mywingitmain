@@ -1,9 +1,9 @@
 @echo off
 chcp 866 >nul
 
-rem setlocal
-rem setlocal enableextensions
-rem setlocal enabledelayedexpansion
+setlocal
+setlocal enableextensions
+setlocal enabledelayedexpansion
 
 rem set file_log=%~dp0%~n0.log
 rem set file_name=%~n0
@@ -25,3 +25,4 @@ call run_git.cmd autopush "%file_log%"
 
 echo .3
 
+exit /b

@@ -16,5 +16,9 @@ if "%~1"=="" (
 )
 
 set file_ini=%~dp0%run_git.cmd.gitbranch.ini
+
 rem run_git.cmd gitbranchnew  %file_log% %file_ini%
-run_git.cmd gitbranchnew  %file_log%
+
+call run_git.cmd gitbranchnew  %file_log%
+
+exit /b

@@ -15,4 +15,6 @@ if "%~1"=="" (
  set file_log=%~1
 )
 
-run_git.cmd checkout %file_log% master
+call run_git.cmd checkout %file_log% master
+
+exit /b

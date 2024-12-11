@@ -14,3 +14,5 @@ echo .
 echo Удаление всех логов *.log ...
 del /s /q *.log
 echo .
+
+exit /b

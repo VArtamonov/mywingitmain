@@ -16,5 +16,5 @@ if "%~1"=="" (
  set file_log=%~1
 )
 
-run_git.cmd autoscanrun "%file_log%" commit
+call run_git.cmd autoscanrun "%file_log%" commit
 exit /b

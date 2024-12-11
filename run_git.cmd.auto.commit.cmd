@@ -17,5 +17,5 @@ if "%~1"=="" (
 
 set DEBUG=1
 
-run_git.cmd autocommit "%file_log%"
+call run_git.cmd autocommit "%file_log%"
 exit /b

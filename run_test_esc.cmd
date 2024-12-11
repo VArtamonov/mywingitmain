@@ -7,3 +7,5 @@ setlocal enabledelayedexpansion
 
 echo .........................
 echo [1F[0KScan
+
+exit /b

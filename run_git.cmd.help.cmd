@@ -16,4 +16,7 @@ if "%~1"=="" (
 )
 
 set DEBUG=1
-run_git.cmd help %file_log%
+
+call run_git.cmd help %file_log%
+
+exit /b

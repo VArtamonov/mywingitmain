@@ -16,5 +16,5 @@ if "%~1"=="" (
  set file_log=%~1
 )
 
-run_git.cmd autoscangit "%file_log%"
+call run_git.cmd autoscangit "%file_log%"
 exit /b
