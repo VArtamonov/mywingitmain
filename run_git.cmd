@@ -391,7 +391,7 @@ goto :eof
 rem ABBAProgrammEnd
 
 :END2
-exit 0
+exit /b /0
 goto :eof
 
 rem ==========
