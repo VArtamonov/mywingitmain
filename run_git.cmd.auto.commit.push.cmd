@@ -18,11 +18,11 @@ if "%~1"=="" (
 set DEBUG=0
 
 echo .1
+
 call run_git.cmd autocommit "%file_log%"
+echo .2 - '%ERRORLEVEL%'
 
-echo .2
 call run_git.cmd autopush "%file_log%"
-
-echo .3
+echo .3 - '%ERRORLEVEL%'
 
 exit /b
