@@ -376,7 +376,7 @@ rem call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 rem call :LOGINFO "END '%~0' ..."
 call :LOGCALLEND %0 "%ERRORLEVEL%"
 call :LOGLINE0
-exit /b 0
+rem exit /b 0
 goto :eof
 
 rem ABBAProgrammMainEnd2
@@ -386,12 +386,12 @@ rem call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 rem call :LOGERROR "END '%~0' ..."
 call :LOGCALLEND %0 "%ERRORLEVEL%"
 call :LOGLINE0
-exit /b 1
+rem exit /b 1
 goto :eof
 rem ABBAProgrammEnd
 
 :END2
-exit /b /0
+rem exit /b /0
 goto :eof
 
 rem ==========
