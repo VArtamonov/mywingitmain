@@ -285,7 +285,9 @@ if "%~1" == "autopush" (
 )
 
 if "%~1" == "autocommitpush" (
+ call :LOGWARNING "˜€ƒ 1"
  call :GITAUTOCOMMIT %3
+ call :LOGWARNING "˜€ƒ 2"
  call :GITAUTOPUSH
  goto :end
 )
