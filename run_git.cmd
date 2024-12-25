@@ -284,6 +284,11 @@ if "%~1" == "autopush" (
  goto :end
 )
 
+if "%~1" == "autopull" (
+ call :GITAUTOPULL %3
+ goto :end
+)
+
 if "%~1" == "autocommitpush" (
  call :LOGWARNING "˜€ƒ 1"
  call :GITAUTOCOMMIT %3
@@ -990,6 +995,7 @@ rem ==========
  exit /b %MEMERRORLEVEL%
 goto :eof
 
+
 rem ==========
 :GITAUTOPUSH
  call :LOGLINE2
@@ -1025,8 +1031,32 @@ rem ==========
   call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
  )
 
- call :LOGCALLEND %0 "%ERRORLEVEL%"
+ echo off
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
 goto :eof
+
+rem ==========
+:GITAUTOPULL
+ call :LOGLINE2
+ call :LOGCALLSTART %0
+ call :LOGINFO "GIT PULL ..."
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
+ echo .
+ "%GITEXE%" pull --verbose
+ echo .
+
+ echo off
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
+goto :eof
+
+
 
 rem ==========
 :GITHUBCREATE
