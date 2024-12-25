@@ -1089,6 +1089,7 @@ rem ==========
 
  echo .
  "%GITEXE%" add . --verbose
+ @echo ERRORLEVEL = %ERRORLEVEL%
  echo .
 
  call :GET_DT
