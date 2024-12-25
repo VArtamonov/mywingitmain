@@ -1144,15 +1144,19 @@ rem ==========
  rem echo %ERRORLEVEL%
 
  echo off
- echo ERRORLEVEL = %ERRORLEVEL%
- echo MEMERRORLEVEL = !MEMERRORLEVEL!
 
  if "!MEMERRORLEVEL!" == "128" (
  echo BRANCH = '!BRANCH!'
- if not "!BRANCH!"=="master" ( "%GITEXE%" push --set-upstream origin --verbose )
+ echo ERRORLEVEL = %ERRORLEVEL%
+ echo MEMERRORLEVEL = !MEMERRORLEVEL!
+ if not "!BRANCH!"=="master" ( 
+   echo .
+   "%GITEXE%" push --set-upstream origin --verbose 
+   echo .
+  )
   echo off
-  if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
-  call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
+  rem if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+  rem call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
  )
 
  echo off
