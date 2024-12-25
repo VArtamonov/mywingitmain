@@ -250,6 +250,8 @@ if "%~1" == "gitinit" (
  call :LOGINFO "REPONAME: '!REPONAME!'"
  set REPONAME=!PARENTFOLDER!
 
+ call :GITINITFILES "%~dp0%~n0%~x0" "%ROOTDIR%"
+
  call :GITINIT
 
  set OWNER=
@@ -257,12 +259,14 @@ if "%~1" == "gitinit" (
  call :LOGINFO "REPONAME: '!REPONAME!'"
  call :LOGINFO "OWNER:    '!OWNER!'"
 
- call :GITHUBCREATE !REPONAME!
-
- call :GITINITFILES "%~dp0%~n0%~x0" "%ROOTDIR%"
-
- call :GITAUTOCOMMIT
+ rem call :GITAUTOCOMMIT
  call :GITREMOTEADD !OWNER! !REPONAME!
+
+ call :GITHUBCREATE !REPONAME!
+ if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
+
+ call :GITAUTOPUSH
+ if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
 
  goto :end
 )
@@ -344,6 +348,16 @@ if "%~1" == "gitbranchnew" (
 rem ---------- GitHub Command
 if "%~1" == "githubauth" (
  call :GITHUBAUTH
+ goto :end
+)
+
+if "%~1" == "githubauthlogin" (
+ call :GITHUBAUTHLOGIN
+ goto :end
+)
+
+if "%~1" == "githubauthlogout" (
+ call :GITHUBAUTHLOGOUT
  goto :end
 )
 
@@ -1129,8 +1143,6 @@ rem ==========
  call :LOGCALLSTART "%~0"
  call :LOGINFO "GIT AUTO PUSH REMOTE ..."
 
- rem call :GITHUBAUTH
-
  echo off
  rem for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do ( echo %%a )
  rem "%GITEXE%" branch"
@@ -1239,12 +1251,58 @@ rem ==========
 goto :eof
 
 rem ==========
+:GITHUBAUTHLOGIN
+ call :LOGCALLSTART "%~0"
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
+ call :GITHUBAUTH
+ rem echo ERRORLEVEL=%ERRORLEVEL%
+ if %ERRORLEVEL% EQU 1 (
+  echo .
+  gh auth login --git-protocol https --hostname github.com --web
+  echo .
+ ) else (
+  call :LOGWARNING "------------------------------------------------------------------------------------------"
+  call :LOGWARNING " GITHUB уже АВТОРИЗОВАНЫ в системе"
+  call :LOGWARNING "------------------------------------------------------------------------------------------"
+ )
+
+ echo off
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
+goto :eof
+
+rem ==========
+:GITHUBAUTHLOGOUT
+ call :LOGCALLSTART "%~0"
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
+ call :GITHUBAUTH
+ rem echo ERRORLEVEL=%ERRORLEVEL%
+ if %ERRORLEVEL% EQU 0 (
+  echo .
+  gh auth logout
+  echo .
+ ) else (
+  call :LOGWARNING "------------------------------------------------------------------------------------------"
+  call :LOGWARNING " GITHUB уже вышли из системы"
+  call :LOGWARNING "------------------------------------------------------------------------------------------"
+ )
+
+ echo off
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
+goto :eof
+
+rem ==========
 :GITHUBCREATE
  call :LOGLINE2
  call :LOGINFO "CREATE REMOTE REPO ON GITHUB"
  call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
-
- rem "%GHEXE%" auth login --web
 
  if "%~1"=="" (
   call :LOGERROR "ARG1 = NULL"
@@ -1253,27 +1311,30 @@ rem ==========
   goto FAILURE
  )
 
- echo .
+ call :GITHUBAUTH
+ rem echo ERRORLEVEL=%ERRORLEVEL%
+ if %ERRORLEVEL% EQU 0 (
+  echo .
+  rem Create a new GitHub repository.
+  rem gh repo create [<name>] [flags]
+  rem --private                Make the new repository private
+  rem --public                 Make the new repository public
+  rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
+  "%GHEXE%" repo create %OWNER%/%1 --private --source=. --remote=origin 
+
+  echo .
+  rem Edit repository settings.
+  rem gh repo edit [<repository>] [flags]
+  rem --description string       Description of the repository
+  rem t OWNER/REPO -d "new Description"
+  "%GHEXE%" repo edit %OWNER%/%1 --description "My Repo '%1'"
+ )
+
  echo off
- "%GHEXE%" auth status
-
- echo .
- rem Create a new GitHub repository.
- rem gh repo create [<name>] [flags]
- rem --private                Make the new repository private
- rem --public                 Make the new repository public
- rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
- "%GHEXE%" repo create %OWNER%/%1 --private --source=. --remote=origin 
-
- echo .
- rem Edit repository settings.
- rem gh repo edit [<repository>] [flags]
- rem --description string       Description of the repository
- rem t OWNER/REPO -d "new Description"
- "%GHEXE%" repo edit %OWNER%/%1 --description "My Repo '%1'"
-
- echo off
- if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
 goto :eof
 
 rem ==========
