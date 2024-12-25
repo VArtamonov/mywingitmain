@@ -1129,7 +1129,7 @@ rem ==========
  rem "%GITEXE%" branch"
  set BRANCH=
  for /f "tokens=1*" %%a in ('"git branch"') do ( 
-  echo Debug1 %%a,%%b 
+  call :LOGDEBUG "GIT BRANCH '%%a' '%%b'"
   if "%%a"=="*" (
    rem echo Debug2 %%a,%%b 
     set BRANCH=%%b
