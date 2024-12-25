@@ -1845,10 +1845,11 @@ rem ==========
 :LOGDEBUG
  if defined DEBUG (
   echo DEBUG='!DEBUG!'
-  if "!DEBUG!" == "0" goto :eof
-  call :LOGSTR  "DEBUG" "%~1"
-  call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[120G³" "[94m"
-  call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+  if !DEBUG! EQU 1 (
+   call :LOGSTR  "DEBUG" "%~1"
+   call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[120G³" "[94m"
+   call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+  )
  )
 goto :eof
 
