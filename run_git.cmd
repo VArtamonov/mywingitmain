@@ -1208,7 +1208,6 @@ rem ==========
  exit /b %MEMERRORLEVEL%
 goto :eof
 
-
 rem ==========
 :GITAUTOCOMMITPUSH
  rem call :LOGLINE2
