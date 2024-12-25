@@ -88,7 +88,7 @@ call :LOGTEST "èêéÇÖêäÄ '%~n0%~x0' ≠• 'run_git.cmd'"
 if not "%~n0%~x0"=="run_git.cmd" (
  call :LOGTEST "èêéÇÖêäÄ - OK"
  call :RUNAUTOCMD "%~n0%~x0"
- if %errorlevel% GTR 0 ( goto :FAILURE )
+ if %ERRORLEVEL% GTR 0 ( goto :FAILURE )
  if errorlevel 0 ( goto :END )
 )
 
@@ -480,12 +480,12 @@ rem ==========
   )
 
   if not "%%b"=="cmd" (
-	set ERRORLEVEL=1
+	set ERRORLEVEL=2
 	goto :RUNAUTOCMD1
   )
 
   if not "%%c"=="auto" (
-	set ERRORLEVEL=1
+	set ERRORLEVEL=3
 	goto :RUNAUTOCMD1
   )
 
@@ -502,7 +502,7 @@ rem  )
 	set CMDVAR=!CMDVAR!.%%e
 
   	if not "%%f"=="cmd" (
-		set ERRORLEVEL=1
+		set ERRORLEVEL=4
 		goto :RUNAUTOCMD1
 	  )
 
@@ -524,10 +524,14 @@ rem  )
   goto :RUNAUTOCMD1
  )
 
+ if "!CMDVAR!"=="push" (
+  call :GITAUTOPUSH %3
+  goto :RUNAUTOCMD1
+ )
 
  (
   call :LOGERROR "çÖÇÖêçÄü äéåÄçÑÄ '!CMDVAR!' ..."
-  set ERRORLEVEL=1
+  set ERRORLEVEL=5
  )
 
 :RUNAUTOCMD1
@@ -1828,7 +1832,7 @@ if not "%~1"=="" (
   rem @echo .                                                                                                                    f
   if not "%~2"=="0" ( 
    rem @echo .
-    call :LOGERROR "'%1' - ERRORLEVEL '%~2'" 
+    call :LOGERROR "'%~1' - ERRORLEVEL '%~2'" 
     call :LOGERROR "END '%~1'"
    ) else (
   call :LOGINFO2 "END '%~1' - OK"
