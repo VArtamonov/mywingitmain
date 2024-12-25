@@ -341,6 +341,12 @@ if "%~1" == "gitbranchnew" (
  goto :end
 )
 
+rem ---------- GitHub Command
+if "%~1" == "githubauth" (
+ call :GITHUBAUTH
+ goto :end
+)
+
 if "%~1" == "githubcreate2" (
  call :GITHUBCREATE !REPONAME!
  goto :end
@@ -355,6 +361,7 @@ if "%~1" == "githubdelete" (
  call :GITHUBDELETE %2
  goto :end
 )
+rem ---------- GitHub Command
 
 rem --------------------------------------------------------------------------------------------------------------
 rem ùíé èéäÄ çÖ çìÜçé
@@ -1122,6 +1129,8 @@ rem ==========
  call :LOGCALLSTART "%~0"
  call :LOGINFO "GIT AUTO PUSH REMOTE ..."
 
+ call :GITHUBAUTH
+
  echo off
  rem for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do ( echo %%a )
  rem "%GITEXE%" branch"
@@ -1212,6 +1221,22 @@ rem ==========
  exit /b %MEMERRORLEVEL%
 goto :eof
 
+
+rem ==========
+:GITHUBAUTH
+ call :LOGCALLSTART "%~0"
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
+ echo .
+ "%GHEXE%" auth status
+ echo .
+
+ echo off
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
+goto :eof
 
 rem ==========
 :GITHUBCREATE
@@ -1633,7 +1658,6 @@ for /f ^"usebackq^ eol^=^
         set /a counter+=1
 )
 goto :eof
-
 
 rem call :FINDFILE "wget.exe" "WGETEXE" "%CD%" "C:" "C:\Windows"
 rem call ::FINDFILE1 %1 %2
