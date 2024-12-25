@@ -15,13 +15,13 @@ if "%~1"=="" (
  set file_log=%~1
 )
 
-rem set DEBUG=1
+set DEBUG=1
 
-call run_git.cmd test %file_log%
+call run_git.cmd test2 %file_log%
 
 set MEMERRORLEVEL=!ERRORLEVEL!
+echo !MEMERRORLEVEL!
 if !MEMERRORLEVEL! GTR 1 ( echo [91m.2 ERROR:[0m ERRORLEVEL = !MEMERRORLEVEL! - [%0] )
 if !MEMERRORLEVEL! EQU 0 ( echo [93m.2 INFO:[0m ERRORLEVEL = !MEMERRORLEVEL!  - [%0] )
 exit /b !MEMERRORLEVEL!
 goto :eof
-
