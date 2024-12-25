@@ -1156,14 +1156,17 @@ goto :eof
 
 rem ==========
 :GITAUTOCOMMITPUSH
- call :LOGLINE2
+ rem call :LOGLINE2
  call :LOGCALLSTART "%~0"
  call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
 
  call :LOGWARNING "˜€ƒ 1"
  call :GITAUTOCOMMIT %3
+ call :LOGLINE2
+
  call :LOGWARNING "˜€ƒ 2"
  call :GITAUTOPUSH
+ call :LOGLINE2
 
  echo off
  set MEMERRORLEVEL=!ERRORLEVEL!
