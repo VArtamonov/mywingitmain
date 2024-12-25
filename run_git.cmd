@@ -521,12 +521,17 @@ rem  )
  call :LOGWARNING " "
 
  if "!CMDVAR!"=="commit" (
-  call :GITAUTOCOMMIT %3
+  call :GITAUTOCOMMIT
   goto :RUNAUTOCMD1
  )
 
  if "!CMDVAR!"=="push" (
-  call :GITAUTOPUSH %3
+  call :GITAUTOPUSH
+  goto :RUNAUTOCMD1
+ )
+
+ if "!CMDVAR!"=="commit.push" (
+  call :GITAUTOCOMMITPUSH
   goto :RUNAUTOCMD1
  )
 
@@ -1163,7 +1168,7 @@ rem ==========
  call :LOGWARNING "%~0 - START"
 
  call :LOGWARNING "%~0 - ˜€ƒ 1"
- call :GITAUTOCOMMIT %3
+ call :GITAUTOCOMMIT
  call :LOGLINE2
 
  call :LOGWARNING "%~0 - ˜€ƒ 2"
