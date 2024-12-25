@@ -462,18 +462,19 @@ rem ==========
 
  rem call :GETCMDVAR "%~n0"
  rem if errorlevel 1 goto :FAILURE
- echo "%~n0"
+ echo "%1"
 
  rem run_git.cmd.auto.commit.cmd
  rem run_git.cmd.auto.commit.push.cmd
  for /f "tokens=1,2,3,4,5,6,7 delims=." %%a in ("%~n0%~x0") do (
-  echo 1 - '%%a'
-  echo 2 - '%%b'
-  echo 3 - '%%c'
-  echo 4 - '%%d'
-  echo 5 - '%%e'
-  echo 6 - '%%f'
-  echo 7 - '%%g'
+  rem echo 1 - '%%a'
+  rem echo 2 - '%%b'
+  rem echo 3 - '%%c'
+  rem echo 4 - '%%d'
+  rem echo 5 - '%%e'
+  rem echo 6 - '%%f'
+  rem echo 7 - '%%g'
+  call :LOGDEBUG "'%%a' '%%b' '%%c' '%%d' '%%e' '%%f' '%%g'"
 
   if not "%%a"=="run_git" (
 	set ERRORLEVEL=1
