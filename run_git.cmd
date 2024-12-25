@@ -378,22 +378,26 @@ set errorlevel=1
 goto FAILURE
 
 rem ABBAProgrammMainEnd1
+
+
 :END
+set MEMERRORLEVEL=!ERRORLEVEL!
 call :LOGLINE2
 rem call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 rem call :LOGINFO "END '%~0' ..."
-call :LOGCALLEND %0 "%ERRORLEVEL%"
+call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
 call :LOGLINE0
 endlocal
 exit /b 0
 goto :eof
 
 rem ABBAProgrammMainEnd2
+set MEMERRORLEVEL=!ERRORLEVEL!
 :FAILURE
 call :LOGLINE2
 rem call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 rem call :LOGERROR "END '%~0' ..."
-call :LOGCALLEND %0 "%ERRORLEVEL%"
+call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
 call :LOGLINE0
 endlocal
 exit /b 1
