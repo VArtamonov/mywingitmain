@@ -1105,7 +1105,7 @@ rem ==========
  echo off
  set MEMERRORLEVEL=!ERRORLEVEL!
  if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
- call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ call :LOGCALLEND "%~0" "!MEMERRORLEVEL!"
  exit /b %MEMERRORLEVEL%
 goto :eof
 
