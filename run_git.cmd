@@ -93,7 +93,8 @@ if "%~1" == "" (
   call :LOGTEST "èêéÇÖêäÄ - OK"
   call :RUNAUTOCMD "%~n0%~x0"
   if %ERRORLEVEL% GTR 0 ( goto :FAILURE )
-  if errorlevel 0 ( goto :END )
+
+  goto :END
  )
 )
 
@@ -1191,6 +1192,7 @@ rem ==========
 
  call :LOGWARNING "%~0 - òÄÉ 1"
  call :GITAUTOCOMMIT
+ if %ERRORLEVEL% GTR 0 ( goto :GITAUTOCOMMITPUSH1)
  rem call :LOGLINE2
 
  call :LOGWARNING "%~0 - òÄÉ 2"
@@ -1199,6 +1201,7 @@ rem ==========
 
  call :LOGWARNING "%~0 - END"
 
+:GITAUTOCOMMITPUSH1
  echo off
  set MEMERRORLEVEL=!ERRORLEVEL!
  if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
