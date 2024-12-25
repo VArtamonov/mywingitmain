@@ -1129,7 +1129,7 @@ rem ==========
  call :LOGCALLSTART "%~0"
  call :LOGINFO "GIT AUTO PUSH REMOTE ..."
 
- call :GITHUBAUTH
+ rem call :GITHUBAUTH
 
  echo off
  rem for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do ( echo %%a )
