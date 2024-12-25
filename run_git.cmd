@@ -1089,7 +1089,6 @@ rem ==========
 
  echo .
  "%GITEXE%" add . --verbose
- @echo ERRORLEVEL = %ERRORLEVEL%
  echo .
 
  call :GET_DT
@@ -1105,7 +1104,7 @@ rem ==========
 
  echo .
  "%GITEXE%" commit -a -m "!COMMITTXT!" --verbose
- @echo ERRORLEVEL = %ERRORLEVEL%
+ rem @echo ERRORLEVEL = %ERRORLEVEL%
  echo .
 
  rem call :LOGDEBUG "GIT STATUS ..."
