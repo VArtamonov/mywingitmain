@@ -1,3 +1,4 @@
+@rem run_git.cmd
 @echo off
 chcp 866 >nul
 setlocal
@@ -59,6 +60,64 @@ if defined DEBUG (
 ) else (
  rem echo .DEBUG NO DEFINED
  call :LOGDEBUG		"DEBUG NO DEFINED"
+)
+
+call :LOGLINE2
+call :LOGTEST "èêéÇÖêäÄ '%~n0%~x0' ≠• 'run_git.cmd'"
+if not "%~n0%~x0"=="run_git.cmd" (
+ call :LOGTEST "èêéÇÖêäÄ - OK"
+
+ rem call :GETCMDVAR "%~n0"
+ rem if errorlevel 1 goto :FAILURE
+ echo "%~n0"
+
+ rem run_git.cmd.auto.commit.cmd
+ for /f "tokens=1,2,3,4,5,6,7 delims=." %%a in ("%~n0%~x0") do (
+  echo 1 - '%%a'
+  echo 2 - '%%b'
+  echo 3 - '%%c'
+  echo 4 - '%%d'
+  echo 5 - '%%e'
+  echo 6 - '%%f'
+  echo 7 - '%%g'
+
+  if not "%%a"=="run_git" (
+	set ERRORLEVEL=1
+	goto :FAILURE
+  )
+
+  if not "%%b"=="cmd" (
+	set ERRORLEVEL=1
+	goto :FAILURE
+  )
+
+  if not "%%c"=="auto" (
+	set ERRORLEVEL=1
+	goto :FAILURE
+  )
+
+ set CMDVAR=%%d
+)
+
+ call :LOGWARNING " "
+ call :LOGWARNING " CMDVAR           = '!CMDVAR!' "
+ call :LOGWARNING " "
+ call :LOGWARNING " ------------------------------------------------------------------------------------------"
+ call :LOGWARNING " Ç êÄáêÄÅéíäÖ "
+ call :LOGWARNING " ------------------------------------------------------------------------------------------"
+ call :LOGWARNING " "
+
+
+ (
+  call :LOGERROR "çÖÇÖêçÄü äéåÄçÑÄ '!CMDVAR!' ..."
+  set ERRORLEVEL=1
+  goto :FAILURE
+ )
+
+ if errorlevel 1 goto :FAILURE
+
+ goto :END
+
 )
 
 if "%~1" == "" (
@@ -1706,6 +1765,14 @@ call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
+:LOGTEST
+call :LOGSTR  "TEST " "%~1"
+rem call :LOGSCR  "≥%dt%≥%tlogstr1%≥%tlogstr2%" "[96m"
+call :LOGSCR  "≥%dt%≥%tlogstr1%≥%tlogstr2%[0m[120G≥" "[96m"
+call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
+goto :eof
+
+rem ==========
 :LOGCALLSTART
 rem call :LOGCALLSTART %1
 @echo off
@@ -2002,6 +2069,33 @@ goto :eof
 rem ABBALibraryCmdInstallEnd
 
 goto :eof
+
+
+rem ==========
+rem run_rclone.test.check.cmd
+rem                 ^^^^^ 
+:GETCMDVAR
+set cmdvar1=%~x1
+set CMDVAR=%cmdvar1:~1,10%
+exit /b 0
+goto :eof
+rem ==========
+rem run_rclone.test.check.cmd
+rem ^^^^^^^^^^^^^^^
+:GETCMDVARINI
+rem echo :GETCMDVARINI '%~1'
+set cmdvar1=%~n1
+call :GETCMDVARINI1 "%cmdvar1%"
+rem echo :GETCMDVARINI !cmdvar1!
+set CMDVARINI=!cmdvar1!
+exit /b 0
+goto :eof
+:GETCMDVARINI1
+rem echo :GETCMDVARINI1 '%~1'
+set cmdvar1=%~n1
+exit /b 0
+goto :eof
+
 
 rem ==========
 :CALLANSI
