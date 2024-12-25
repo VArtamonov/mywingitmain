@@ -457,16 +457,15 @@ goto :eof
 
 rem ==========
 :RUNAUTOCMD
-
  call :LOGCALLSTART "%~0"
 
  rem call :GETCMDVAR "%~n0"
  rem if errorlevel 1 goto :FAILURE
- echo "%~1"
-
+ rem echo "%~1"
  rem run_git.cmd.auto.commit.cmd
  rem run_git.cmd.auto.commit.push.cmd
  rem for /f "tokens=1,2,3,4,5,6,7 delims=." %%a in ("%~n0%~x0") do (
+
  for /f "tokens=1,2,3,4,5,6,7 delims=." %%a in ("%~1") do (
   rem echo 1 - '%%a'
   rem echo 2 - '%%b'
@@ -475,7 +474,8 @@ rem ==========
   rem echo 5 - '%%e'
   rem echo 6 - '%%f'
   rem echo 7 - '%%g'
-  call :LOGWARNING "'%%a' '%%b' '%%c' '%%d' '%%e' '%%f' '%%g'"
+ 
+ call :LOGWARNING "'%%a' '%%b' '%%c' '%%d' '%%e' '%%f' '%%g'"
 
   if not "%%a"=="run_git" (
 	set ERRORLEVEL=1
@@ -492,13 +492,13 @@ rem ==========
 	goto :RUNAUTOCMD1
   )
 
-rem run_git.cmd.auto.commit.cmd
+ rem run_git.cmd.auto.commit.cmd
   set CMDVAR=%%d
 
-rem  if "%%e"=="cmd" (
-rem	set ERRORLEVEL=1
-rem	goto :FAILURE
-rem  )
+ rem  if "%%e"=="cmd" (
+ rem	set ERRORLEVEL=1
+ rem	goto :FAILURE
+ rem  )
 
   rem run_git.cmd.auto.commit.push.cmd
   if not "%%e"=="cmd" (
