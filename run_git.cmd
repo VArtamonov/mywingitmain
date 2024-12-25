@@ -72,6 +72,7 @@ if not "%~n0%~x0"=="run_git.cmd" (
  echo "%~n0"
 
  rem run_git.cmd.auto.commit.cmd
+ rem run_git.cmd.auto.commit.push.cmd
  for /f "tokens=1,2,3,4,5,6,7 delims=." %%a in ("%~n0%~x0") do (
   echo 1 - '%%a'
   echo 2 - '%%b'
@@ -96,7 +97,26 @@ if not "%~n0%~x0"=="run_git.cmd" (
 	goto :FAILURE
   )
 
- set CMDVAR=%%d
+rem run_git.cmd.auto.commit.cmd
+  set CMDVAR=%%d
+
+rem  if "%%e"=="cmd" (
+rem	set ERRORLEVEL=1
+rem	goto :FAILURE
+rem  )
+
+  rem run_git.cmd.auto.commit.push.cmd
+  if not "%%e"=="cmd" (
+	set CMDVAR=!CMDVAR!.%%e
+
+  	if not "%%f"=="cmd" (
+		set ERRORLEVEL=1
+		goto :FAILURE
+	  )
+
+  )
+
+
 )
 
  call :LOGWARNING " "
@@ -106,6 +126,11 @@ if not "%~n0%~x0"=="run_git.cmd" (
  call :LOGWARNING " Ç êÄáêÄÅéíäÖ "
  call :LOGWARNING " ------------------------------------------------------------------------------------------"
  call :LOGWARNING " "
+
+ if "!CMDVAR!"=="commit" (
+  call :GITAUTOCOMMIT %3
+  goto :end
+ )
 
 
  (
