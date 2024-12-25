@@ -20,6 +20,7 @@ set DEBUG=0
 echo .1
 rem call run_git.cmd autocommit "%file_log%"
 call run_git.cmd autocommitpush "%file_log%"
+if errorlevel 1 ( echo [91mERROR:[0m ERRORLEVEL = %ERRORLEVEL% )
 echo .2 - '%ERRORLEVEL%'
 
 rem call run_git.cmd autopush "%file_log%"
