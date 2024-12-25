@@ -1133,7 +1133,7 @@ rem ==========
   if "%%a"=="*" (
    rem echo Debug2 %%a,%%b 
     set BRANCH=%%b
-    call :INFO2 "BRANCH = '!BRANCH!'"
+    call :LOGINFO2 "BRANCH = '!BRANCH!'"
     echo .
     "%GITEXE%" push --set-upstream origin !BRANCH! --verbose
     set MEMERRORLEVEL=!ERRORLEVEL!
