@@ -1873,7 +1873,7 @@ rem call :LOGCALLSTART %1
 @echo off
 if not "%~1"=="" (
  rem @echo .
-  call :LOGINFO2 "START '%~1' - OK"
+  call :LOGINFO2 "START: '%~1' - OK"
  ) else (
   call :LOGERROR "'%~0' - CALL ERROR 1"
  )
@@ -1891,9 +1891,9 @@ if not "%~1"=="" (
   if not "%~2"=="0" ( 
    rem @echo .
     call :LOGERROR "'%~1' - ERRORLEVEL '%~2'" 
-    call :LOGERROR "END '%~1'"
+    call :LOGERROR "END: '%~1'"
    ) else (
-  call :LOGINFO2 "END '%~1' - OK"
+  call :LOGINFO2 "END: '%~1' - OK"
   ) 
  ) else (
  call :LOGERROR "'%~0' - CALL ERROR 2"
