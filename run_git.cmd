@@ -212,6 +212,7 @@ if not exist .git (
   call :LOGWARNING " àãà äéåÄçÑéâ 'run_git.cmd gitinit' "
   call :LOGWARNING "------------------------------------------------------------------------------------------" 
   call :LOGLINE3
+  set ERRORLEVEL=1
   goto :FAILURE
  )
 )
