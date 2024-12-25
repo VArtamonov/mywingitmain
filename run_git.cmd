@@ -260,13 +260,13 @@ if "%~1" == "gitinit" (
  call :LOGINFO "OWNER:    '!OWNER!'"
 
  rem call :GITAUTOCOMMIT
- call :GITREMOTEADD !OWNER! !REPONAME!
+ rem call :GITREMOTEADD !OWNER! !REPONAME!
 
  call :GITHUBCREATE !REPONAME!
  if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
 
- call :GITAUTOPUSH
- if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
+ rem call :GITAUTOPUSH
+ rem if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
 
  goto :end
 )
@@ -1018,7 +1018,7 @@ goto :eof
 
 rem ==========
 :GITINIT
- call :LOGCALLSTART %0
+ call :LOGCALLSTART "%~0"
  call :LOGINFO "ëéáÑÄçàÖ à àçàñàÄãàáÄñàü êÖèéáàíéêàü ..."
 
 rem ------------------------------------------------------------------------
@@ -1037,19 +1037,22 @@ rem git branch -M main
 rem git push -u origin main
 rem ------------------------------------------------------------------------
 
+ echo .
  "%GITEXE%" init
+
+ echo .
  "%GITEXE%" add . --verbose
 
+ echo .
  call :GET_DT
  call :LOGDEBUG "CREATE TIMESTAMP '%DT%'"
  "%GITEXE%" commit -a -m "First commit '%dt%'" --verbose
 
+ echo .
  git branch -M main --verbose
 
- call :LOGDEBUG "GIT BRANCH LIST"
- git branch
 
- call :LOGCALLEND %0 "%ERRORLEVEL%"
+ call :LOGCALLEND "%~0" "%ERRORLEVEL%"
 goto :eof
 
 rem ==========
@@ -1259,7 +1262,7 @@ rem ==========
  rem echo ERRORLEVEL=%ERRORLEVEL%
  if %ERRORLEVEL% EQU 1 (
   echo .
-  gh auth login --git-protocol https --hostname github.com --web
+  gh auth login --git-protocol https --hostname github.com --web --scopes delete_repo
   echo .
  ) else (
   call :LOGWARNING "------------------------------------------------------------------------------------------"
@@ -1314,13 +1317,15 @@ rem ==========
  call :GITHUBAUTH
  rem echo ERRORLEVEL=%ERRORLEVEL%
  if %ERRORLEVEL% EQU 0 (
+
   echo .
   rem Create a new GitHub repository.
   rem gh repo create [<name>] [flags]
   rem --private                Make the new repository private
   rem --public                 Make the new repository public
   rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
-  "%GHEXE%" repo create %OWNER%/%1 --private --source=. --remote=origin 
+  rem "%GHEXE%" repo create %OWNER%/%1 --private --source=. --remote=origin
+  "%GHEXE%" repo create %OWNER%/%1 --private --source=. --remote=origin --push
 
   echo .
   rem Edit repository settings.
@@ -1328,6 +1333,8 @@ rem ==========
   rem --description string       Description of the repository
   rem t OWNER/REPO -d "new Description"
   "%GHEXE%" repo edit %OWNER%/%1 --description "My Repo '%1'"
+
+  echo .
  )
 
  echo off
