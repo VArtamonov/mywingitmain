@@ -20,9 +20,9 @@ set DEBUG=0
 echo [93m.1 INFO:[0m - [%0]
 
 call run_git.cmd autocommit "%file_log%"
-
-if errorlevel 1 ( echo [91m.2 ERROR:[0m ERRORLEVEL = %ERRORLEVEL% - [%0] )
-if errorlevel 0 ( echo [93m.2 INFO:[0m ERRORLEVEL = %ERRORLEVEL%  - [%0] )
+set MEMERRORLEVEL=!ERRORLEVEL!
+if %MEMERRORLEVEL%==1 ( echo [91m.2 ERROR:[0m ERRORLEVEL = %ERRORLEVEL% - [%0] )
+if %MEMERRORLEVEL%==0( echo [93m.2 INFO:[0m ERRORLEVEL = %ERRORLEVEL%  - [%0] )
 
 exit /b 0
 goto :eof
