@@ -1100,8 +1100,8 @@ goto :eof
 
 rem ==========
 :GITAUTOPUSH
- call :LOGLINE2
- call :LOGCALLSTART %0
+ rem call :LOGLINE2
+ call :LOGCALLSTART "%~0"
  call :LOGINFO "GIT AUTO PUSH REMOTE ..."
 
  echo off
@@ -1142,8 +1142,8 @@ goto :eof
 
 rem ==========
 :GITAUTOPULL
- call :LOGLINE2
- call :LOGCALLSTART %0
+ rem call :LOGLINE2
+ call :LOGCALLSTART "%~0"
  call :LOGINFO "GIT PULL ..."
  call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
 
@@ -1169,11 +1169,11 @@ rem ==========
 
  call :LOGWARNING "%~0 - ˜€ƒ 1"
  call :GITAUTOCOMMIT
- call :LOGLINE2
+ rem call :LOGLINE2
 
  call :LOGWARNING "%~0 - ˜€ƒ 2"
  call :GITAUTOPUSH
- call :LOGLINE2
+ rem call :LOGLINE2
 
  call :LOGWARNING "%~0 - END"
 
@@ -1183,8 +1183,6 @@ rem ==========
  call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
  exit /b %MEMERRORLEVEL%
 goto :eof
-
-
 
 
 rem ==========
