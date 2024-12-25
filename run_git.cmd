@@ -986,8 +986,10 @@ rem ==========
  rem "%GITEXE%" status --verbose
 
  echo off
- if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
- call :LOGCALLEND %0 "%ERRORLEVEL%"
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
 goto :eof
 
 rem ==========
