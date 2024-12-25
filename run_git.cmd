@@ -490,7 +490,7 @@ rem ==========
   rem echo 6 - '%%f'
   rem echo 7 - '%%g'
  
- call :LOGWARNING "'%%a' '%%b' '%%c' '%%d' '%%e' '%%f' '%%g'"
+  call :LOGWARNING "'%%a' '%%b' '%%c' '%%d' '%%e' '%%f' '%%g'"
 
   if not "%%a"=="run_git" (
 	set ERRORLEVEL=1
