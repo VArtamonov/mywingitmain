@@ -60,7 +60,7 @@ if defined DEBUG (
 
 ) else (
  rem echo .DEBUG NO DEFINED
- call :LOGDEBUG		"DEBUG NO DEFINED"
+ call :LOGDEBUG "DEBUG NO DEFINED"
 )
 rem ---------- éíãÄÑäÄ ----------
 
@@ -85,8 +85,8 @@ rem call :LOGINFO "RCLONEEXE = '%RCLONEEXE%'"
 rem call :LOGINFO "GITEXE    = '%GITEXE%'"
 rem call :LOGINFO "GHEXE     = '%GHEXE%'"
 
-echo 0 = '%~0'
-echo 1 = '%~1'
+rem echo 0 = '%~0'
+rem echo 1 = '%~1'
 
 if "%~1" == "" (
  call :LOGLINE2
@@ -212,7 +212,7 @@ if not exist .git (
   call :LOGWARNING " àãà äéåÄçÑéâ 'run_git.cmd gitinit' "
   call :LOGWARNING "------------------------------------------------------------------------------------------" 
   call :LOGLINE3
-  set ERRORLEVEL=1
+  set ERRORLEVEL=100
   goto :FAILURE
  )
 )
@@ -1992,7 +1992,6 @@ rem ABBALibraryCmdInstallStart
  REM echo .. "!pathcmd!"
  call :LOGINFO "PROGRAMM PATH = [93m'%~dp1'[0m"
  call :LOGINFO "PROGRAMM INSTALL PATH = [93m'!pathcmd!'[0m"
-
 
  if "%~dp0" == "!pathcmd!\" (
   echo [31mError install path '%~dp0' [0m
