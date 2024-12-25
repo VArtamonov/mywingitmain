@@ -17,11 +17,11 @@ if "%~1"=="" (
 
 set DEBUG=0
 
-echo .1
+echo [93m.1 INFO:[0m
 rem call run_git.cmd autocommit "%file_log%"
 call run_git.cmd autocommitpush "%file_log%"
 if errorlevel 1 ( echo [91m.2 ERROR:[0m ERRORLEVEL = %ERRORLEVEL% )
-if errorlevel 0 ( echo [92m.2 INFO:[0m ERRORLEVEL = %ERRORLEVEL% )
+if errorlevel 0 ( echo [93m.2 INFO:[0m ERRORLEVEL = %ERRORLEVEL% )
 
 exit /b 0
 goto :eof
