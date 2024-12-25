@@ -413,6 +413,7 @@ rem call :LOGDEBUG "ERRORLEVEL %ERRORLEVEL%"
 rem call :LOGINFO "END '%~0' ..."
 call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
 call :LOGLINE0
+echo MEMERRORLEVEL = '%MEMERRORLEVEL%'
 exit /b %MEMERRORLEVEL%
 goto :eof
 
