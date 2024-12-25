@@ -17,4 +17,9 @@ if "%~1"=="" (
 )
 
 call run_git.cmd autoscanrun "%file_log%" 
-exit /b
+
+set MEMERRORLEVEL=!ERRORLEVEL!
+if "%MEMERRORLEVEL%"=="1" ( echo [91m.2 ERROR:[0m ERRORLEVEL = %ERRORLEVEL% - [%0] )
+if "%MEMERRORLEVEL%"=="0" ( echo [93m.2 INFO:[0m ERRORLEVEL = %ERRORLEVEL%  - [%0] )
+exit /b %MEMERRORLEVEL%
+goto :eof
