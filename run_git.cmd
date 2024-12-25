@@ -1127,6 +1127,7 @@ rem ==========
  rem echo %ERRORLEVEL%
 
  echo off
+ echo ERRORLEVEL = %ERRORLEVEL%
  if not "%ERRORLEVEL%" == "128" (
  echo BRANCH = '!BRANCH!'
  if not "!BRANCH!"=="master" ( "%GITEXE%" push --set-upstream origin --verbose )
