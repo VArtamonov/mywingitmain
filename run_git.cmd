@@ -85,13 +85,18 @@ rem call :LOGINFO "RCLONEEXE = '%RCLONEEXE%'"
 rem call :LOGINFO "GITEXE    = '%GITEXE%'"
 rem call :LOGINFO "GHEXE     = '%GHEXE%'"
 
-call :LOGLINE2
-call :LOGTEST "èêéÇÖêäÄ '%~n0%~x0' ≠• 'run_git.cmd'"
-if not "%~n0%~x0"=="run_git.cmd" (
- call :LOGTEST "èêéÇÖêäÄ - OK"
- call :RUNAUTOCMD "%~n0%~x0"
- if %ERRORLEVEL% GTR 0 ( goto :FAILURE )
- if errorlevel 0 ( goto :END )
+echo 0 = '%~0'
+echo 1 = '%~1'
+
+if "%~1" == "" (
+ call :LOGLINE2
+ call :LOGTEST "èêéÇÖêäÄ '%~n0%~x0' ≠• 'run_git.cmd'"
+ if not "%~n0%~x0"=="run_git.cmd" (
+  call :LOGTEST "èêéÇÖêäÄ - OK"
+  call :RUNAUTOCMD "%~n0%~x0"
+  if %ERRORLEVEL% GTR 0 ( goto :FAILURE )
+  if errorlevel 0 ( goto :END )
+ )
 )
 
 if "%~1" == "" (
@@ -191,6 +196,9 @@ if "%~1" == "info" (
 )
 
 if "%~1" == "test" ( 
+  call :LOGWARNING "------------------------------------------------------------------------------------------"
+  call :LOGWARNING " íÖëíàêéÇÄçàÖ "
+  call :LOGWARNING "------------------------------------------------------------------------------------------"
  goto :end
 )
 
