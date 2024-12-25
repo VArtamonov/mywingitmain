@@ -88,6 +88,8 @@ call :LOGTEST "‚…Š€ '%~n0%~x0' ­¥ 'run_git.cmd'"
 if not "%~n0%~x0"=="run_git.cmd" (
  call :LOGTEST "‚…Š€ - OK"
  call :RUNAUTOCMD "%~n0%~x0"
+ if errorlevel 1 ( goto :FAILURE )
+ if errorlevel 0 ( goto :END )
 )
 
 if "%~1" == "" (
