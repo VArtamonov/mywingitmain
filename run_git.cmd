@@ -1844,6 +1844,7 @@ goto :eof
 rem ==========
 :LOGDEBUG
  if defined DEBUG (
+  echo DEBUG='!DEBUG!'
   if "!DEBUG!" == "0" goto :eof
   call :LOGSTR  "DEBUG" "%~1"
   call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[120G³" "[94m"
