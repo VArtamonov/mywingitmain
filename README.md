@@ -56,10 +56,13 @@ run_git.cmd <command>
 
 ```
 
-So far, I will state everything briefly.
-A set of personal programs for automating work with Git.
-Used as an alternative to the archiver.
-The work is done in Microsoft Windows [https://www.microsoft.com/ru-ru/windows]
+
+
+
+So far, I will state everything briefly.  
+A set of personal programs for automating work with Git.  
+Used as an alternative to the archiver.  
+The work is done in Microsoft Windows [https://www.microsoft.com/ru-ru/windows]  
 
 Используемые программы, ссылки:
 Programs used, links:
