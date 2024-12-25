@@ -300,10 +300,11 @@ if "%~1" == "autopull" (
 )
 
 if "%~1" == "autocommitpush" (
- call :LOGWARNING "˜€ƒ 1"
- call :GITAUTOCOMMIT %3
- call :LOGWARNING "˜€ƒ 2"
- call :GITAUTOPUSH
+ call :GITAUTOCOMMITPUSH
+ rem call :LOGWARNING "˜€ƒ 1"
+ rem call :GITAUTOCOMMIT %3
+ rem call :LOGWARNING "˜€ƒ 2"
+ rem call :GITAUTOPUSH
  goto :end
 )
 
@@ -1151,6 +1152,26 @@ rem ==========
  call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
  exit /b %MEMERRORLEVEL%
 goto :eof
+
+
+rem ==========
+:GITAUTOCOMMITPUSH
+ call :LOGLINE2
+ call :LOGCALLSTART "%~0"
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
+ call :LOGWARNING "˜€ƒ 1"
+ call :GITAUTOCOMMIT %3
+ call :LOGWARNING "˜€ƒ 2"
+ call :GITAUTOPUSH
+
+ echo off
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
+goto :eof
+
 
 
 
