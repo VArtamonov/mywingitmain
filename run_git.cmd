@@ -1128,7 +1128,7 @@ rem ==========
 
  echo off
  if not "%ERRORLEVEL%" == "128" (
- rem echo "!BRANCH!"
+ echo BRANCH = '!BRANCH!'
  if not "!BRANCH!"=="master" ( "%GITEXE%" push --set-upstream origin --verbose )
   echo off
   if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
