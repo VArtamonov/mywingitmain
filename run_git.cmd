@@ -1846,6 +1846,7 @@ rem ==========
  if defined DEBUG (
   echo DEBUG='!DEBUG!'
   if !DEBUG! EQU 1 (
+   echo '%dt%' '%tlogstr1%' '%tlogstr2%'
    call :LOGSTR  "DEBUG" "%~1"
    call :LOGSCR  "³!dt!³%tlogstr1%³%tlogstr%[0m[120G³" "[94m"
    call :LOGFILE "!dt! !tlogstr1! !tlogstr2!"
