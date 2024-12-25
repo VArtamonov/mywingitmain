@@ -1,9 +1,9 @@
 # Программа для управления репозиториями.
 
-Привет всем. Hi everyone. :wave:
+Привет всем. Hi everyone. :wave:  
 
-Пока все изложу все кратко. 
-So far, I will state everything briefly.
+Пока все изложу все кратко.  
+So far, I will state everything briefly.  
 
 ## Оглавление
 1. [Общее описание](#1-Общее-описание)
