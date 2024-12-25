@@ -1105,6 +1105,7 @@ rem ==========
 
  echo .
  "%GITEXE%" commit -a -m "!COMMITTXT!" --verbose
+ @echo ERRORLEVEL = %ERRORLEVEL%
  echo .
 
  rem call :LOGDEBUG "GIT STATUS ..."
