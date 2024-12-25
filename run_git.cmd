@@ -1061,8 +1061,8 @@ goto :eof
 
 rem ==========
 :GITAUTOCOMMIT
- call :LOGLINE2
- call :LOGCALLSTART %0
+ rem call :LOGLINE2
+ call :LOGCALLSTART "%~0"
  call :LOGINFO "GIT ADD AUTO COMMIT ..."
  call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
 
