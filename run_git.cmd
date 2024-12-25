@@ -51,8 +51,8 @@ if defined DEBUG (
   rem call :LOGCALLEND
   rem call :LOGCALLEND %0
 
-  call :LOGCALLSTART %0
-  call :LOGCALLEND %0 "%ERRORLEVEL%"
+  call :LOGCALLSTART "%~0"
+  call :LOGCALLEND "%~0" "%ERRORLEVEL%"
  ) else (
   call :LOGINFO2 "êÖÜàå éíãÄÑäà - éíäãûóÖç"
  )
@@ -63,86 +63,31 @@ if defined DEBUG (
 )
 
 call :LOGLINE2
+rem root dir
+set ROOTDIR=%CD%
+call :LOG "ROOTDIR = '!ROOTDIR!' ..."
+call :CHANGEDIR "%ROOTDIR%"
+
+call :LOGLINE2
+call :LOGINFO2 "èéàëä ìíàãàí"
+call :FINDZIP
+call :FINDWGET
+call :FINDRCLONE
+call :FINDGIT
+call :FINDGITHUBCLI
+
+call :LOGLINE2
+call :LOGINFO "ZIPEXE    = '%ZIPEXE%'"
+call :LOGINFO "WGETEXE   = '%WGETEXE%'"
+call :LOGINFO "RCLONEEXE = '%RCLONEEXE%'"
+call :LOGINFO "GITEXE    = '%GITEXE%'"
+call :LOGINFO "GHEXE     = '%GHEXE%'"
+
+call :LOGLINE2
 call :LOGTEST "èêéÇÖêäÄ '%~n0%~x0' ≠• 'run_git.cmd'"
 if not "%~n0%~x0"=="run_git.cmd" (
  call :LOGTEST "èêéÇÖêäÄ - OK"
-
- rem call :GETCMDVAR "%~n0"
- rem if errorlevel 1 goto :FAILURE
- echo "%~n0"
-
- rem run_git.cmd.auto.commit.cmd
- rem run_git.cmd.auto.commit.push.cmd
- for /f "tokens=1,2,3,4,5,6,7 delims=." %%a in ("%~n0%~x0") do (
-  echo 1 - '%%a'
-  echo 2 - '%%b'
-  echo 3 - '%%c'
-  echo 4 - '%%d'
-  echo 5 - '%%e'
-  echo 6 - '%%f'
-  echo 7 - '%%g'
-
-  if not "%%a"=="run_git" (
-	set ERRORLEVEL=1
-	goto :FAILURE
-  )
-
-  if not "%%b"=="cmd" (
-	set ERRORLEVEL=1
-	goto :FAILURE
-  )
-
-  if not "%%c"=="auto" (
-	set ERRORLEVEL=1
-	goto :FAILURE
-  )
-
-rem run_git.cmd.auto.commit.cmd
-  set CMDVAR=%%d
-
-rem  if "%%e"=="cmd" (
-rem	set ERRORLEVEL=1
-rem	goto :FAILURE
-rem  )
-
-  rem run_git.cmd.auto.commit.push.cmd
-  if not "%%e"=="cmd" (
-	set CMDVAR=!CMDVAR!.%%e
-
-  	if not "%%f"=="cmd" (
-		set ERRORLEVEL=1
-		goto :FAILURE
-	  )
-
-  )
-
-
-)
-
- call :LOGWARNING " "
- call :LOGWARNING " CMDVAR           = '!CMDVAR!' "
- call :LOGWARNING " "
- call :LOGWARNING " ------------------------------------------------------------------------------------------"
- call :LOGWARNING " Ç êÄáêÄÅéíäÖ "
- call :LOGWARNING " ------------------------------------------------------------------------------------------"
- call :LOGWARNING " "
-
- if "!CMDVAR!"=="commit" (
-  call :GITAUTOCOMMIT %3
-  goto :end
- )
-
-
- (
-  call :LOGERROR "çÖÇÖêçÄü äéåÄçÑÄ '!CMDVAR!' ..."
-  set ERRORLEVEL=1
-  goto :FAILURE
- )
-
- if errorlevel 1 goto :FAILURE
-
- goto :END
-
+ call :RUNAUTOCMD "%~n0%~x0"
 )
 
 if "%~1" == "" (
@@ -157,12 +102,6 @@ if "%~1" == "" (
   rem call :LOGLINE3
  goto :end
 )
-
-call :LOGLINE2
-rem root dir
-set ROOTDIR=%CD%
-call :LOG "ROOTDIR = '!ROOTDIR!' ..."
-CALL :CHANGEDIR "%ROOTDIR%"
 
 if "%~1" == "help" (
  call :help %~n0
@@ -237,21 +176,6 @@ if "%~1" == "autoscanrun" (
  call :AUTOSCANRUN %file_scan_ini% %3 %4 %5
  goto :end
 )
-
-call :LOGLINE2
-call :LOGINFO2 "èéàëä ìíàãàí"
-call :FINDZIP
-call :FINDWGET
-call :FINDRCLONE
-call :FINDGIT
-call :FINDGITHUBCLI
-
-call :LOGLINE2
-call :LOGINFO "ZIPEXE    = '%ZIPEXE%'"
-call :LOGINFO "WGETEXE   = '%WGETEXE%'"
-call :LOGINFO "RCLONEEXE = '%RCLONEEXE%'"
-call :LOGINFO "GITEXE    = '%GITEXE%'"
-call :LOGINFO "GHEXE     = '%GHEXE%'"
 
 echo off
 rem call :GITREADINIFILE
@@ -526,6 +450,88 @@ rem ==========
 
  call :LOGCALLEND "%0" "%ERRORLEVEL%"
 
+goto :eof
+
+rem ==========
+:RUNAUTOCMD
+
+ call :LOGCALLSTART "%~0"
+
+ rem call :GETCMDVAR "%~n0"
+ rem if errorlevel 1 goto :FAILURE
+ echo "%~n0"
+
+ rem run_git.cmd.auto.commit.cmd
+ rem run_git.cmd.auto.commit.push.cmd
+ for /f "tokens=1,2,3,4,5,6,7 delims=." %%a in ("%~n0%~x0") do (
+  echo 1 - '%%a'
+  echo 2 - '%%b'
+  echo 3 - '%%c'
+  echo 4 - '%%d'
+  echo 5 - '%%e'
+  echo 6 - '%%f'
+  echo 7 - '%%g'
+
+  if not "%%a"=="run_git" (
+	set ERRORLEVEL=1
+	goto :RUNAUTOCMD1
+  )
+
+  if not "%%b"=="cmd" (
+	set ERRORLEVEL=1
+	goto :RUNAUTOCMD1
+  )
+
+  if not "%%c"=="auto" (
+	set ERRORLEVEL=1
+	goto :RUNAUTOCMD1
+  )
+
+rem run_git.cmd.auto.commit.cmd
+  set CMDVAR=%%d
+
+rem  if "%%e"=="cmd" (
+rem	set ERRORLEVEL=1
+rem	goto :FAILURE
+rem  )
+
+  rem run_git.cmd.auto.commit.push.cmd
+  if not "%%e"=="cmd" (
+	set CMDVAR=!CMDVAR!.%%e
+
+  	if not "%%f"=="cmd" (
+		set ERRORLEVEL=1
+		goto :RUNAUTOCMD1
+	  )
+
+  )
+
+
+)
+
+ call :LOGWARNING " "
+ call :LOGWARNING " CMDVAR           = '!CMDVAR!' "
+ call :LOGWARNING " "
+ call :LOGWARNING " ------------------------------------------------------------------------------------------"
+ call :LOGWARNING " Ç êÄáêÄÅéíäÖ "
+ call :LOGWARNING " ------------------------------------------------------------------------------------------"
+ call :LOGWARNING " "
+
+ if "!CMDVAR!"=="commit" (
+  call :GITAUTOCOMMIT %3
+  goto :RUNAUTOCMD1
+ )
+
+
+ (
+  call :LOGERROR "çÖÇÖêçÄü äéåÄçÑÄ '!CMDVAR!' ..."
+  set ERRORLEVEL=1
+ )
+
+:RUNAUTOCMD1
+set MEMERRORLEVEL=!ERRORLEVEL!
+call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+exit /b %MEMERRORLEVEL%
 goto :eof
 
 rem ==========
