@@ -31,6 +31,7 @@ call :LOGINFO "íÖäìôÖâ äÄíÄãéÉ: '%CD%'"
 call :LOGINFO "ëãìóÄâçéÖ ÑÖëüíàóçéÖ óàëãé: %RANDOM%"
 call :LOGCALLSTART "%~0"
 
+rem ---------- éíãÄÑäÄ ----------
 if defined DEBUG (
  call :LOGLINE2
  rem set DEBUG=1
@@ -61,6 +62,7 @@ if defined DEBUG (
  rem echo .DEBUG NO DEFINED
  call :LOGDEBUG		"DEBUG NO DEFINED"
 )
+rem ---------- éíãÄÑäÄ ----------
 
 call :LOGLINE2
 rem root dir
@@ -70,18 +72,18 @@ call :CHANGEDIR "%ROOTDIR%"
 
 call :LOGLINE2
 call :LOGINFO2 "èéàëä ìíàãàí"
-call :FINDZIP
-call :FINDWGET
-call :FINDRCLONE
+rem call :FINDZIP
+rem call :FINDWGET
+rem call :FINDRCLONE
 call :FINDGIT
 call :FINDGITHUBCLI
 
-call :LOGLINE2
-call :LOGINFO "ZIPEXE    = '%ZIPEXE%'"
-call :LOGINFO "WGETEXE   = '%WGETEXE%'"
-call :LOGINFO "RCLONEEXE = '%RCLONEEXE%'"
-call :LOGINFO "GITEXE    = '%GITEXE%'"
-call :LOGINFO "GHEXE     = '%GHEXE%'"
+rem call :LOGLINE2
+rem call :LOGINFO "ZIPEXE    = '%ZIPEXE%'"
+rem call :LOGINFO "WGETEXE   = '%WGETEXE%'"
+rem call :LOGINFO "RCLONEEXE = '%RCLONEEXE%'"
+rem call :LOGINFO "GITEXE    = '%GITEXE%'"
+rem call :LOGINFO "GHEXE     = '%GHEXE%'"
 
 call :LOGLINE2
 call :LOGTEST "èêéÇÖêäÄ '%~n0%~x0' ≠• 'run_git.cmd'"
@@ -1129,7 +1131,9 @@ rem ==========
 
  echo off
  echo ERRORLEVEL = %ERRORLEVEL%
- if not "%ERRORLEVEL%" == "128" (
+ echo MEMERRORLEVEL = !MEMERRORLEVEL!
+
+ if "!MEMERRORLEVEL!" == "128" (
  echo BRANCH = '!BRANCH!'
  if not "!BRANCH!"=="master" ( "%GITEXE%" push --set-upstream origin --verbose )
   echo off
