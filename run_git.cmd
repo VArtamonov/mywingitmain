@@ -27,16 +27,17 @@ call :LOGDEBUG "MAINTITLE = '%MAINTITLE%'"
 title %MAINTITLE%
 call :LOGINFO "íÖäìôÖâ äÄíÄãéÉ: '%CD%'"
 call :LOGINFO "ëãìóÄâçéÖ ÑÖëüíàóçéÖ óàëãé: %RANDOM%"
-call :LOGCALLSTART "%~0"
+call :LOGCALLSTART "%~0" "1"
 
 rem ---------- éíãÄÑäÄ ----------
+call :LOGLINE2
 if defined DEBUG (
- call :LOGLINE2
+ rem call :LOGLINE2
  rem set DEBUG=1
  rem echo .DEBUG=%DEBUG%
  call :LOGINFO2		"DEBUG = '%DEBUG%'"
 
- if "%DEBUG%"=="1" (
+ if "!DEBUG!"=="1" (
   call :LOGINFO2 "êÖÜàå éíãÄÑäà - ÇäãûóÖç"
   call :LOGLINE2
   call :LOGINFO		"TEST INFO	..."
@@ -52,13 +53,14 @@ if defined DEBUG (
 
   call :LOGCALLSTART "%~0"
   call :LOGCALLEND "%~0" "%ERRORLEVEL%"
+
  ) else (
   call :LOGINFO2 "êÖÜàå éíãÄÑäà - éíäãûóÖç"
  )
 
 ) else (
  rem echo .DEBUG NO DEFINED
- call :LOGDEBUG "DEBUG NO DEFINED"
+ call :LOGWARNING "DEBUG NO DEFINED"
 )
 rem ---------- éíãÄÑäÄ ----------
 
@@ -70,11 +72,16 @@ call :CHANGEDIR "%ROOTDIR%"
 
 call :LOGLINE2
 call :LOGINFO2 "èéàëä ìíàãàí"
+
 rem call :FINDZIP
 rem call :FINDWGET
 rem call :FINDRCLONE
+
 call :FINDGIT
+if %ERRORLEVEL% GTR 0 ( goto :FINDFAILURE)
+
 call :FINDGITHUBCLI
+if %ERRORLEVEL% GTR 0 ( goto :FINDFAILURE)
 
 rem call :LOGLINE2
 rem call :LOGINFO "ZIPEXE    = '%ZIPEXE%'"
@@ -195,9 +202,21 @@ if "%~1" == "info" (
 )
 
 if "%~1" == "test" ( 
+ call :LOGLINE2
  call :LOGWARNING "------------------------------------------------------------------------------------------"
  call :LOGWARNING " íÖëíàêéÇÄçàÖ "
  call :LOGWARNING "------------------------------------------------------------------------------------------"
+
+ call :LOGWARNING "'%~0' '%~1' '%~2' '%~3' '%~4' '%~5' '%~6'"
+
+ call :FINDFILE "wget.exe" "WGETEXE2"
+ if !ERRORLEVEL! GTR 0 ( goto :FINDFAILURE)
+
+ if not "%~3"=="" (
+  call :FINDFILE "%~3" "TESTEXE"
+  if !ERRORLEVEL! GTR 0 ( goto :FINDFAILURE)
+ )
+
  goto :end
 )
 
@@ -434,30 +453,46 @@ goto FAILURE
 
 rem ABBAProgrammMainEnd1
 :END
-set MEMERRORLEVEL=!ERRORLEVEL!
-call :LOGLINE2
-call :LOGDEBUG "ERRORLEVEL %MEMERRORLEVEL%"
-call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
-call :LOGLINE0
-exit /b %MEMERRORLEVEL%
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ call :LOGLINE2
+ call :LOGDEBUG "ERRORLEVEL %MEMERRORLEVEL%"
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%" "1"
+ call :LOGLINE0
+ exit /b %MEMERRORLEVEL%
 goto :eof
 
 rem ABBAProgrammMainEnd2
 :FAILURE
-set MEMERRORLEVEL=!ERRORLEVEL!
-call :LOGLINE2
-call :LOGDEBUG "ERRORLEVEL %MEMERRORLEVEL%"
-call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
-call :LOGLINE0
-exit /b %MEMERRORLEVEL%
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ call :LOGLINE2
+ call :LOGDEBUG "ERRORLEVEL %MEMERRORLEVEL%"
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%" "1"
+ call :LOGLINE0
+ exit /b %MEMERRORLEVEL%
 goto :eof
 rem ABBAProgrammEnd
 
 rem ==========
 :END2
-endlocal
-exit /b /0
+ endlocal
+ exit /b /0
 goto :eof
+
+rem ==========
+:FINDFAILURE
+ call :LOGLINE2
+ call :LOGWARNING "------------------------------------------------------------------------------------------"
+ call :LOGWARNING " áÄÉêìáàíÖ à ìëíÄçéÇàíÖ ëééíÇÖíëÇìûôàÖ ìíàãàíõ "
+ call :LOGWARNING " "
+ call :LOGINFO    " **Git for Windows**	'https://git-scm.com/download/win' "
+ call :LOGWARNING " "
+ call :LOGINFO    " **GitHub CLI**	'https://cli.github.com' "
+ call :LOGWARNING " "
+ call :LOGWARNING "------------------------------------------------------------------------------------------"
+ goto :FAILURE
+goto :eof
+
+
 
 rem ==========
 :help
@@ -1729,6 +1764,9 @@ goto :eof
 rem call :FINDFILE "wget.exe" "WGETEXE" "%CD%" "C:" "C:\Windows"
 rem call ::FINDFILE1 %1 %2
 :FINDFILE
+call :LOGCALLSTART "%~0"
+call :LOGDEBUG "'%~0' '%~1' '%~2' '%~3' '%~4' '%~5' '%~6'"
+
 if "%~1"=="" (
  call :LOGERROR "ARG1 = NULL"
  goto FINDFILE2
@@ -1739,14 +1777,14 @@ if "%~2"=="" (
  goto FINDFILE2
 )
 
-call :LOGINFO "FIND '%~1' ..."
-for %%i in ("%~1") do set %~2=%%~$PATH:i
-rem echo "!%~2!"
-if not "!%~2!" == "" (
- rem set %~2=!z1!
+rem call :LOGINFO "FIND '%~1' ..."
+for %%i in ("%~1") do ( set %~2=%%~$PATH:i )
+
+if not "!%~2!" == " " (
+ rem echo "!%~2!"
  goto FINDFILE1
-) else (
- echo off
+)
+ 
  if not "%~3"=="" (
   for /D %%k in (%3 %4 %5 %6 %7 %8 %9) do (
    set z1=%%~k\%~1
@@ -1757,17 +1795,21 @@ if not "!%~2!" == "" (
     )
    )
   )
- )
 
-call :LOGERROR "'%~2' no found"
-call :LOGERROR "ERRORLEVEL %ERRORLEVEL%"
+call :LOGERROR "'%~1' no found"
+set ERRORLEVEL=101
+goto :FINDFILEEND
 
 :FINDFILE1
 call :LOG "FOUND %~2 = '!%~2!'"
+set ERRORLEVEL=0
 
-:FINDFILE2
+:FINDFILEEND
  echo off
- if not "%ERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %ERRORLEVEL%" )
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
 goto :eof
 rem ABBALibraryFindZipEnd
 
@@ -1966,9 +2008,14 @@ rem ==========
 :LOGCALLSTART
 rem call :LOGCALLSTART %1
 @echo off
+rem call :LOGDEBUG "'%~0' '%~1' '%~2' '%~3' '%~4' '%~5' '%~6'"
 if not "%~1"=="" (
- rem @echo .
-  call :LOGINFO2 "START: '%~1' - OK"
+   if "%~2"=="" (
+    call :LOGDEBUG "START: '%~1' - OK"
+   ) else (
+    call :LOGINFO "START: '%~1' - OK"
+   )
+
  ) else (
   call :LOGERROR "'%~0' - CALL ERROR 1"
  )
@@ -1979,6 +2026,7 @@ rem ==========
 :LOGCALLEND
 rem call :LOGCALLEND %1 %2
 @echo off
+rem call :LOGDEBUG "'%~0' '%~1' '%~2' '%~3' '%~4' '%~5' '%~6'"
 if not "%~1"=="" (
  rem @echo .
  if not "%~2"=="" (
@@ -1988,7 +2036,14 @@ if not "%~1"=="" (
     call :LOGERROR "'%~1' - ERRORLEVEL '%~2'" 
     call :LOGERROR "END: '%~1'"
    ) else (
-  call :LOGINFO2 "END: '%~1' - OK"
+
+   if "%~3"=="" (
+    call :LOGDEBUG "END: '%~1' - OK"
+   ) else (
+    call :LOGINFO "'%~1' - ERRORLEVEL '%~2'" 
+    call :LOGINFO "END: '%~1' - OK"
+   )
+
   ) 
  ) else (
  call :LOGERROR "'%~0' - CALL ERROR 2"
