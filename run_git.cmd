@@ -484,9 +484,12 @@ rem ==========
  call :LOGWARNING "------------------------------------------------------------------------------------------"
  call :LOGWARNING " ┤─┐░⌠┤┬▓┘ ┬ ⌠▒▓─█▌┌┬▓┘ ▒▌▌▓┌┘▓▒┌⌠·≥┬┘ ⌠▓┬▀┬▓⌡ "
  call :LOGWARNING " "
- call :LOGINFO    " **Git for Windows**	'https://git-scm.com/download/win' "
- call :LOGWARNING " "
- call :LOGINFO    " **GitHub CLI**	'https://cli.github.com' "
+ call :LOG        " **Git for Windows**	'https://git-scm.com/download/win' "
+ call :LOG        " 'https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.1/Git-2.47.1-64-bit.exe' "
+ call :LOG        " 'winget install --id Git.Git -e --source winget' "
+ call :LOG        " "
+ call :LOG        " **GitHub CLI**	'https://cli.github.com' "
+ call :LOG        " 'https://github.com/cli/cli/releases/download/v2.64.0/gh_2.64.0_windows_amd64.msi' "
  call :LOGWARNING " "
  call :LOGWARNING "------------------------------------------------------------------------------------------"
  goto :FAILURE
@@ -1927,52 +1930,52 @@ set ScrColunEnd=120
 rem ==========
 rem                             ------------------------------------------------------------------------------------------
 :LOGLINE0
-echo юдддддддддддддддддддадддддадддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддды
+echo юдддддддддддддддддддадддддадддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддды
 goto :eof
 
 :LOGLINE1
-echo здддддддддддддддддддбдддддбдддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддд©
+echo здддддддддддддддддддбдддддбдддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддд©
 goto :eof                                                                                                                    
                                                                                                                              
 :LOGLINE2                                                                                                                    
-echo цдддддддддддддддддддедддддедддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддд╢
+echo цдддддддддддддддддддедддддедддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддд╢
 goto :eof                                                                                                                    
 
 rem цдддддддддддддддддддедддддеддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддд╢
 
 :LOGLINE3
-echo [0mц[95mдддддддддддддддддддедддддедддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддд[0m╢[0m
+echo [0mц[95mдддддддддддддддддддедддддедддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддд[0m╢[0m
 goto :eof
 
 :LOGLINE4
-echo [0mц[93mдддддддддддддддддддедддддедддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддд[0m╢[0m
+echo [0mц[93mдддддддддддддддддддедддддедддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддд[0m╢[0m
 goto :eof
 
 rem ==========
 :LOG
 call :LOGSTR  "     " "%~1"
-call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[0m[120GЁ" "[97m"
+call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[0m[130GЁ" "[97m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGINFO
 call :LOGSTR  "INFO " "%~1"
-call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[0m[120GЁ" "[92m"
+call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[0m[130GЁ" "[92m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGINFO2
 call :LOGSTR  "INFO " "%~1"
-call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[0m[120GЁ" "[93m"
+call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[0m[130GЁ" "[93m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGWARNING
 call :LOGSTR  "WARN " "%~1"
-call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[0m[120GЁ" "[95m"
+call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[0m[130GЁ" "[95m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
@@ -1983,7 +1986,7 @@ rem ==========
   if !DEBUG! EQU 1 (
    call :LOGSTR  "DEBUG" "%~1"
    rem echo '!dt!' '!tlogstr1!' '!tlogstr2!'
-   call :LOGSCR  "Ё!dt!Ё!tlogstr1!Ё!tlogstr2![0m[120GЁ" "[94m"
+   call :LOGSCR  "Ё!dt!Ё!tlogstr1!Ё!tlogstr2![0m[130GЁ" "[94m"
    call :LOGFILE "!dt! !tlogstr1! !tlogstr2!"
   )
  )
@@ -1992,7 +1995,7 @@ goto :eof
 rem ==========
 :LOGERROR
 call :LOGSTR  "ERROR" "%~1"
-call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[0m[120GЁ" "[91m"
+call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[0m[130GЁ" "[91m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
@@ -2000,7 +2003,7 @@ rem ==========
 :LOGTEST
 call :LOGSTR  "TEST " "%~1"
 rem call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%" "[96m"
-call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[0m[120GЁ" "[96m"
+call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[0m[130GЁ" "[96m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
@@ -2121,7 +2124,7 @@ goto :eof
 :LOGSTART
 call :LOGSTR  "     " "%~1"
 call :LOGFILE "%dt%       ------------------------------------------------------------------------------------------"
-call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[120GЁ"
+call :LOGSCR  "Ё%dt%Ё%tlogstr1%Ё%tlogstr2%[130GЁ"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
