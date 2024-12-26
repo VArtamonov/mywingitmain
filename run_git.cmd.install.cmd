@@ -8,6 +8,8 @@ setlocal enabledelayedexpansion
 set file_log=%~dp0%~n0.log
 set file_name=%~n0
 
+echo [93m.1 INFO:[0m - [%0]
+
 set DEBUG=0
 
 call run_git.cmd install %file_log%

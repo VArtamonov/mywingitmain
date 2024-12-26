@@ -15,7 +15,9 @@ if "%~1"=="" (
  set file_log=%~1
 )
 
-set DEBUG=1
+echo [93m.1 INFO:[0m - [%0]
+
+set DEBUG=0
 
 call run_git.cmd help %file_log%
 
