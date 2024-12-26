@@ -1356,6 +1356,7 @@ rem ==========
  rem echo ERRORLEVEL=%ERRORLEVEL%
  if %ERRORLEVEL% EQU 0 (
 
+  call :LOGINFO "CREATE REMOTE REPO '%OWNER%/%1' ON GITHUB AND PUSH"
   echo .
   rem Create a new GitHub repository.
   rem gh repo create [<name>] [flags]
@@ -1364,7 +1365,9 @@ rem ==========
   rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
   rem "%GHEXE%" repo create %OWNER%/%1 --private --source=. --remote=origin
   "%GHEXE%" repo create %OWNER%/%1 --private --source=. --remote=origin --push
+  echo .
 
+  call :LOGINFO "REPO '%OWNER%/%1' EDIT DESCRIPTION"
   echo .
   rem Edit repository settings.
   rem gh repo edit [<repository>] [flags]
