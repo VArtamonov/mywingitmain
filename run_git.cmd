@@ -228,6 +228,8 @@ if "%~1" == "test2" (
  goto :FAILURE
 )
 
+call :LOGLINE2
+call :LOGTEST "Ž‚…Š€ ˆ‘“’‘’‚ˆŸ ‚ Š€’€‹Žƒ… '%CD%' …Ž‡ˆ’ŽˆŸ"
 if not exist .git (
  if not "%~1" == "gitinit" (
   call :LOGLINE3
@@ -242,6 +244,7 @@ if not exist .git (
   goto :FAILURE
  )
 )
+call :LOGTEST "Ž‚…Š€ - OK"
 
 rem call :gitinfo
 
