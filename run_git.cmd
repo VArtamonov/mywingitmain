@@ -265,26 +265,22 @@ if "%~1" == "gitinfo" (
 if "%~1" == "gitinit" (
  call :LOGDEBUG "ëéáÑÄçàÖ à àçàñàÄãàáÄñàü êÖèéáàíéêàü"
 
- call :GETPARENTFOLDER
- call :LOGINFO "ÇÖêïçàâ äÄíÄãéÉ: '!PARENTFOLDER!'"
-
- call :GETGITHUBOWNER
- call :LOGINFO "REPONAME: '!REPONAME!'"
- set REPONAME=!PARENTFOLDER!
-
  call :GITINITFILES "%~dp0%~n0%~x0" "%ROOTDIR%"
 
  call :GITINIT
 
- set OWNER=
- call :GETGITHUBOWNER 
- call :LOGINFO "REPONAME: '!REPONAME!'"
- call :LOGINFO "OWNER:    '!OWNER!'"
+ rem call :GETGITHUBOWNER
+ rem call :LOGINFO "REPONAME: '!REPONAME!'"
+
+
+ rem set OWNER=
+ rem call :GETGITHUBOWNER 
+ rem call :LOGINFO "OWNER:    '!OWNER!'"
 
  rem call :GITAUTOCOMMIT
  rem call :GITREMOTEADD !OWNER! !REPONAME!
 
- call :GITHUBCREATE !REPONAME!
+ call :GITHUBCREATE "!REPONAME!"
  if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
 
  rem call :GITAUTOPUSH
@@ -384,12 +380,14 @@ if "%~1" == "githubauthlogout" (
 )
 
 if "%~1" == "githubcreate2" (
- call :GITHUBCREATE !REPONAME!
+ call :GITHUBCREATE "!REPONAME!"
+ if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
  goto :end
 )
 
 if "%~1" == "githubdelete2" (
- call :GITHUBDELETE2
+ call :GITHUBDELETE "!REPONAME!"
+ if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
  goto :end
 )
 
@@ -431,7 +429,7 @@ if "%~1" == "remoteadd" (
 )
 
 if "%~1" == "remoteadd2" (
- call :GITREMOTEADD !GITUSERNAME! !REPONAME!
+ call :GITREMOTEADD "!GITUSERNAME!" "!REPONAME!"
  goto :end
 )
 
@@ -446,7 +444,7 @@ if "%~1" == "githubcreate" (
 )
 
 if "%~1" == "createhub2" (
- call :GITHUBCREATE !REPONAME!
+ call :GITHUBCREATE "!REPONAME!"
  goto :end
 )
 
@@ -1093,8 +1091,11 @@ rem ------------------------------------------------------------------------
  echo .
  git branch -M main --verbose
 
-
- call :LOGCALLEND "%~0" "%ERRORLEVEL%"
+ echo off
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
 goto :eof
 
 rem ==========
@@ -1359,7 +1360,8 @@ rem ==========
  rem echo ERRORLEVEL=%ERRORLEVEL%
  if %ERRORLEVEL% EQU 0 (
 
-  call :LOGINFO "CREATE REMOTE REPO '%OWNER%/%1' ON GITHUB AND PUSH"
+  rem call :LOGINFO "CREATE REMOTE REPO '%OWNER%/%1' ON GITHUB AND PUSH"
+  call :LOGINFO "CREATE REMOTE REPO '%~1' ON GITHUB AND PUSH"
   echo .
   rem Create a new GitHub repository.
   rem gh repo create [<name>] [flags]
@@ -1367,7 +1369,8 @@ rem ==========
   rem --public                 Make the new repository public
   rem "%GHEXE%" repo create --public --description "My Repo 'mywingit%~1'" -y
   rem "%GHEXE%" repo create %OWNER%/%1 --private --source=. --remote=origin
-  "%GHEXE%" repo create %OWNER%/%1 --private --source=. --remote=origin --push
+  rem "%GHEXE%" repo create %OWNER%/%1 --private --source=. --remote=origin --push
+  "%GHEXE%" repo create "%~1" --private --source=. --remote=origin --push
   echo .
 
   call :LOGINFO "REPO '%OWNER%/%1' EDIT DESCRIPTION"
@@ -1376,7 +1379,8 @@ rem ==========
   rem gh repo edit [<repository>] [flags]
   rem --description string       Description of the repository
   rem t OWNER/REPO -d "new Description"
-  "%GHEXE%" repo edit %OWNER%/%1 --description "My Repo '%1'"
+  rem "%GHEXE%" repo edit %OWNER%/%1 --description "My Repo '%1'"
+  "%GHEXE%" repo edit %~1 --description "My Repo '%1'"
 
   echo .
  )
@@ -1390,6 +1394,38 @@ goto :eof
 
 rem ==========
 :GITHUBDELETE
+ call :LOGCALLSTART %0
+ call :LOGINFO "DELETE REMOTE REPO ON GITHUB"
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
+ if "%~1"=="" (
+  call :LOGERROR "ARG1 = NULL"
+  call :LOGDEBUG "call :GITHUBDELETE RepoName"
+  set errorlevel=1
+  goto FAILURE
+ )
+
+ call :GITHUBAUTH
+ rem echo ERRORLEVEL=%ERRORLEVEL%
+ if %ERRORLEVEL% EQU 0 (
+
+ call :LOGINFO "ìÑÄãÖçàÖ êÖèéáàíéêàü '%~1' ON GITHUB"
+
+ echo .
+ "%GHEXE%" repo delete "%~1" --yes
+ echo .
+
+)
+
+ echo off
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
+goto :eof
+
+rem ==========
+:GITHUBDELETE1
  call :LOGLINE2
  call :LOGCALLSTART %0
  call :LOGINFO "DELETE REMOTE REPO ON GITHUB"
@@ -1411,7 +1447,7 @@ rem ==========
 
  rem [remote "origin"]
  rem url = https://github.com/VArtamonov/SPB.SDK.FIRST.git
- for /f "tokens=1* delims==" %%a in ('"git remote get-url origin"') do (set REPOURL1=%%a) 
+ rem for /f "tokens=1* delims==" %%a in ('"git remote get-url origin"') do (set REPOURL1=%%a) 
  echo .
  "%GHEXE%" repo delete !REPOURL1! --yes
 
