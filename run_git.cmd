@@ -25,7 +25,7 @@ call :LOGSTART "START '%~0'"
 call :LOGINFO "LOG FILE - '%file_log%'"
 call :LOGDEBUG "MAINTITLE = '%MAINTITLE%'"
 title %MAINTITLE%
-call :LOGINFO "’…Š“™…‰ Š€’€‹Žƒ: '%CD%'"
+rem call :LOGINFO "’…Š“™…‰ Š€’€‹Žƒ: '%CD%'"
 call :LOGINFO "‘‹“—€‰Ž… „…‘Ÿ’ˆ—Ž… —ˆ‘‹Ž: %RANDOM%"
 call :LOGCALLSTART "%~0" "1"
 
@@ -67,7 +67,8 @@ rem ---------- Ž’‹€„Š€ ----------
 call :LOGLINE2
 rem root dir
 set ROOTDIR=%CD%
-call :LOG "ROOTDIR = '!ROOTDIR!' ..."
+call :LOGDEBUG "ROOTDIR = '!ROOTDIR!' ..."
+call :LOGINFO "’…Š“™…‰ Š€’€‹Žƒ: '!ROOTDIR!'"
 call :CHANGEDIR "%ROOTDIR%"
 
 call :LOGLINE2
@@ -244,15 +245,12 @@ if not exist .git (
   goto :FAILURE
  )
 )
+
 call :LOGTEST "Ž‚…Š€ - OK"
-
-rem call :gitinfo
-
-call :LOGLINE2
 call :GETPARENTFOLDER
-call :LOGINFO "‚…•ˆ‰ Š€’€‹Žƒ: '!PARENTFOLDER!'"
+call :LOGDEBUG "‚…•ˆ‰ Š€’€‹Žƒ: '!PARENTFOLDER!'"
 set REPONAME=!PARENTFOLDER!
-call :LOGINFO "REPONAME: '!REPONAME!'"
+call :LOGINFO "…Ž‡ˆ’Žˆ‰ REPONAME: '!REPONAME!'"
 
 call :LOGLINE2
 call :LOGINFO2 "RUN COMMAND '%1' ..."
@@ -263,30 +261,58 @@ if "%~1" == "gitinfo" (
 )
 
 if "%~1" == "gitinit" (
- call :LOGDEBUG "‘Ž‡„€ˆ… ˆ ˆˆ–ˆ€‹ˆ‡€–ˆŸ …Ž‡ˆ’ŽˆŸ"
+:GITINITL1
+ call :LOGINFO "‘Ž‡„€ˆ… ˆ ˆˆ–ˆ€‹ˆ‡€–ˆŸ …Ž‡ˆ’ŽˆŸ ‚ Š€’€‹Žƒ… '!ROOTDIR!'"
 
- call :GITINITFILES "%~dp0%~n0%~x0" "%ROOTDIR%"
+ if exist .git (
+ call :LOGTEST "“„€‹ˆ’œ ’…Š“™ˆ‰ …Ž‡ˆ’Žˆ‰ '!REPONAME!' ˆ ‡€Ž‚Ž ‘Ž‡„€’œ Y/N"
 
- call :GITINIT
+ rem echo [2F[60G.
+ echo . ‚®¯à®á Y/N „/
+ set /p ASK1=
+ echo .
 
- rem call :GETGITHUBOWNER
- rem call :LOGINFO "REPONAME: '!REPONAME!'"
+ rem echo !ASK1!
 
+ if "!ASK1!"=="Y" goto :GITINITL2
+ if "!ASK1!"=="y" goto :GITINITL2
+ if "!ASK1!"=="„" goto :GITINITL2
+ if "!ASK1!"=="¤" goto :GITINITL2
 
- rem set OWNER=
- rem call :GETGITHUBOWNER 
- rem call :LOGINFO "OWNER:    '!OWNER!'"
-
- rem call :GITAUTOCOMMIT
- rem call :GITREMOTEADD !OWNER! !REPONAME!
-
- call :GITHUBCREATE "!REPONAME!"
- if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
-
- rem call :GITAUTOPUSH
- rem if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
+ call :LOGWARNING " ------------------------------------------------------------------------------------------"
+ call :LOGWARNING " ---                               ‚›•Ž„ …‡ “„€‹…ˆŸ                                   ---"
+ call :LOGWARNING " ------------------------------------------------------------------------------------------"
 
  goto :end
+
+
+ :GITINITL2
+  call :LOGWARNING " ------------------------------------------------------------------------------------------"
+  call :LOGWARNING " --- “„€‹…ˆ… …Ž‡ˆ’ŽˆŸ '!REPONAME!'"
+  call :LOGWARNING " ------------------------------------------------------------------------------------------"
+  echo . 
+  echo rmdir /s /q "!ROOTDIR!\.git"
+  rmdir /s /q "!ROOTDIR!\.git"
+  echo .
+
+)
+
+  call :GITINITFILES "%~dp0%~n0%~x0" "%ROOTDIR%"
+  call :GITINIT
+  rem call :GETGITHUBOWNER
+  rem call :LOGINFO "REPONAME: '!REPONAME!'"
+  rem set OWNER=
+  rem call :GETGITHUBOWNER 
+  rem call :LOGINFO "OWNER:    '!OWNER!'"
+  rem call :GITAUTOCOMMIT
+  rem call :GITREMOTEADD !OWNER! !REPONAME!
+  rem call :GITHUBCREATE "!REPONAME!"
+  rem if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
+  rem call :GITAUTOPUSH
+  rem if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
+
+ 
+goto :end
 )
 
 rem call :LOGINFO "ˆŒŸ Ž‹œ‡Ž‚€’…‹Ÿ: '%GITUSERNAME%'"
