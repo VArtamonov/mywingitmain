@@ -403,6 +403,12 @@ if "%~1" == "githubauthstatus" (
  goto :end
 )
 
+if "%~1" == "githubauthswitch" (
+ call :GITHUBAUTHSWITCH
+ if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
+ goto :end
+)
+
 if "%~1" == "githubauthlogin" (
  call :GITHUBAUTHLOGIN
  if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
@@ -1340,6 +1346,24 @@ rem ==========
  call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
  exit /b %MEMERRORLEVEL%
 goto :eof
+
+rem ==========
+:GITHUBAUTHSWITCH
+ call :LOGCALLSTART "%~0"
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
+ echo .
+ echo "%GHEXE%" auth switch
+ "%GHEXE%" auth switch 
+ echo .
+
+ echo off
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
+goto :eof
+
 
 rem ==========
 :GITHUBAUTHSTATUS
