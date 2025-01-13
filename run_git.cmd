@@ -390,20 +390,39 @@ if "%~1" == "gitbranchnew" (
 )
 
 rem ---------- GitHub Command
+
 if "%~1" == "githubauth" (
  call :GITHUBAUTH
+ if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
+ goto :end
+)
+
+if "%~1" == "githubauthstatus" (
+ call :GITHUBAUTHSTATUS
+ if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
  goto :end
 )
 
 if "%~1" == "githubauthlogin" (
  call :GITHUBAUTHLOGIN
+ if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
  goto :end
 )
 
 if "%~1" == "githubauthlogout" (
  call :GITHUBAUTHLOGOUT
+ if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
  goto :end
 )
+
+
+if "%~1" == "githubauthrefresh" (
+ call :GITHUBAUTHREFRESH
+ if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
+ goto :end
+)
+
+
 
 if "%~1" == "githubcreate2" (
  call :GITHUBCREATE "!REPONAME!"
@@ -1311,8 +1330,100 @@ rem ==========
  call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
 
  echo .
- "%GHEXE%" auth status
+ echo "%GHEXE%" auth status
+ call :GITHUBAUTHSTATUS
  echo .
+
+ echo off
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
+goto :eof
+
+rem ==========
+:GITHUBAUTHSTATUS
+ call :LOGCALLSTART "%~0"
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
+ rem echo .
+ rem "%GHEXE%" auth status
+
+ echo .
+ echo "%GHEXE%" auth status
+
+ set count1=1
+ set gstatus1=0
+ set gstatus2=0
+ set gstatus3=0
+
+ for /f "tokens=1,2,3,4,5,6,7,8,9* delims= " %%a in ('"%GHEXE%" auth status --hostname github.com') do ( 
+  rem echo -
+  rem echo a='%%a' b='%%b' c='%%c' d='%%d' e='%%e' f='%%f' g='%%g' h='%%h'
+
+  if !count1!==1 (
+   set gstatus1=%%a
+  )
+
+  if !count1! GTR 1 (
+
+   rem echo .1
+   if "%%b"=="Logged" (
+   rem echo .2
+    if "%%e"=="!gstatus1!" (
+     rem echo .3
+     set gstatus2=%%g
+    )
+   )
+
+   if "%%b"=="Active" (
+     rem echo .4
+     if "%%d"=="true" (
+      rem echo .5
+      call ::LOGWARNING "Active account   '!gstatus1!' USERNAME '!gstatus2!'"
+      set gstatus3=1
+     ) else  (
+      rem echo .6
+      call ::LOGWARNING "NoActive account '!gstatus1!' USERNAME '!gstatus2!'"
+     )
+   )
+
+  )
+
+  rem echo count1=!count1!
+  rem echo gstatus1=!gstatus1!
+  rem echo gstatus2=!gstatus2!
+
+  set /a count1=!count1!+1
+ )
+
+ echo .
+ echo gstatus3=!gstatus3!
+ if !gstatus3!==1 (
+  set ERRORLEVEL=0
+ ) else (
+  set ERRORLEVEL=1
+ )
+
+ echo off
+ set MEMERRORLEVEL=!ERRORLEVEL!
+ if not "%MEMERRORLEVEL%"=="0" ( call :LOGDEBUG "'%0' - ERRORLEVEL %MEMERRORLEVEL%" )
+ call :LOGCALLEND "%~0" "%MEMERRORLEVEL%"
+ exit /b %MEMERRORLEVEL%
+goto :eof
+
+rem ==========
+:GITHUBAUTHREFRESH
+ call :LOGCALLSTART "%~0"
+ call :LOGDEBUG "'%0' '%1' '%2' '%3' '%4' '%5' '%6'"
+
+ call :GITHUBAUTH
+ rem echo ERRORLEVEL=%ERRORLEVEL%
+ if %ERRORLEVEL% EQU 0 (
+  echo .
+  gh auth refresh --hostname github.com --scopes delete_repo
+  echo .
+ )
 
  echo off
  set MEMERRORLEVEL=!ERRORLEVEL!
@@ -1850,7 +1961,7 @@ if "%~2"=="" (
 )
 
 rem call :LOGINFO "FIND '%~1' ..."
-for %%i in ("%~1") do ( set %~2=%%~$PATH:i )
+for %%i in ("%~1") do (set %~2=%%~$PATH:i)
 
 if not "!%~2!" == " " (
  rem echo "!%~2!"
@@ -1859,6 +1970,7 @@ if not "!%~2!" == " " (
  
  if not "%~3"=="" (
   for /D %%k in (%3 %4 %5 %6 %7 %8 %9) do (
+   rem echo '%~1'
    set z1=%%~k\%~1
    rem echo !z1!
    if exist !z1! (
