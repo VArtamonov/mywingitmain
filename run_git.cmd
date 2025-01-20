@@ -1212,7 +1212,10 @@ rem ==========
  
  if "%~1" == "" (
   rem set COMMITTXT=The autocommit has been added to '%dt%'
-  set COMMITTXT=The autocommit has been added to '%dt%' frem `whoami.exe`
+  set ``
+  for /f "tokens=1* delims==" %%a in ('"whoami.exe"') do ( set hostuser=%%a )
+  call :LOGINFO2 "•‘’ ˆŒŸ ‹œ‡‚€’…‹Ÿ:           '!hostuser!'"
+  set COMMITTXT=The autocommit has been added to '%dt%' from '!hostuser!'
   call :LOGDEBUG "COMMITTXT '!COMMITTXT!'"
  ) else (
   set COMMITTXT=Commit '%~1' has been added to '%dt%'
