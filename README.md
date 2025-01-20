@@ -72,7 +72,7 @@ Programs used, links:
 3. **Far Manager**	https://farmanager.com/
 4. **MSYS2**		https://www.msys2.org/
 
-Кое какие ссылки:
+Кое какие ссылки:  
  How to echo with different colors in the Windows command line https://stackoverflow.com/questions/2048509/how-to-echo-with-different-colors-in-the-windows-command-line
 
 ____
