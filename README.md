@@ -65,8 +65,8 @@ A set of personal programs for automating work with Git.
 Used as an alternative to the archiver.  
 The work is done in Microsoft Windows [https://www.microsoft.com/ru-ru/windows]  
 
-Используемые программы, ссылки:
-Programs used, links:
+Используемые программы, ссылки:  
+Programs used, links:  
 1. **Git for Windows**	https://git-scm.com/download/win
 2. **GitHub CLI**	https://cli.github.com/
 3. **Far Manager**	https://farmanager.com/
