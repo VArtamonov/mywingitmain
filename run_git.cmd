@@ -1211,7 +1211,8 @@ rem ==========
  rem call :LOGDEBUG "CREATE TIMESTAMP '%DT%'"
  
  if "%~1" == "" (
-  set COMMITTXT=The autocommit has been added to '%dt%'
+  rem set COMMITTXT=The autocommit has been added to '%dt%'
+  set COMMITTXT=The autocommit has been added to '%dt%' frem `whoami.exe`
   call :LOGDEBUG "COMMITTXT '!COMMITTXT!'"
  ) else (
   set COMMITTXT=Commit '%~1' has been added to '%dt%'
