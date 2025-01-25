@@ -12,6 +12,9 @@ echo [1F[0KScan
 @echo off
 echo [24E
 
+echo .
+echo [1G+[3G+[150G+
+
 set MEMERRORLEVEL=!ERRORLEVEL!
 if !MEMERRORLEVEL! GTR 1 ( echo [91m.2 ERROR:[0m ERRORLEVEL = !MEMERRORLEVEL! - [%0] )
 if !MEMERRORLEVEL! EQU 0 ( echo [93m.2 INFO:[0m ERRORLEVEL = !MEMERRORLEVEL!  - [%0] )

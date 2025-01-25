@@ -1216,10 +1216,10 @@ rem ==========
  if "%~1" == "" (
   rem set COMMITTXT=The autocommit has been added to '%dt%'
   set COMMITTXT=The autocommit has been added to '%dt%' from '!hostuser!'
-  call :LOGDEBUG "COMMITTXT '!COMMITTXT!'"
+  call :LOGINFO "COMMITTXT '!COMMITTXT!'"
  ) else (
   set COMMITTXT=Commit '%~1' has been added to '%dt%' from '!hostuser!'
-  call :LOGDEBUG "COMMITTXT '!COMMITTXT!'"
+  call :LOGINFO "COMMITTXT '!COMMITTXT!'"
  )
 
  echo .
@@ -2163,28 +2163,28 @@ goto :eof
 rem ==========
 :LOG
 call :LOGSTR  "     " "%~1"
-call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[130G³" "[97m"
+call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[!colnum!G³" "[97m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGINFO
 call :LOGSTR  "INFO " "%~1"
-call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[130G³" "[92m"
+call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[!colnum!G³" "[92m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGINFO2
 call :LOGSTR  "INFO " "%~1"
-call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[130G³" "[93m"
+call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[!colnum!G³" "[93m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGWARNING
 call :LOGSTR  "WARN " "%~1"
-call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[130G³" "[95m"
+call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[!colnum!G³" "[95m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
@@ -2195,7 +2195,7 @@ rem ==========
   if !DEBUG! EQU 1 (
    call :LOGSTR  "DEBUG" "%~1"
    rem echo '!dt!' '!tlogstr1!' '!tlogstr2!'
-   call :LOGSCR  "³!dt!³!tlogstr1!³!tlogstr2![0m[130G³" "[94m"
+   call :LOGSCR  "³!dt!³!tlogstr1!³!tlogstr2![0m[!colnum!G³" "[94m"
    call :LOGFILE "!dt! !tlogstr1! !tlogstr2!"
   )
  )
@@ -2204,7 +2204,7 @@ goto :eof
 rem ==========
 :LOGERROR
 call :LOGSTR  "ERROR" "%~1"
-call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[130G³" "[91m"
+call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[!colnum!G³" "[91m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
@@ -2212,7 +2212,7 @@ rem ==========
 :LOGTEST
 call :LOGSTR  "TEST " "%~1"
 rem call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%" "[96m"
-call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[130G³" "[96m"
+call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[0m[!colnum!G³" "[96m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
@@ -2331,9 +2331,11 @@ call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 :LOGSTART
+rem set colnum=150
+set colnum=130
 call :LOGSTR  "     " "%~1"
 call :LOGFILE "%dt%       ------------------------------------------------------------------------------------------"
-call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[130G³"
+call :LOGSCR  "³%dt%³%tlogstr1%³%tlogstr2%[!colnum!G³"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
