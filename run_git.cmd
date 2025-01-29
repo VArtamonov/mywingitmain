@@ -74,8 +74,8 @@ call :CHANGEDIR "%ROOTDIR%"
 call :LOGLINE2
 call :LOGINFO2 "èéàëä ìíàãàí"
 
-rem call :FINDZIP
-rem call :FINDWGET
+call :FINDZIP
+call :FINDWGET
 rem call :FINDRCLONE
 
 call :FINDGIT
@@ -1991,7 +1991,7 @@ if "%~2"=="" (
 rem call :LOGINFO "FIND '%~1' ..."
 for %%i in ("%~1") do (set %~2=%%~$PATH:i)
 
-if not "!%~2!" == " " (
+if not "!%~2!" == "" (
  rem echo "!%~2!"
  goto FINDFILE1
 )
