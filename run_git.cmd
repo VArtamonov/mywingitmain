@@ -315,6 +315,26 @@ if "%~1" == "gitinit" (
 goto :end
 )
 
+rem --------------------------------------------------------------------------------------------------------------
+if "%~1" == "gitinitremote" (
+rem [remote "tnas1"]
+rem url = ssh://git@192.168.88.12:9222/mnt/DISK4/1_REPO/mywingitmain.git
+rem fetch = +refs/heads/*:refs/remotes/tnas1/*
+rem ssh -p 9222 git@192.168.88.12 "cd /mnt/DISK4/1_REPO && ls"
+
+ set gitremote=192.168.88.12
+ call :LOGINFO "‘‡„€ˆ… ˆ ˆˆ–ˆ€‹ˆ‡€–ˆŸ “„€‹…ƒ …‡ˆ’ˆŸ '!REPONAME!' € ‘…‚…… '!gitremote!'"
+
+ echo .
+ echo on
+ ssh -p 9222 git@!gitremote! "cd /mnt/DISK4/1_REPO && mkdir !REPONAME!.git && cd !REPONAME!.git && git init --bare && ls"
+ @echo off
+ echo .
+
+ goto :end
+)
+rem --------------------------------------------------------------------------------------------------------------
+
 rem call :LOGINFO "ˆŒŸ ‹œ‡‚€’…‹Ÿ: '%GITUSERNAME%'"
 
 rem for %%i in ("git.exe") do set FILE1=%%~$PATH:i
