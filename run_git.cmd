@@ -364,10 +364,9 @@ rem echo off
 rem --------------------------------------------------------------------------------------------------------------
 rem ùíé çìÜçé
 
-rem call :GETPARENTFOLDER
-rem call :GETGITHUBOWNER 
-rem call :LOGINFO "REPONAME: '!REPONAME!'"
-rem call :LOGINFO "OWNER:    '!OWNER!'"
+call :GETGITHUBOWNER 
+call :LOGINFO "REPONAME: '!REPONAME!'"
+call :LOGINFO "OWNER:    '!OWNER!'"
 rem set REPONAME=!PARENTFOLDER!
 
 if "%~1" == "autocommit" (
@@ -441,23 +440,24 @@ if "%~1" == "githubauthlogout" (
  goto :end
 )
 
-
 if "%~1" == "githubauthrefresh" (
  call :GITHUBAUTHREFRESH
  if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
  goto :end
 )
 
-
-
 if "%~1" == "githubcreate2" (
- call :GITHUBCREATE "!REPONAME!"
+ call :LOGINFO "REPONAME: '!REPONAME!'"
+ call :LOGINFO "OWNER:    '!OWNER!'"
+ call :GITHUBCREATE "!OWNER!/!REPONAME!"
  if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
  goto :end
 )
 
 if "%~1" == "githubdelete2" (
- call :GITHUBDELETE "!REPONAME!"
+ call :LOGINFO "REPONAME: '!REPONAME!'"
+ call :LOGINFO "OWNER:    '!OWNER!'"
+ call :GITHUBDELETE "!OWNER!/!REPONAME!"
  if !ERRORLEVEL! GTR 0 ( goto :FAILURE )
  goto :end
 )
@@ -1558,7 +1558,7 @@ rem ==========
   "%GHEXE%" repo create "%~1" --private --source=. --remote=origin --push
   echo .
 
-  call :LOGINFO "REPO '%OWNER%/%1' EDIT DESCRIPTION"
+  call :LOGINFO "REPO '%~1' EDIT DESCRIPTION"
   echo .
   rem Edit repository settings.
   rem gh repo edit [<repository>] [flags]
