@@ -4,31 +4,42 @@ setlocal
 setlocal enableextensions
 setlocal enabledelayedexpansion
 
-echo [93m.1 INFO:[0m - [%0]
+echo [93m. 1 INFO:[0m - [%0]
 
-echo -------------------------------------------------
+echo --------------------------------------------------------------------------------------------------
 set p=obj,bin,.vs,OutputPath,artifacts,__pycache__
-echo Удаление всех '%p%' ...
+echo . 2 Удаление всех '%p%' ...
 for /r %%a in (%p%) do (
  rem echo %%a
  echo .
  echo [1F[0K Scan '%%a'[1F
  if exist "%%a" (
-  echo Delete '%%a'
-  rem del /f /s /q "%%a"
+  echo . Delete '%%a'
   rd /s /q "%%a"
  )
 )
+echo .
+echo [1F[0K[92m. Удаление завершено[0m[1F
 
 echo [1E.
-echo -------------------------------------------------
-echo Удаление всех логов *.log ...
-del /s /q *.log
+echo --------------------------------------------------------------------------------------------------
+echo . 3 Удаление всех логов *.log ...
+for /r %%a in (*.log) do (
+ rem echo %%a
+ echo .
+ echo [1F[0K Scan '%%a'[1F
+ if exist "%%a" (
+  echo . Delete '%%a'
+  del /f /q "%%a"
+ )
+)
+echo .
+echo [1F[0K[92m. Удаление завершено[0m[1F
 
 echo [1E.
 set MEMERRORLEVEL=!ERRORLEVEL!
-if !MEMERRORLEVEL! GTR 1 ( echo [91m.2 ERROR:[0m ERRORLEVEL = !MEMERRORLEVEL! - [%0] )
-if !MEMERRORLEVEL! EQU 0 ( echo [93m.2 INFO:[0m ERRORLEVEL = !MEMERRORLEVEL!  - [%0] )
+if !MEMERRORLEVEL! GTR 1 ( echo [91m. 9 ERROR:[0m ERRORLEVEL = !MEMERRORLEVEL! - [%0] )
+if !MEMERRORLEVEL! EQU 0 ( echo [93m. 9 INFO:[0m ERRORLEVEL = !MEMERRORLEVEL!  - [%0] )
 exit /b %MEMERRORLEVEL%
 goto :eof
 
