@@ -74,8 +74,8 @@ call :CHANGEDIR "%ROOTDIR%"
 call :LOGLINE2
 call :LOGINFO2 "ПОИСК УТИЛИТ"
 
-rem call :FINDZIP
-rem call :FINDWGET
+call :FINDZIP
+call :FINDWGET
 rem call :FINDRCLONE
 
 call :FINDGIT
@@ -1216,10 +1216,10 @@ rem ==========
  if "%~1" == "" (
   rem set COMMITTXT=The autocommit has been added to '%dt%'
   set COMMITTXT=The autocommit has been added to '%dt%' from '!hostuser!'
-  call :LOGDEBUG "COMMITTXT '!COMMITTXT!'"
+  call :LOGINFO "COMMITTXT '!COMMITTXT!'"
  ) else (
   set COMMITTXT=Commit '%~1' has been added to '%dt%' from '!hostuser!'
-  call :LOGDEBUG "COMMITTXT '!COMMITTXT!'"
+  call :LOGINFO "COMMITTXT '!COMMITTXT!'"
  )
 
  echo .
@@ -1991,7 +1991,7 @@ if "%~2"=="" (
 rem call :LOGINFO "FIND '%~1' ..."
 for %%i in ("%~1") do (set %~2=%%~$PATH:i)
 
-if not "!%~2!" == " " (
+if not "!%~2!" == "" (
  rem echo "!%~2!"
  goto FINDFILE1
 )
@@ -2163,28 +2163,28 @@ goto :eof
 rem ==========
 :LOG
 call :LOGSTR  "     " "%~1"
-call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[0m[130G│" "[97m"
+call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[0m[!colnum!G│" "[97m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGINFO
 call :LOGSTR  "INFO " "%~1"
-call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[0m[130G│" "[92m"
+call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[0m[!colnum!G│" "[92m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGINFO2
 call :LOGSTR  "INFO " "%~1"
-call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[0m[130G│" "[93m"
+call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[0m[!colnum!G│" "[93m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 rem ==========
 :LOGWARNING
 call :LOGSTR  "WARN " "%~1"
-call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[0m[130G│" "[95m"
+call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[0m[!colnum!G│" "[95m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
@@ -2195,7 +2195,7 @@ rem ==========
   if !DEBUG! EQU 1 (
    call :LOGSTR  "DEBUG" "%~1"
    rem echo '!dt!' '!tlogstr1!' '!tlogstr2!'
-   call :LOGSCR  "│!dt!│!tlogstr1!│!tlogstr2![0m[130G│" "[94m"
+   call :LOGSCR  "│!dt!│!tlogstr1!│!tlogstr2![0m[!colnum!G│" "[94m"
    call :LOGFILE "!dt! !tlogstr1! !tlogstr2!"
   )
  )
@@ -2204,7 +2204,7 @@ goto :eof
 rem ==========
 :LOGERROR
 call :LOGSTR  "ERROR" "%~1"
-call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[0m[130G│" "[91m"
+call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[0m[!colnum!G│" "[91m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
@@ -2212,7 +2212,7 @@ rem ==========
 :LOGTEST
 call :LOGSTR  "TEST " "%~1"
 rem call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%" "[96m"
-call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[0m[130G│" "[96m"
+call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[0m[!colnum!G│" "[96m"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
@@ -2331,9 +2331,11 @@ call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
 :LOGSTART
+rem set colnum=150
+set colnum=130
 call :LOGSTR  "     " "%~1"
 call :LOGFILE "%dt%       ------------------------------------------------------------------------------------------"
-call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[130G│"
+call :LOGSCR  "│%dt%│%tlogstr1%│%tlogstr2%[!colnum!G│"
 call :LOGFILE "%dt% %tlogstr1% %tlogstr2%"
 goto :eof
 
@@ -2558,9 +2560,14 @@ rem ==========
 rem Управляющие последовательности ANSI
 rem Совокупность символов ESC и [ называют CSI или Control Sequence Introducer
 rem ESC (ASCII: 27 / 0x1B / 033
-rem [nK  Удаляет часть строки. Если n равно двум, очищает всю строку. Положение курсора не меняется.
-rem [nF  Перемещает курсор в начало n-ой (по умолчанию 1-й) строки сверху относительно текущей.
+rem [nK EL  - Erase in Line - Удаляет часть строки. 
+rem 				Если n равно нулю (или отсутствует), очищает всё от курсора до конца строки.
+rem 				Если n равно единице, очищает всё от курсора до начала строки.
+rem 				Если n равно двум, очищает всю строку. Положение курсора не меняется.
+rem [nF CPL - Cursor Previous Line - Перемещает курсор в начало n-ой (по умолчанию 1-й) строки сверху относительно текущей.
+rem [nE CNL - Cursor Next Line - Перемещает курсор в начало n-ой (по умолчанию 1-й) строки снизу относительно текущей.
 rem [nG Cursor Horizontal Absolute Перемещает курсор в столбец n.
+
 goto :eof
 
 exit /b 0
