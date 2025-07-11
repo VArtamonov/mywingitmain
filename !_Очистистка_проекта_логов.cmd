@@ -4,56 +4,23 @@ setlocal
 setlocal enableextensions
 setlocal enabledelayedexpansion
 
-echo [93m.1 INFO:[0m - [%0]
-
-echo --------------------------------------------------------------------------------------------------
-set p=obj,bin,.vs,OutputPath,artifacts,__pycache__,.pytest_cache
-echo [93m.2 Удаление всех папок '%p%' ...[0m
-for /r %%a in (%p%) do (
- rem echo %%a
- set aa=%%a
- set bb=!aa:~0,70!
- echo .
- echo [1F[0KScan '!bb!'[1F
- if exist "%%a" (
-  echo .2 Delete '%%a'
-  rd /s /q "%%a"
- )
-)
-echo [0K[92m.2 Удаление завершено[0m
+echo [93m. 1 INFO:[0m - [%0]
 
 echo [1E.
 echo --------------------------------------------------------------------------------------------------
-set p2=.DS_Store
-echo [93m.3 Удаление всех файлов  '%p2%'...[0m
-for /r %%a in (%p%) do (
- rem echo %%a
- set aa=%%a
- set bb=!aa:~0,70!
- echo .
- echo [1F[0KScan '!bb!'[1F
- if exist "%%a" (
-  echo .3 Delete '%%a'
-  del /f /q "%%a"
- )
-)
-echo [0K[92m.3 Удаление завершено[0m
-
-echo [1E.
-echo --------------------------------------------------------------------------------------------------
-echo [93m.4 Удаление всех логов *.log ...[0m
-for /r %%a in (*.log) do (
+echo [93m. 3 Удаление всех логов *.log ...
+for /r %%a in (*.log.*) do (
  rem echo %%a
  echo .
  echo [1F[0K Scan '%%a'[1F
  if exist "%%a" (
-  echo .4 Delete '%%a'
+  echo . Delete '%%a'
   del /f /q "%%a"
  )
 )
 echo .
 echo .
-echo [0K[92m4. Удаление завершено[0m
+echo [1F[0K[92m. Удаление завершено[0m[1F
 
 echo [1E.
 set MEMERRORLEVEL=!ERRORLEVEL!
